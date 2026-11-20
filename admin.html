@@ -32,6 +32,14 @@
   <!-- Toast -->
   <div id="toast-container" class="fixed top-5 left-1/2 -translate-x-1/2 z-50 w-[92%] max-w-md pointer-events-none flex flex-col gap-2"></div>
 
+  <!-- قائمة الاقتراحات الجاهزة (اختيارية - تقدر تكتب أي نص حر) -->
+  <datalist id="area-suggestions">
+    <option value="شمال الرياض"></option>
+    <option value="شرق الرياض"></option>
+    <option value="غرب وجنوب الرياض"></option>
+    <option value="وسط الرياض"></option>
+  </datalist>
+
   <!-- Top Header -->
   <header class="bg-white border-b border-emerald-100 shadow-sm sticky top-0 z-30">
     <div class="max-w-6xl mx-auto px-4 py-3.5 flex items-center justify-between gap-3">
@@ -54,7 +62,7 @@
 
   <main class="flex-1 max-w-6xl w-full mx-auto px-4 py-6">
 
-    <!-- Admin Dashboard (Direct Access) -->
+    <!-- Admin Dashboard -->
     <section id="admin-dashboard" class="space-y-6">
       <div class="bg-white rounded-3xl p-5 sm:p-7 border border-slate-200/80 shadow-sm space-y-5">
         <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 border-b border-slate-100 pb-5">
@@ -116,12 +124,8 @@
               <input id="pickup-name" type="text" required placeholder="مثال: حي النرجس - شمال الرياض" class="w-full p-3 rounded-xl bg-white border border-slate-200 text-xs sm:text-sm font-bold text-slate-800 focus:border-emerald-600 focus:outline-none" />
             </div>
             <div>
-              <label class="block text-xs font-bold text-slate-700 mb-1">القطاع *</label>
-              <select id="pickup-area" class="w-full p-3 rounded-xl bg-white border border-slate-200 text-xs sm:text-sm font-bold text-slate-800 focus:border-emerald-600 focus:outline-none">
-                <option value="شمال">شمال الرياض</option>
-                <option value="شرق">شرق الرياض</option>
-                <option value="غرب">غرب وجنوب الرياض</option>
-              </select>
+              <label class="block text-xs font-bold text-slate-700 mb-1">القطاع / المنطقة *</label>
+              <input id="pickup-area" type="text" required list="area-suggestions" placeholder="اكتب القطاع أو المنطقة التي تريدها..." class="w-full p-3 rounded-xl bg-white border border-slate-200 text-xs sm:text-sm font-bold text-slate-800 focus:border-emerald-600 focus:outline-none" />
             </div>
             <div>
               <label class="block text-xs font-bold text-slate-700 mb-1">تفاصيل الموقع / النطاق *</label>
@@ -166,11 +170,7 @@
             </div>
             <div>
               <label class="block text-xs font-bold text-slate-700 mb-1">القطاع / المنطقة *</label>
-              <select id="vehicle-area" class="w-full p-3 rounded-xl bg-white border border-slate-200 text-xs sm:text-sm font-bold text-slate-800 focus:border-emerald-600 focus:outline-none">
-                <option value="شمال">شمال الرياض</option>
-                <option value="شرق">شرق الرياض</option>
-                <option value="غرب">غرب وجنوب الرياض</option>
-              </select>
+              <input id="vehicle-area" type="text" required list="area-suggestions" placeholder="اكتب القطاع أو المنطقة التي تريدها..." class="w-full p-3 rounded-xl bg-white border border-slate-200 text-xs sm:text-sm font-bold text-slate-800 focus:border-emerald-600 focus:outline-none" />
             </div>
             <div>
               <label class="block text-xs font-bold text-slate-700 mb-1">موقع تمركز السيارة الحالي *</label>
@@ -213,6 +213,79 @@
         <h3 class="text-base sm:text-lg font-black text-emerald-950 mb-1">إدارة طلبات تسليم المصاحف وتذكير الواتساب</h3>
         <p class="text-xs text-slate-500 mb-4">تحديث مرحلة الطلب أو إرسال رسالة تذكير واتساب مباشرة لصاحب الطلب</p>
         <div id="admin-orders-list" class="space-y-3"></div>
+      </div>
+
+      <!-- تراخيصنا -->
+      <div class="bg-white rounded-3xl p-5 sm:p-7 border border-slate-200/80 shadow-sm space-y-4">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 pb-4">
+          <div class="flex items-center gap-2.5">
+            <div class="w-10 h-10 rounded-2xl bg-emerald-50 text-emerald-800 border border-emerald-200 flex items-center justify-center text-base">
+              <i class="fa-solid fa-certificate"></i>
+            </div>
+            <div>
+              <h3 class="text-base sm:text-lg font-black text-emerald-950">تراخيصنا</h3>
+              <p class="text-xs text-slate-500">الروابط الرسمية المعتمدة في منصة أمان / المركز الوطني لتنمية القطاع غير الربحي</p>
+            </div>
+          </div>
+          <span class="inline-flex items-center gap-1.5 text-[11px] font-extrabold bg-gold-50 text-gold-600 border border-gold-200 px-3 py-1 rounded-full self-start sm:self-auto">
+            <i class="fa-solid fa-shield-check"></i>
+            <span>تراخيص رسمية موثقة</span>
+          </span>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <!-- ترخيص 1 -->
+          <div class="rounded-2xl p-4 sm:p-5 bg-gradient-to-br from-emerald-50/70 to-white border border-emerald-200/90 hover:border-emerald-400 transition flex flex-col justify-between gap-4 shadow-2xs">
+            <div class="space-y-2">
+              <div class="flex items-center justify-between gap-2">
+                <span class="text-xs font-black text-emerald-950 flex items-center gap-1.5">
+                  <i class="fa-solid fa-file-shield text-emerald-700"></i>
+                  <span>الترخيص الأول — 26102322</span>
+                </span>
+                <span class="text-[11px] font-bold bg-white text-emerald-800 border border-emerald-200 px-2.5 py-0.5 rounded-full">NCNP / أمان</span>
+              </div>
+              <a href="https://dongovernance.ncnp.gov.sa/aman/l/26102322" target="_blank" rel="noopener noreferrer" dir="ltr" class="block text-xs font-mono text-emerald-800 hover:text-emerald-600 underline break-all text-left bg-white/90 px-3 py-2 rounded-xl border border-emerald-100">
+                https://dongovernance.ncnp.gov.sa/aman/l/26102322
+              </a>
+            </div>
+            <div class="flex items-center gap-2">
+              <a href="https://dongovernance.ncnp.gov.sa/aman/l/26102322" target="_blank" rel="noopener noreferrer" class="flex-1 bg-emerald-800 hover:bg-emerald-700 text-white text-xs font-extrabold py-2.5 px-3.5 rounded-xl transition flex items-center justify-center gap-1.5">
+                <span>فتح رابط الترخيص</span>
+                <i class="fa-solid fa-arrow-up-left-from-square text-[11px]"></i>
+              </a>
+              <button type="button" onclick="copyTextToClipboard('https://dongovernance.ncnp.gov.sa/aman/l/26102322', 'تم نسخ رابط الترخيص 26102322')" class="bg-white hover:bg-slate-100 text-slate-700 border border-slate-200 text-xs font-bold py-2.5 px-3.5 rounded-xl transition flex items-center gap-1.5">
+                <i class="fa-regular fa-copy"></i>
+                <span>نسخ</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- ترخيص 2 -->
+          <div class="rounded-2xl p-4 sm:p-5 bg-gradient-to-br from-gold-50/70 to-white border border-gold-200/90 hover:border-gold-400 transition flex flex-col justify-between gap-4 shadow-2xs">
+            <div class="space-y-2">
+              <div class="flex items-center justify-between gap-2">
+                <span class="text-xs font-black text-emerald-950 flex items-center gap-1.5">
+                  <i class="fa-solid fa-file-shield text-gold-600"></i>
+                  <span>الترخيص الثاني — 26102313</span>
+                </span>
+                <span class="text-[11px] font-bold bg-white text-gold-600 border border-gold-200 px-2.5 py-0.5 rounded-full">NCNP / أمان</span>
+              </div>
+              <a href="https://dongovernance.ncnp.gov.sa/aman/l/26102313" target="_blank" rel="noopener noreferrer" dir="ltr" class="block text-xs font-mono text-emerald-800 hover:text-emerald-600 underline break-all text-left bg-white/90 px-3 py-2 rounded-xl border border-gold-100">
+                https://dongovernance.ncnp.gov.sa/aman/l/26102313
+              </a>
+            </div>
+            <div class="flex items-center gap-2">
+              <a href="https://dongovernance.ncnp.gov.sa/aman/l/26102313" target="_blank" rel="noopener noreferrer" class="flex-1 bg-emerald-800 hover:bg-emerald-700 text-white text-xs font-extrabold py-2.5 px-3.5 rounded-xl transition flex items-center justify-center gap-1.5">
+                <span>فتح رابط الترخيص</span>
+                <i class="fa-solid fa-arrow-up-left-from-square text-[11px]"></i>
+              </a>
+              <button type="button" onclick="copyTextToClipboard('https://dongovernance.ncnp.gov.sa/aman/l/26102313', 'تم نسخ رابط الترخيص 26102313')" class="bg-white hover:bg-slate-100 text-slate-700 border border-slate-200 text-xs font-bold py-2.5 px-3.5 rounded-xl transition flex items-center gap-1.5">
+                <i class="fa-regular fa-copy"></i>
+                <span>نسخ</span>
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
     </section>
   </main>
@@ -259,19 +332,19 @@
     };
 
     const DEFAULT_PICKUP_LOCATIONS = [
-      { id: 101, name: 'حي النرجس - شمال الرياض', area: 'شمال', address: 'شمال الرياض - منازل ومساجد', hours: 'يومياً من 9:00 ص - 10:00 م', status: 'متاح' },
-      { id: 102, name: 'حي الياسمين - شمال الرياض', area: 'شمال', address: 'شمال الرياض - منازل ومساجد', hours: 'يومياً من 9:00 ص - 10:00 م', status: 'متاح' },
-      { id: 103, name: 'حي الروضة - شرق الرياض', area: 'شرق', address: 'شرق الرياض - منازل ومساجد', hours: 'يومياً من 9:00 ص - 10:00 م', status: 'متاح' },
-      { id: 104, name: 'حي السويدي - غرب الرياض', area: 'غرب', address: 'غرب الرياض - منازل ومساجد', hours: 'يومياً من 9:00 ص - 10:00 م', status: 'متاح' }
+      { id: 101, name: 'حي النرجس - شمال الرياض', area: 'شمال الرياض', address: 'شمال الرياض - منازل ومساجد', hours: 'يومياً من 9:00 ص - 10:00 م', status: 'متاح' },
+      { id: 102, name: 'حي الياسمين - شمال الرياض', area: 'شمال الرياض', address: 'شمال الرياض - منازل ومساجد', hours: 'يومياً من 9:00 ص - 10:00 م', status: 'متاح' },
+      { id: 103, name: 'حي الروضة - شرق الرياض', area: 'شرق الرياض', address: 'شرق الرياض - منازل ومساجد', hours: 'يومياً من 9:00 ص - 10:00 م', status: 'متاح' },
+      { id: 104, name: 'حي السويدي - غرب الرياض', area: 'غرب وجنوب الرياض', address: 'غرب الرياض - منازل ومساجد', hours: 'يومياً من 9:00 ص - 10:00 م', status: 'متاح' }
     ];
 
     const DEFAULT_VEHICLES = [
-      { id: 1, name: 'سيارة الاستلام (1) - حي الروضة', area: 'شرق', address: 'مقر جمعية العناية بالمصحف - حي الروضة، الرياض', distance: '1.8 كم', hours: 'مفتوح 24 ساعة (استقبال مباشر وميداني)', status: 'متاح', capacityPercent: 32 },
-      { id: 2, name: 'سيارة الاستلام (2) - جامع الراجحي', area: 'شرق', address: 'مخرج 15، البوابة الشمالية للجامع', distance: '3.2 كم', hours: 'يومياً من 4:00 عصراً - 10:30 مساءً', status: 'متاح', capacityPercent: 45 },
-      { id: 3, name: 'سيارة الاستلام (3) - حي الياسمين', area: 'شمال', address: 'حي الياسمين، طريق الملك عبدالعزيز', distance: '5.4 كم', hours: '8:00 صباحاً - 12:00 منتصف الليل', status: 'شبه ممتلئ', capacityPercent: 82 },
-      { id: 4, name: 'سيارة الاستلام (4) - حي النرجس', area: 'شمال', address: 'حي النرجس، طريق عثمان بن عفان', distance: '6.1 كم', hours: 'يومياً من 3:00 عصراً - 11:00 مساءً', status: 'متاح', capacityPercent: 20 },
-      { id: 5, name: 'سيارة الاستلام (5) - السويدي', area: 'غرب', address: 'حي السويدي، الرياض', distance: '8.7 كم', hours: '4:00 عصراً - 10:00 مساءً', status: 'متاح', capacityPercent: 40 },
-      { id: 6, name: 'سيارة الاستلام (6) - العزيزية', area: 'غرب', address: 'حي العزيزية، الطريق الدائري الجنوبي', distance: '10.2 كم', hours: 'يومياً من 4:00 عصراً - 10:00 مساءً', status: 'متاح', capacityPercent: 55 }
+      { id: 1, name: 'سيارة الاستلام (1) - حي الروضة', area: 'شرق الرياض', address: 'مقر جمعية العناية بالمصحف - حي الروضة، الرياض', distance: '1.8 كم', hours: 'مفتوح 24 ساعة (استقبال مباشر وميداني)', status: 'متاح', capacityPercent: 32 },
+      { id: 2, name: 'سيارة الاستلام (2) - جامع الراجحي', area: 'شرق الرياض', address: 'مخرج 15، البوابة الشمالية للجامع', distance: '3.2 كم', hours: 'يومياً من 4:00 عصراً - 10:30 مساءً', status: 'متاح', capacityPercent: 45 },
+      { id: 3, name: 'سيارة الاستلام (3) - حي الياسمين', area: 'شمال الرياض', address: 'حي الياسمين، طريق الملك عبدالعزيز', distance: '5.4 كم', hours: '8:00 صباحاً - 12:00 منتصف الليل', status: 'شبه ممتلئ', capacityPercent: 82 },
+      { id: 4, name: 'سيارة الاستلام (4) - حي النرجس', area: 'شمال الرياض', address: 'حي النرجس، طريق عثمان بن عفان', distance: '6.1 كم', hours: 'يومياً من 3:00 عصراً - 11:00 مساءً', status: 'متاح', capacityPercent: 20 },
+      { id: 5, name: 'سيارة الاستلام (5) - السويدي', area: 'غرب وجنوب الرياض', address: 'حي السويدي، الرياض', distance: '8.7 كم', hours: '4:00 عصراً - 10:00 مساءً', status: 'متاح', capacityPercent: 40 },
+      { id: 6, name: 'سيارة الاستلام (6) - العزيزية', area: 'غرب وجنوب الرياض', address: 'حي العزيزية، الطريق الدائري الجنوبي', distance: '10.2 كم', hours: 'يومياً من 4:00 عصراً - 10:00 مساءً', status: 'متاح', capacityPercent: 55 }
     ];
 
     const DEFAULT_DONATIONS = [
@@ -322,6 +395,24 @@
       toast.innerHTML = `<i class="fa-solid fa-circle-check text-gold-400 text-lg"></i><span>${message}</span>`;
       container.appendChild(toast);
       setTimeout(() => toast.remove(), 3200);
+    }
+
+    function copyTextToClipboard(text, successMsg = 'تم النسخ بنجاح') {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(() => showToast(successMsg)).catch(() => fallbackCopy(text, successMsg));
+      } else {
+        fallbackCopy(text, successMsg);
+      }
+    }
+
+    function fallbackCopy(text, successMsg) {
+      const tempInput = document.createElement('input');
+      tempInput.value = text;
+      document.body.appendChild(tempInput);
+      tempInput.select();
+      document.execCommand('copy');
+      document.body.removeChild(tempInput);
+      showToast(successMsg);
     }
 
     function loadLocalData() {
@@ -417,7 +508,7 @@
             state.pickupLocations = pData.map(row => ({
               id: row.id,
               name: row.name,
-              area: row.area || 'شمال',
+              area: row.area || '',
               address: row.address || '',
               hours: row.hours || 'يومياً',
               status: row.status || 'متاح'
@@ -432,7 +523,7 @@
             state.dropoffPoints = vData.map(row => ({
               id: row.id,
               name: row.name,
-              area: row.area || 'شرق',
+              area: row.area || '',
               address: row.address || '',
               distance: row.distance || 'مباشر',
               hours: row.hours || 'يومياً',
@@ -483,7 +574,7 @@
           <div class="space-y-0.5">
             <div class="flex flex-wrap items-center gap-2">
               <span class="font-black text-sm text-emerald-950">${p.name}</span>
-              <span class="text-[11px] font-bold bg-emerald-100 text-emerald-800 px-2.5 py-0.5 rounded-full">قطاع ${p.area}</span>
+              ${p.area ? `<span class="text-[11px] font-bold bg-emerald-100 text-emerald-800 px-2.5 py-0.5 rounded-full">${p.area}</span>` : ''}
             </div>
             <div class="text-xs text-slate-600">${p.address} • <span class="text-slate-500">${p.hours}</span></div>
           </div>
@@ -505,7 +596,7 @@
       if (!p) return;
       document.getElementById('pickup-edit-id').value = p.id;
       document.getElementById('pickup-name').value = p.name;
-      document.getElementById('pickup-area').value = p.area;
+      document.getElementById('pickup-area').value = p.area || '';
       document.getElementById('pickup-address').value = p.address;
       document.getElementById('pickup-hours').value = p.hours;
       document.getElementById('pickup-submit-btn').innerHTML = '<i class="fa-solid fa-check"></i><span>حفظ التعديل</span>';
@@ -527,7 +618,7 @@
       const item = {
         id: isEdit ? Number(editIdRaw) : Date.now(),
         name: document.getElementById('pickup-name').value.trim(),
-        area: document.getElementById('pickup-area').value,
+        area: document.getElementById('pickup-area').value.trim(),
         address: document.getElementById('pickup-address').value.trim(),
         hours: document.getElementById('pickup-hours').value.trim(),
         status: 'متاح'
@@ -576,7 +667,7 @@
           <div class="space-y-1">
             <div class="flex flex-wrap items-center gap-2">
               <span class="font-black text-sm text-emerald-950">${v.name}</span>
-              <span class="text-[11px] font-bold bg-emerald-100 text-emerald-800 px-2.5 py-0.5 rounded-full">قطاع ${v.area}</span>
+              ${v.area ? `<span class="text-[11px] font-bold bg-emerald-100 text-emerald-800 px-2.5 py-0.5 rounded-full">${v.area}</span>` : ''}
               <span class="text-[11px] font-bold bg-white text-slate-600 border border-slate-200 px-2.5 py-0.5 rounded-full">${v.status} • ${v.capacityPercent}%</span>
             </div>
             <div class="text-xs text-slate-600"><i class="fa-solid fa-location-dot text-emerald-700 ml-1"></i>${v.address} • <span class="text-slate-500">${v.hours}</span></div>
@@ -599,7 +690,7 @@
       if (!v) return;
       document.getElementById('vehicle-edit-id').value = v.id;
       document.getElementById('vehicle-name').value = v.name;
-      document.getElementById('vehicle-area').value = v.area;
+      document.getElementById('vehicle-area').value = v.area || '';
       document.getElementById('vehicle-address').value = v.address;
       document.getElementById('vehicle-hours').value = v.hours;
       document.getElementById('vehicle-status').value = v.status;
@@ -626,7 +717,7 @@
       const vehicleObj = {
         id: isEdit ? Number(editIdRaw) : Date.now(),
         name: document.getElementById('vehicle-name').value.trim(),
-        area: document.getElementById('vehicle-area').value,
+        area: document.getElementById('vehicle-area').value.trim(),
         address: document.getElementById('vehicle-address').value.trim(),
         distance: 'مباشر',
         hours: document.getElementById('vehicle-hours').value.trim(),
@@ -761,8 +852,7 @@
     }
 
     function copyWhatsAppMessage() {
-      navigator.clipboard?.writeText(document.getElementById('wa-message-text').value);
-      showToast('تم نسخ رسالة التذكير');
+      copyTextToClipboard(document.getElementById('wa-message-text').value, 'تم نسخ رسالة التذكير');
     }
 
     function closeWhatsAppModal() {
