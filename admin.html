@@ -92,6 +92,7 @@
           </div>
           <div class="flex flex-wrap gap-2">
             <button onclick="saveSupabaseConfig()" class="bg-emerald-800 hover:bg-emerald-700 text-white text-xs font-extrabold px-4 py-2.5 rounded-xl transition">حفظ والاتصال</button>
+            <button onclick="resetSupabaseConfigToDefault()" class="bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200 text-xs font-bold px-4 py-2.5 rounded-xl transition">استعادة الإعداد الافتراضي</button>
             <button onclick="toggleDbConfigPanel()" class="bg-white hover:bg-slate-100 text-slate-600 border border-slate-200 text-xs font-bold px-4 py-2.5 rounded-xl transition">إغلاق</button>
           </div>
         </div>
@@ -198,7 +199,6 @@
   </div>
 
   <script>
-
     const DEFAULT_SB_URL = 'https://hhlhmlvkclpkjjapwlfv.supabase.co';
     const DEFAULT_SB_KEY = 'sb_publishable_zbaTUGPjuDaTMYxvQC_0Qw_6GECR4q5';
 
@@ -293,10 +293,20 @@
         const raw = localStorage.getItem(STORAGE_KEYS.SB_CONFIG);
         if (raw) {
           const cfg = JSON.parse(raw);
-          if (cfg.url) url = cfg.url;
-          if (cfg.key) key = cfg.key;
+          if (cfg.url && cfg.url.startsWith('https://hhlhmlvkclpkjjapwlfv.supabase.co')) {
+            url = cfg.url.replace(/\/rest\/v1\/?$/, '');
+          } else {
+            localStorage.removeItem(STORAGE_KEYS.SB_CONFIG);
+          }
+          if (cfg.key && cfg.key.startsWith('sb_publishable_zbaTUGPjuDaTMYxvQC_0Qw_6GECR4q5')) {
+            key = cfg.key.trim();
+          } else {
+            localStorage.removeItem(STORAGE_KEYS.SB_CONFIG);
+          }
         }
-      } catch {}
+      } catch {
+        localStorage.removeItem(STORAGE_KEYS.SB_CONFIG);
+      }
 
       document.getElementById('admin-sb-url').value = url;
       document.getElementById('admin-sb-key').value = key;
@@ -316,12 +326,19 @@
     }
 
     function saveSupabaseConfig() {
-      const url = document.getElementById('admin-sb-url').value.trim();
+      const url = document.getElementById('admin-sb-url').value.trim().replace(/\/rest\/v1\/?$/, '');
       const key = document.getElementById('admin-sb-key').value.trim();
       localStorage.setItem(STORAGE_KEYS.SB_CONFIG, JSON.stringify({ url, key }));
       initSupabase();
       showToast('تم حفظ إعدادات Supabase');
       syncAllFromDatabase(false);
+    }
+
+    function resetSupabaseConfigToDefault() {
+      localStorage.removeItem(STORAGE_KEYS.SB_CONFIG);
+      initSupabase();
+      showToast('تمت استعادة الإعداد الافتراضي');
+      syncAllFromDatabase(true);
     }
 
     async function syncAllFromDatabase(showFeedback = false) {
@@ -382,7 +399,7 @@
             <div class="flex flex-wrap items-center gap-2">
               <span class="font-black text-sm text-emerald-950">${v.name}</span>
               <span class="text-[11px] font-bold bg-emerald-100 text-emerald-800 px-2.5 py-0.5 rounded-full">قطاع ${v.area}</span>
-              <span class="text-[11px] font-bold bg-white text-slate-600 border border-slate-200 px-2.5 py-0.5 rounded-full">${v.status} • ${v.capacityPercent}%</span>
+              <span class="text-[11px] font-bold bg-white text-slate-600 border border-slate-200 px-2.5 py-0.5 rounded-full">${v.status} •${v.capacityPercent}%</span>
             </div>
             <div class="text-xs text-slate-600"><i class="fa-solid fa-location-dot text-emerald-700 ml-1"></i>${v.address} • <span class="text-slate-500">${v.hours}</span></div>
           </div>
@@ -518,7 +535,7 @@
               <span class="text-xs font-bold text-slate-700">${d.donorName || 'مساهم'} • <span dir="ltr">${d.donorPhone || '0554899929'}</span></span>
               <span class="text-[11px] font-bold bg-emerald-50 text-emerald-800 border border-emerald-200 px-2.5 py-0.5 rounded-full">المرحلة ${d.step} من 4</span>
             </div>
-            <div class="text-xs text-slate-600">${d.quantity} مصاحف • ${d.location} • ${d.date}</div>
+            <div class="text-xs text-slate-600">${d.quantity} مصاحف • ${d.location} •${d.date}</div>
           </div>
           <div class="flex flex-wrap items-center gap-2 shrink-0">
             <button onclick="openWhatsAppReminderById('${d.id}')" class="bg-emerald-700 hover:bg-emerald-600 text-white text-xs font-extrabold px-3.5 py-2 rounded-xl transition flex items-center gap-1.5">
@@ -562,7 +579,7 @@
 
     function updateWhatsAppLinkBeforeOpen() {
       const ta = document.getElementById('wa-message-text');
-      document.getElementById('wa-send-link').href = `https://wa.me/${ta.dataset.waPhone || '966554899929'}?text=${encodeURIComponent(ta.value)}`;
+      document.getElementById('wa-send-link').href = `https://wa.me/${ta.dataset.waPhone \vert{}\vert{} '966554899929'}?text=${encodeURIComponent(ta.value)}`;
     }
 
     function copyWhatsAppMessage() {
