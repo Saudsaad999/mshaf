@@ -40,74 +40,36 @@
           <i class="fa-solid fa-user-shield"></i>
         </div>
         <div>
-          <h1 class="text-base sm:text-lg font-black text-emerald-950">لوحة الإدارة المستقلة — جمع المصاحف المخالفة</h1>
+          <h1 class="text-base sm:text-lg font-black text-emerald-950">لوحة الإدارة — جمع المصاحف المخالفة</h1>
           <p class="text-[11px] sm:text-xs text-slate-500">mshaf-orcin.vercel.app/admin.html • ترخيص 1000629800</p>
         </div>
       </div>
 
-      <div class="flex items-center gap-2">
-        <a href="https://mshaf-orcin.vercel.app/" class="bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-extrabold px-3.5 py-2.5 rounded-xl transition flex items-center gap-1.5">
-          <i class="fa-solid fa-arrow-right"></i>
-          <span>الصفحة الرئيسية</span>
-        </a>
-        <button id="logout-btn" onclick="handleLogout()" class="hidden bg-red-600 hover:bg-red-700 text-white text-xs font-extrabold px-3.5 py-2.5 rounded-xl transition flex items-center gap-1.5">
-          <i class="fa-solid fa-right-from-bracket"></i>
-          <span>خروج</span>
-        </button>
-      </div>
+      <a href="https://mshaf-orcin.vercel.app/" class="bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-extrabold px-3.5 py-2.5 rounded-xl transition flex items-center gap-1.5">
+        <i class="fa-solid fa-arrow-right"></i>
+        <span>الصفحة الرئيسية</span>
+      </a>
     </div>
   </header>
 
   <main class="flex-1 max-w-6xl w-full mx-auto px-4 py-6">
 
-    <!-- Login Gate -->
-    <section id="login-section" class="max-w-md mx-auto bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/80 shadow-sm mt-6 space-y-5">
-      <div class="text-center">
-        <div class="w-14 h-14 mx-auto rounded-2xl bg-emerald-900 text-gold-400 flex items-center justify-center text-2xl mb-3">
-          <i class="fa-solid fa-lock"></i>
-        </div>
-        <h2 class="text-xl font-black text-emerald-950">دخول مشرفي النظام</h2>
-        <p class="text-xs text-slate-500 mt-1">سجّل الدخول بحساب المشرف لإدارة سيارات الاستلام والطلبات</p>
-      </div>
-
-      <form id="login-form" onsubmit="handleLogin(event)" class="space-y-4">
-        <div>
-          <label class="block text-xs font-bold text-slate-700 mb-1">البريد الإلكتروني</label>
-          <input id="login-email" type="email" required placeholder="admin@example.com" class="w-full p-3 rounded-xl bg-slate-50 border border-slate-200 text-sm font-bold focus:border-emerald-600 focus:outline-none" />
-        </div>
-        <div>
-          <label class="block text-xs font-bold text-slate-700 mb-1">كلمة المرور</label>
-          <input id="login-password" type="password" required placeholder="••••••••" class="w-full p-3 rounded-xl bg-slate-50 border border-slate-200 text-sm font-bold focus:border-emerald-600 focus:outline-none" />
-        </div>
-        <button type="submit" id="login-submit-btn" class="w-full bg-emerald-800 hover:bg-emerald-700 text-white font-extrabold text-sm py-3.5 rounded-xl shadow transition">
-          تسجيل الدخول
-        </button>
-        <p id="login-error" class="text-xs font-bold text-red-600 text-center"></p>
-      </form>
-
-      <div class="pt-3 border-t border-slate-100">
-        <button type="button" onclick="toggleDbConfigPanel()" class="w-full text-xs font-bold text-emerald-800 hover:underline">
-          إعدادات اتصال Supabase (الرابط والمفتاح)
-        </button>
-      </div>
-    </section>
-
-    <!-- Admin Dashboard -->
-    <section id="admin-dashboard" class="hidden space-y-6">
+    <!-- Admin Dashboard (Direct Access) -->
+    <section id="admin-dashboard" class="space-y-6">
       <div class="bg-white rounded-3xl p-5 sm:p-7 border border-slate-200/80 shadow-sm space-y-5">
         <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 border-b border-slate-100 pb-5">
           <div>
             <div class="inline-flex items-center gap-2 text-xs font-extrabold bg-emerald-50 text-emerald-800 border border-emerald-200 px-3 py-1 rounded-full mb-2">
               <i class="fa-solid fa-database"></i>
-              <span id="db-connection-badge">متصل بقاعدة البيانات</span>
+              <span id="db-connection-badge">جاهز للعمل</span>
             </div>
             <h2 class="text-xl sm:text-2xl font-black text-emerald-950">إدارة مواقع سيارات الاستلام والطلبات</h2>
-            <p id="admin-session-info" class="text-xs text-slate-500 mt-1"></p>
+            <p class="text-xs text-slate-500 mt-1">دخول مباشر لإضافة وتعديل وحذف سيارات الاستلام وتحديث الطلبات وإرسال تذكير الواتساب</p>
           </div>
           <div class="flex flex-wrap gap-2">
             <button onclick="syncAllFromDatabase(true)" class="bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-extrabold px-4 py-2.5 rounded-xl transition flex items-center gap-1.5">
               <i class="fa-solid fa-rotate"></i>
-              <span>تحديث البيانات</span>
+              <span>مزامنة / تحديث</span>
             </button>
             <button onclick="toggleDbConfigPanel()" class="bg-emerald-900 hover:bg-emerald-800 text-white text-xs font-extrabold px-4 py-2.5 rounded-xl transition flex items-center gap-1.5">
               <i class="fa-solid fa-gear"></i>
@@ -183,7 +145,7 @@
             <div class="sm:col-span-2 lg:col-span-3 flex justify-end pt-1">
               <button type="submit" id="vehicle-submit-btn" class="bg-emerald-800 hover:bg-emerald-700 text-white text-xs sm:text-sm font-extrabold px-6 py-3 rounded-xl shadow-sm transition flex items-center gap-2">
                 <i class="fa-solid fa-floppy-disk"></i>
-                <span>حفظ موقع السيارة في قاعدة البيانات</span>
+                <span>حفظ موقع السيارة</span>
               </button>
             </div>
           </form>
@@ -236,7 +198,7 @@
   </div>
 
   <script>
-    const DEFAULT_SB_URL = 'https://YOUR_PROJECT_REF.supabase.co';
+    const DEFAULT_SB_URL = '';
     const DEFAULT_SB_KEY = 'sb_publishable_rmIcCd4D8k2bdNutSukziA_fNZLus5Z';
 
     const STORAGE_KEYS = {
@@ -343,7 +305,8 @@
         state.supabaseConnected = true;
         document.getElementById('db-connection-badge').textContent = 'متصل سحابياً بـ Supabase';
       } else {
-        document.getElementById('db-connection-badge').textContent = 'متصل بالقاعدة المحلية (أدخل رابط Supabase لإدارة سحابية حية)';
+        state.supabaseConnected = false;
+        document.getElementById('db-connection-badge').textContent = 'متصل بالقاعدة المحلية (أدخل رابط Supabase للمزامنة السحابية)';
       }
     }
 
@@ -358,68 +321,6 @@
       initSupabase();
       showToast('تم حفظ إعدادات Supabase');
       syncAllFromDatabase(false);
-    }
-
-    async function checkAdminSession() {
-      if (state.supabaseConnected && state.supabaseClient) {
-        const { data: { session } } = await state.supabaseClient.auth.getSession();
-        if (session && session.user) {
-          showDashboard(session.user.email);
-          await syncAllFromDatabase(false);
-          return;
-        }
-      }
-      showLogin();
-    }
-
-    function showLogin() {
-      document.getElementById('login-section').classList.remove('hidden');
-      document.getElementById('admin-dashboard').classList.add('hidden');
-      document.getElementById('logout-btn').classList.add('hidden');
-    }
-
-    function showDashboard(emailLabel = 'الوضع المحلي') {
-      document.getElementById('login-section').classList.add('hidden');
-      document.getElementById('admin-dashboard').classList.remove('hidden');
-      document.getElementById('logout-btn').classList.remove('hidden');
-      document.getElementById('admin-session-info').textContent = `حساب الإدارة النشط: ${emailLabel}`;
-      renderAdminVehicles();
-      renderAdminOrders();
-    }
-
-    async function handleLogin(e) {
-      e.preventDefault();
-      const email = document.getElementById('login-email').value.trim();
-      const password = document.getElementById('login-password').value;
-      const errEl = document.getElementById('login-error');
-      const btn = document.getElementById('login-submit-btn');
-      errEl.textContent = '';
-
-      if (!state.supabaseConnected || !state.supabaseClient) {
-        errEl.textContent = 'يرجى ضبط رابط Supabase الصحيح أولاً من إعدادات Supabase.';
-        return;
-      }
-
-      btn.disabled = true;
-      btn.textContent = 'جاري التحقق...';
-      const { data, error } = await state.supabaseClient.auth.signInWithPassword({ email, password });
-      btn.disabled = false;
-      btn.textContent = 'تسجيل الدخول';
-
-      if (error) {
-        errEl.textContent = 'بيانات الدخول غير صحيحة أو الحساب غير مفعل.';
-        return;
-      }
-
-      showDashboard(data.user?.email || email);
-      await syncAllFromDatabase(true);
-    }
-
-    async function handleLogout() {
-      if (state.supabaseClient) {
-        await state.supabaseClient.auth.signOut();
-      }
-      showLogin();
     }
 
     async function syncAllFromDatabase(showFeedback = false) {
@@ -465,6 +366,8 @@
         } catch (err) {
           console.warn(err);
         }
+      } else if (showFeedback) {
+        showToast('تم تحديث العرض من البيانات المحفوظة محلياً');
       }
       renderAdminVehicles();
       renderAdminOrders();
@@ -516,7 +419,7 @@
       document.getElementById('vehicle-hours').value = 'يومياً من 4:00 عصراً - 10:00 مساءً';
       document.getElementById('vehicle-capacity').value = 25;
       document.getElementById('vehicle-form-title').innerHTML = '<i class="fa-solid fa-car-side text-[#8C9B1E]"></i><span>إضافة موقع سيارة استلام جديدة</span>';
-      document.getElementById('vehicle-submit-btn').innerHTML = '<i class="fa-solid fa-floppy-disk"></i><span>حفظ موقع السيارة في قاعدة البيانات</span>';
+      document.getElementById('vehicle-submit-btn').innerHTML = '<i class="fa-solid fa-floppy-disk"></i><span>حفظ موقع السيارة</span>';
       document.getElementById('cancel-vehicle-edit-btn').classList.add('hidden');
     }
 
@@ -557,7 +460,7 @@
           ? await state.supabaseClient.from('pickup_vehicles').update(payload).eq('id', vehicleObj.id)
           : await state.supabaseClient.from('pickup_vehicles').insert(payload);
         if (error) {
-          showToast('تعذر الحفظ السحابي، تحقق من صلاحيات RLS', 'info');
+          showToast('تم الحفظ محلياً؛ تحقق من سياسات Supabase إذا أردت الحفظ السحابي', 'info');
         }
       }
 
@@ -673,7 +576,9 @@
     document.addEventListener('DOMContentLoaded', () => {
       loadLocalData();
       initSupabase();
-      checkAdminSession();
+      renderAdminVehicles();
+      renderAdminOrders();
+      syncAllFromDatabase(false);
     });
   </script>
 </body>
