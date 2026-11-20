@@ -61,7 +61,7 @@
           <div>
             <div class="inline-flex items-center gap-2 text-xs font-extrabold bg-emerald-50 text-emerald-800 border border-emerald-200 px-3 py-1 rounded-full mb-2">
               <i class="fa-solid fa-database"></i>
-              <span id="db-connection-badge">جاهز للعمل</span>
+              <span id="db-connection-badge">متصل سحابياً بـ Supabase</span>
             </div>
             <h2 class="text-xl sm:text-2xl font-black text-emerald-950">إدارة مواقع سيارات الاستلام والطلبات</h2>
             <p class="text-xs text-slate-500 mt-1">دخول مباشر لإضافة وتعديل وحذف سيارات الاستلام وتحديث الطلبات وإرسال تذكير الواتساب</p>
@@ -83,7 +83,7 @@
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
               <label class="block text-xs font-bold text-slate-700 mb-1">Supabase Project URL</label>
-              <input id="admin-sb-url" type="url" placeholder="https://xxxxxxxxxxxx.supabase.co" dir="ltr" class="w-full p-3 rounded-xl bg-white border border-slate-200 text-xs font-mono text-left focus:border-emerald-600 focus:outline-none" />
+              <input id="admin-sb-url" type="url" dir="ltr" class="w-full p-3 rounded-xl bg-white border border-slate-200 text-xs font-mono text-left focus:border-emerald-600 focus:outline-none" />
             </div>
             <div>
               <label class="block text-xs font-bold text-slate-700 mb-1">Supabase Publishable / Anon Key</label>
@@ -198,7 +198,7 @@
   </div>
 
   <script>
-    const DEFAULT_SB_URL = '';
+    const DEFAULT_SB_URL = 'https://hhlhmlvkclpkjjapwlfv.supabase.co';
     const DEFAULT_SB_KEY = 'sb_publishable_rmIcCd4D8k2bdNutSukziA_fNZLus5Z';
 
     const STORAGE_KEYS = {
@@ -300,13 +300,13 @@
       document.getElementById('admin-sb-url').value = url;
       document.getElementById('admin-sb-key').value = key;
 
-      if (url && !url.includes('YOUR_PROJECT_REF') && key && window.supabase) {
+      if (url && key && window.supabase) {
         state.supabaseClient = window.supabase.createClient(url, key);
         state.supabaseConnected = true;
-        document.getElementById('db-connection-badge').textContent = 'متصل سحابياً بـ Supabase';
+        document.getElementById('db-connection-badge').textContent = 'متصل سحابياً بـ Supabase (hhlhmlvkclpkjjapwlfv)';
       } else {
         state.supabaseConnected = false;
-        document.getElementById('db-connection-badge').textContent = 'متصل بالقاعدة المحلية (أدخل رابط Supabase للمزامنة السحابية)';
+        document.getElementById('db-connection-badge').textContent = 'متصل بالقاعدة المحلية';
       }
     }
 
@@ -460,7 +460,7 @@
           ? await state.supabaseClient.from('pickup_vehicles').update(payload).eq('id', vehicleObj.id)
           : await state.supabaseClient.from('pickup_vehicles').insert(payload);
         if (error) {
-          showToast('تم الحفظ محلياً؛ تحقق من سياسات Supabase إذا أردت الحفظ السحابي', 'info');
+          showToast('تم الحفظ محلياً؛ تحقق من سياسات RLS على pickup_vehicles في Supabase', 'info');
         }
       }
 
