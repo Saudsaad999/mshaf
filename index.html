@@ -1,3 +1,5 @@
+تم تحديث الشعار المثبت في أعلى يمين الصفحة ليعتمد على ملف الصورة بصيغة JPG (src="logo.jpg" داخل <img id="association-logo-jpg" src="logo.jpg" ... />) مع إبقائه ثابتاً في الأعلى (fixed top-3 right-3 z-50) وبجانبه اسم الجمعية والمبادرة. تأكد فقط من وضع ملف logo.jpg في نفس مجلد ملف index.html.
+الكود الكامل (index.html)
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -132,19 +134,12 @@
 </head>
 <body class="min-h-screen flex flex-col pb-24 md:pb-10">
 
-  <!-- Fixed Top-Right Association Logo Badge (ثابت في أعلى اليمين) -->
+  <!-- Fixed Top-Right Association Logo Badge (ثابت في أعلى اليمين بصيغة JPG) -->
   <div id="fixed-association-logo" class="no-print fixed top-3 right-3 z-50 bg-white/95 backdrop-blur-md border border-[#8C9B1E]/35 shadow-lg rounded-2xl px-3 py-1.5 flex items-center gap-2.5 select-none">
-    <svg viewBox="0 0 220 115" class="h-10 w-auto shrink-0" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="شعار جمعية العناية بالمصحف">
-      <!-- Quran Book Frame in Olive Green (#8C9B1E) -->
-      <path d="M122 18C122 18 144 13 168 13C192 13 212 20 212 20V82C212 82 192 75 168 75C144 75 122 82 122 82V18Z" fill="#8C9B1E"/>
-      <line x1="134" y1="30" x2="198" y2="30" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" opacity="0.85"/>
-      <line x1="134" y1="42" x2="198" y2="42" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" opacity="0.85"/>
-      <line x1="134" y1="54" x2="198" y2="54" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" opacity="0.85"/>
-      <!-- Supporting Hand in Gray (#808285) -->
-      <path d="M62 84C76 74 96 64 118 58C136 53 162 56 174 60C162 72 138 86 112 90C90 93 74 92 62 84Z" fill="#808285"/>
-      <path d="M95 62C108 50 126 42 142 40C134 50 118 60 95 62Z" fill="#808285"/>
-      <text x="112" y="106" text-anchor="middle" fill="#808285" font-size="13" font-family="Arial, sans-serif" font-weight="bold">Quran Care Association</text>
-    </svg>
+    <img id="association-logo-jpg" src="logo.jpg" alt="شعار جمعية العناية بالمصحف" class="h-10 w-auto object-contain rounded-lg shrink-0" onerror="this.style.display='none'; document.getElementById('logo-jpg-fallback').classList.remove('hidden');" />
+    <span id="logo-jpg-fallback" class="hidden w-9 h-9 rounded-xl bg-[#8C9B1E] text-white flex items-center justify-center text-sm shrink-0">
+      <i class="fa-solid fa-book-quran"></i>
+    </span>
     <div class="border-r border-slate-200 pr-2.5 text-right leading-tight">
       <div class="text-[11px] font-extrabold text-[#8C9B1E]">جمعية العناية بالمصحف</div>
       <div class="text-[10px] font-bold text-[#808285]">جمع المصاحف المخالفة</div>
@@ -1365,3 +1360,4 @@
   </script>
 </body>
 </html>
+
