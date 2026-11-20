@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>لوحة الإدارة</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      font-family: Tahoma, Arial, sans-serif;
+      background: #f3f5f8;
+      margin: 0;
+      padding: 24px;
+      color: #111827;
+    }
+    .box {
+      max-width: 1050px;
+      margin: 24px auto;
+      background: #ffffff;
+      padding: 26px;
+      border-radius: 14px;
+      box-shadow: 0 6px 24px rgba(0, 0, 0, 0.06);
+    }
+    .hidden {
+      display: none !important;
+    }
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 20px;
+      padding-bottom: 14px;
+      border-bottom: 1px solid #e5e7eb;
+    }
+    .controls {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 16px;
+    }
+    input, select, button {
+      padding: 10px 12px;
+      border-radius: 8px;
+      border: 1px solid #d1d5db;
+      font-family: inherit;
+      font-size: 14px;
+    }
+    button {
+      background: #111827;
+      color: #ffffff;
+      border: none;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    button:hover {
+      background: #1f2937;
+    }
+    button.secondary {
+      background: #4b5563;
+    }
+    button.danger {
+      background: #dc2626;
+      padding: 7px 12px;
+      font-size: 13px;
+    }
+    button.danger:hover {
+      background: #b91c1c;
+    }
+    .login-box {
+      max-width: 420px;
+      margin: 40px auto;
+    }
+    .login-box input {
+      width: 100%;
+      margin-bottom: 12px;
+    }
+    .login-box button {
+      width: 100%;
+    }
+    .error-text {
+      color: #b91c1c;
+      font-size: 14px;
+      margin-top: 10px;
+    }
+    .table-wrap {
+      overflow-x: auto;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 720px;
+    }
+    th, td {
+      padding: 12px 10px;
+      border-bottom: 1px solid #e5e7eb;
+      text-align: right;
+      vertical-align: middle;
+      font-size: 14px;
+    }
+    th {
+      background: #f9fafb;
+      font-weight: bold;
+    }
+    .muted {
+      color: #6b7280;
+      font-size: 12px;
+    }
+  </style>
+</head>
+<body>
+  <div id="login-section" class="box login-box">
+    <h2 style="margin-top:0;">تسجيل دخول الإدارة</h2>
+    <p class="muted" style="margin-bottom:16px;">الدخول مخصص لحسابات المشرفين المعتمدة فقط.</p>
+    <form id="login-form">
+      <input type="email" id="email" placeholder="البريد الإلكتروني" required />
+      <input type="password" id="password" placeholder="كلمة المرور" required />
+      <button type="submit" id="login-btn">دخول</button>
+    </form>
+    <div id="login-error" class="error-text"></div>
+  </div>
+
+  <div id="admin-section" class="box hidden">
+    <div class="topbar">
+      <div>
+        <h2 style="margin:0;">لوحة إدارة السجلات</h2>
+        <span id="admin-email" class="muted"></span>
+      </div>
+      <div style="display:flex; gap:8px;">
+        <button id="refresh-btn" class="secondary">تحديث</button>
+        <button id="logout-btn" class="danger">تسجيل الخروج</button>
+      </div>
+    </div>
+
+    <div class="controls">
+      <input type="text" id="search-input" placeholder="بحث بالعنوان أو الموقع أو التصنيف..." style="flex:1; min-width:220px;" />
+      <select id="status-filter">
+        <option value="all">كل الحالات</option>
+        <option value="pending">قيد المراجعة</option>
+        <option value="approved">معتمد</option>
+        <option value="completed">مكتمل</option>
+        <option value="rejected">مرفوض</option>
+      </select>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>العنوان</th>
+            <th>التصنيف</th>
+            <th>الكمية</th>
+            <th>الموقع</th>
+            <th>ملاحظات</th>
+            <th>الحالة</th>
+            <th>التاريخ</th>
+            <th>إجراء</th>
+          </tr>
+        </thead>
+        <tbody id="rows-body">
+          <tr><td colspan="8">جاري التحميل...</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <script>
+    const SUPABASE_URL = "https://YOUR_PROJECT_REF.supabase.co";
+    const SUPABASE_KEY = "sb_publishable_rmIcCd4D8k2bdNutSukziA_fNZLus5Z";
+    const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+    const loginSection = document.getElementById("login-section");
+    const adminSection = document.getElementById("admin-section");
+    const loginForm = document.getElementById("login-form");
+    const loginBtn = document.getElementById("login-btn");
+    const loginError = document.getElementById("login-error");
+    const adminEmailEl = document.getElementById("admin-email");
+    const rowsBody = document.getElementById("rows-body");
+    const searchInput = document.getElementById("search-input");
+    const statusFilter = document.getElementById("status-filter");
+    const refreshBtn = document.getElementById("refresh-btn");
+    const logoutBtn = document.getElementById("logout-btn");
+
+    let allRows = [];
+
+    function escapeHtml(value) {
+      return String(value ?? "")
+        .replace(/&/g, "&")
+        .replace(/</g, "<")
+        .replace(/>/g, ">")
+        .replace(/"/g, """)
+        .replace(/'/g, "'");
+    }
+
+    async function checkAuth() {
+      const { data: { session } } = await sb.auth.getSession();
+      if (session && session.user) {
+        loginSection.classList.add("hidden");
+        adminSection.classList.remove("hidden");
+        adminEmailEl.textContent = `المشرف: ${session.user.email}`;
+        await fetchRows();
+      } else {
+        adminSection.classList.add("hidden");
+        loginSection.classList.remove("hidden");
+      }
+    }
+
+    loginForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      loginError.textContent = "";
+      loginBtn.disabled = true;
+      loginBtn.textContent = "جاري التحقق...";
+
+      const email = document.getElementById("email").value.trim();
+      const password = document.getElementById("password").value;
+
+      const { error } = await sb.auth.signInWithPassword({ email, password });
+
+      loginBtn.disabled = false;
+      loginBtn.textContent = "دخول";
+
+      if (error) {
+        loginError.textContent = "تعذر تسجيل الدخول، تأكد من البريد الإلكتروني وكلمة المرور.";
+        return;
+      }
+
+      await checkAuth();
+    });
+
+    logoutBtn.addEventListener("click", async () => {
+      await sb.auth.signOut();
+      allRows = [];
+      await checkAuth();
+    });
+
+    refreshBtn.addEventListener("click", fetchRows);
+    searchInput.addEventListener("input", renderTable);
+    statusFilter.addEventListener("change", renderTable);
+
+    async function fetchRows() {
+      rowsBody.innerHTML = `<tr><td colspan="8">جاري تحميل البيانات...</td></tr>`;
+      const { data, error } = await sb
+        .from("items")
+        .select("*")
+        .order("created_at", { ascending: false });
+
+      if (error) {
+        console.error(error);
+        rowsBody.innerHTML = `<tr><td colspan="8" style="color:#b91c1c;">تعذر جلب البيانات، تحقق من صلاحيات RLS للمستخدم المسجل.</td></tr>`;
+        return;
+      }
+
+      allRows = data || [];
+      renderTable();
+    }
+
+    function renderTable() {
+      const q = searchInput.value.trim().toLowerCase();
+      const selectedStatus = statusFilter.value;
+
+      const filtered = allRows.filter((row) => {
+        const matchesStatus = selectedStatus === "all" || row.status === selectedStatus;
+        const haystack = `${row.title ?? ""} ${row.category ?? ""} ${row.location ?? ""} ${row.notes ?? ""}`.toLowerCase();
+        const matchesQuery = !q || haystack.includes(q);
+        return matchesStatus && matchesQuery;
+      });
+
+      if (!filtered.length) {
+        rowsBody.innerHTML = `<tr><td colspan="8">لا توجد سجلات مطابقة.</td></tr>`;
+        return;
+      }
+
+      rowsBody.innerHTML = filtered.map((row) => {
+        const dateStr = row.created_at
+          ? new Date(row.created_at).toLocaleString("ar-SA")
+          : "-";
+
+        return `
+          <tr>
+            <td><strong>${escapeHtml(row.title)}</strong></td>
+            <td>${escapeHtml(row.category || "-")}</td>
+            <td>${escapeHtml(row.quantity)}</td>
+            <td>${escapeHtml(row.location || "-")}</td>
+            <td>${escapeHtml(row.notes || "-")}</td>
+            <td>
+              <select onchange="handleStatusChange('${escapeHtml(row.id)}', this.value)">
+                <option value="pending" ${row.status === "pending" ? "selected" : ""}>قيد المراجعة</option>
+                <option value="approved" ${row.status === "approved" ? "selected" : ""}>معتمد</option>
+                <option value="completed" ${row.status === "completed" ? "selected" : ""}>مكتمل</option>
+                <option value="rejected" ${row.status === "rejected" ? "selected" : ""}>مرفوض</option>
+              </select>
+            </td>
+            <td class="muted">${escapeHtml(dateStr)}</td>
+            <td>
+              <button class="danger" onclick="handleDelete('${escapeHtml(row.id)}')">حذف</button>
+            </td>
+          </tr>
+        `;
+      }).join("");
+    }
+
+    window.handleStatusChange = async (id, newStatus) => {
+      const { error } = await sb
+        .from("items")
+        .update({ status: newStatus })
+        .eq("id", id);
+
+      if (error) {
+        alert("تعذر تحديث الحالة");
+        await fetchRows();
+        return;
+      }
+
+      const target = allRows.find((r) => r.id === id);
+      if (target) target.status = newStatus;
+      renderTable();
+    };
+
+    window.handleDelete = async (id) => {
+      const confirmed = confirm("هل أنت متأكد من حذف هذا السجل نهائياً؟");
+      if (!confirmed) return;
+
+      const { error } = await sb
+        .from("items")
+        .delete()
+        .eq("id", id);
+
+      if (error) {
+        alert("تعذر حذف السجل");
+        return;
+      }
+
+      allRows = allRows.filter((r) => r.id !== id);
+      renderTable();
+    };
+
+    checkAuth();
+  </script>
+</body>
+</html>
