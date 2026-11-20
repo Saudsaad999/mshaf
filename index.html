@@ -130,37 +130,37 @@
     }
   </style>
 </head>
-<body class="min-h-screen flex flex-col pb-24 md:pb-10">
+<body class="min-h-screen flex flex-col pt-14 md:pt-0 pb-24 md:pb-10">
 
-  <!-- Fixed Top-Right Association Logo Badge (ثابت في أعلى اليمين بصيغة JPG) -->
-  <div id="fixed-association-logo" class="no-print fixed top-3 right-3 z-50 bg-white/95 backdrop-blur-md border border-[#8C9B1E]/35 shadow-lg rounded-2xl px-3 py-1.5 flex items-center gap-2.5 select-none">
-    <img id="association-logo-jpg" src="logo.jpg" alt="شعار جمعية العناية بالمصحف" class="h-10 w-auto object-contain rounded-lg shrink-0" onerror="this.style.display='none'; document.getElementById('logo-jpg-fallback').classList.remove('hidden');" />
+  <!-- Fixed Top-Right Association Logo Badge (ثابت وواضح في أعلى اليمين بصيغة JPG) -->
+  <div id="fixed-association-logo" class="no-print fixed top-2.5 right-2.5 sm:top-3 sm:right-3 z-50 bg-white border-2 border-[#8C9B1E]/40 shadow-xl rounded-2xl px-2.5 sm:px-3.5 py-1.5 flex items-center gap-2 select-none max-w-[52vw] sm:max-w-none">
+    <img id="association-logo-jpg" src="logo.jpg" alt="شعار جمعية العناية بالمصحف" class="h-10 sm:h-11 w-auto max-w-[64px] object-contain rounded-lg shrink-0" onerror="this.style.display='none'; document.getElementById('logo-jpg-fallback').classList.remove('hidden');" />
     <span id="logo-jpg-fallback" class="hidden w-9 h-9 rounded-xl bg-[#8C9B1E] text-white flex items-center justify-center text-sm shrink-0">
       <i class="fa-solid fa-book-quran"></i>
     </span>
-    <div class="border-r border-slate-200 pr-2.5 text-right leading-tight">
-      <div class="text-[11px] font-extrabold text-[#8C9B1E]">جمعية العناية بالمصحف</div>
-      <div class="text-[10px] font-bold text-[#808285]">جمع المصاحف المخالفة</div>
+    <div class="border-r border-slate-200 pr-2 text-right leading-tight min-w-0">
+      <div class="text-[11px] sm:text-xs font-extrabold text-[#727e16] truncate">جمعية العناية بالمصحف</div>
+      <div class="text-[10px] font-bold text-slate-600 truncate">جمع المصاحف المخالفة</div>
     </div>
   </div>
 
   <!-- Toast Notification Container -->
-  <div id="toast-container" class="fixed top-16 left-1/2 -translate-x-1/2 z-50 w-[92%] max-w-md pointer-events-none flex flex-col gap-2"></div>
+  <div id="toast-container" class="fixed top-20 left-1/2 -translate-x-1/2 z-50 w-[92%] max-w-md pointer-events-none flex flex-col gap-2"></div>
 
   <!-- Top Desktop & Mobile Header -->
-  <header class="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-emerald-100 shadow-sm">
-    <div class="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between gap-2">
-      <!-- Brand Identity (padded on right so fixed top-right logo never overlaps) -->
-      <div class="flex items-center gap-2.5 cursor-pointer pr-44 sm:pr-56" onclick="switchTab('home')">
-        <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-[#8C9B1E] to-emerald-800 flex items-center justify-center text-white shadow-sm shrink-0">
-          <i class="fa-solid fa-book-quran text-sm"></i>
+  <header class="sticky top-14 md:top-0 z-40 bg-white/95 backdrop-blur-md border-b border-emerald-100 shadow-sm">
+    <div class="max-w-6xl mx-auto px-3 sm:px-4 min-h-16 py-2 flex items-center justify-between gap-2">
+      <!-- Brand Identity -->
+      <div class="flex items-center gap-2 cursor-pointer md:pr-56" onclick="switchTab('home')">
+        <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-gradient-to-br from-[#8C9B1E] to-emerald-800 flex items-center justify-center text-white shadow-sm shrink-0">
+          <i class="fa-solid fa-book-quran text-xs sm:text-sm"></i>
         </div>
-        <div>
-          <div class="flex items-center gap-1.5 flex-wrap">
-            <h1 class="text-sm sm:text-lg font-black text-emerald-950 tracking-tight">جمع المصاحف المخالفة</h1>
-            <span class="hidden lg:inline-block text-[10px] font-bold bg-[#8C9B1E]/15 text-[#727e16] px-2 py-0.5 rounded-full border border-[#8C9B1E]/30">جمعية العناية بالمصحف</span>
+        <div class="min-w-0">
+          <div class="flex items-center gap-1.5">
+            <h1 class="text-xs sm:text-base lg:text-lg font-black text-emerald-950 leading-snug whitespace-nowrap">جمع المصاحف المخالفة</h1>
+            <span class="hidden xl:inline-block text-[10px] font-bold bg-[#8C9B1E]/15 text-[#727e16] px-2 py-0.5 rounded-full border border-[#8C9B1E]/30">جمعية العناية بالمصحف</span>
           </div>
-          <p class="text-[10px] sm:text-[11px] text-[#808285] hidden sm:block">ترخيص 1000629800 • جمع وفرز وصيانة دون توزيع</p>
+          <p class="text-[10px] sm:text-[11px] text-slate-500 hidden sm:block">ترخيص 1000629800 • جمع وفرز وصيانة دون توزيع</p>
         </div>
       </div>
 
