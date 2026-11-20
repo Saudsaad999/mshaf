@@ -636,7 +636,7 @@
       </div>
       <div class="p-5 sm:p-6 space-y-4">
         <div class="text-xs text-slate-500">
-          رقم الجوال المستهدف: <strong id="wa-target-phone" dir="ltr" class="text-slate-800"></strong> • رمز الطلب: <strong id="wa-target-code" class="text-emerald-800"></strong>
+          رقم الجوال المستهدف: <strong id="wa-target-phone" dir="ltr" class="text-slate-800">0534494111</strong> • رمز الطلب: <strong id="wa-target-code" class="text-emerald-800"></strong>
         </div>
         <div>
           <label class="block text-xs font-bold text-slate-700 mb-1.5">نص رسالة التذكير (قابل للتعديل)</label>
@@ -1077,29 +1077,23 @@
     function buildWhatsAppReminderMessage(order) {
       const dateStr = order.preferredDate ? `${order.date} (${order.preferredDate})` : order.date;
       const slotStr = order.timeSlot ? ` - ${order.timeSlot}` : '';
-      const namePart = order.donorName ? `أ/ ${order.donorName}` : 'بالضيف الكريم';
-      return `السلام عليكم ورحمة الله وبركاته، حياك الله ${namePart} 🌸
-تذكير من *جمعية العناية بالمصحف* (مبادرة جمع المصاحف المخالفة - ترخيص 1000629800):
-✅ تم تسجيل طلبك رقم: *${order.id}*
+      const nameLine = order.donorName ? `الاسم: *${order.donorName}*\n` : '';
+      const phoneLine = order.donorPhone ? `جوال المرسل: *${order.donorPhone}*\n` : '';
+      return `السلام عليكم ورحمة الله وبركاته، حياكم الله في *جمعية العناية بالمصحف* (مبادرة جمع المصاحف المخالفة - ترخيص 1000629800) 🌸
+${nameLine}${phoneLine}✅ رقم الطلب: *${order.id}*
 📖 العدد: *${order.quantity} مصاحف* (${order.condition})
 🚗 طريقة التسليم / الموقع: *${order.location}*
-📅 الموعد: *${dateStr}${slotStr}*
-
-للاستفسار أو المتابعة: ${ASSOCIATION_PHONE}`;
+📅 الموعد: *${dateStr}${slotStr}*`;
     }
 
-    function formatPhoneForWhatsApp(phone) {
-      const digits = (phone || '').replace(/\D/g, '');
-      if (digits.startsWith('966')) return digits;
-      if (digits.startsWith('05') && digits.length === 10) return '966' + digits.slice(1);
-      if (digits.startsWith('5') && digits.length === 9) return '966' + digits;
-      return digits || ASSOCIATION_WA_PHONE;
+    function formatPhoneForWhatsApp() {
+      return ASSOCIATION_WA_PHONE;
     }
 
     function openWhatsAppModal(order) {
       const waPhone = formatPhoneForWhatsApp(order.donorPhone);
       const msg = buildWhatsAppReminderMessage(order);
-      document.getElementById('wa-target-phone').textContent = order.donorPhone || '';
+      document.getElementById('wa-target-phone').textContent = ASSOCIATION_PHONE;
       document.getElementById('wa-target-code').textContent = order.id;
       const textarea = document.getElementById('wa-message-text');
       textarea.value = msg;
@@ -1319,7 +1313,7 @@
           <div class="flex flex-wrap items-center gap-2">
             <button onclick="openWhatsAppReminderById('${donation.id}')" class="bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200 px-3 py-1.5 rounded-xl text-xs font-extrabold flex items-center gap-1.5 transition">
               <i class="fa-brands fa-whatsapp text-sm"></i>
-              <span>تذكير واتساب</span>
+              <span>إرسال للجمعية واتساب</span>
             </button>
             <div class="bg-emerald-50 text-emerald-800 border border-emerald-200 px-3.5 py-1.5 rounded-xl text-xs font-extrabold">
               ${donation.quantity} مصاحف (${donation.condition})
