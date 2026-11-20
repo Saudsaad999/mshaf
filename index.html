@@ -134,7 +134,7 @@
 </head>
 <body class="min-h-screen flex flex-col pt-28 sm:pt-32 md:pt-0 pb-24 md:pb-10">
 
-  <!-- Fixed Top-Right Association Logo Badge (شعار أكبر + نص واضح أسفله بشكل مرتب) -->
+  <!-- Fixed Top-Right Association Logo Badge -->
   <div id="fixed-association-logo" class="no-print fixed top-2.5 right-2.5 sm:top-3.5 sm:right-4 z-50 bg-white border-2 border-[#8C9B1E]/45 shadow-xl rounded-2xl px-3 sm:px-4 py-2 sm:py-2.5 flex flex-col items-center justify-center text-center select-none w-32 sm:w-40">
     <img id="association-logo-jpg" src="logo.jpg" alt="شعار جمعية العناية بالمصحف" class="h-12 sm:h-16 w-auto max-w-full object-contain rounded-lg shrink-0" onerror="this.style.display='none'; document.getElementById('logo-jpg-fallback').classList.remove('hidden');" />
     <span id="logo-jpg-fallback" class="hidden w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-[#8C9B1E] text-white flex items-center justify-center text-xl shrink-0">
@@ -168,23 +168,20 @@
 
       <!-- Desktop Navigation Links -->
       <nav class="hidden md:flex items-center gap-1 bg-slate-100/80 p-1 rounded-2xl border border-slate-200/70">
-        <button onclick="switchTab('home')" data-nav="home" class="nav-btn px-2.5 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5">
+        <button onclick="switchTab('home')" data-nav="home" class="nav-btn px-3 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5">
           <i class="fa-solid fa-house"></i> الرئيسية
         </button>
-        <button onclick="switchTab('donate')" data-nav="donate" class="nav-btn px-2.5 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5">
+        <button onclick="switchTab('donate')" data-nav="donate" class="nav-btn px-3 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5">
           <i class="fa-solid fa-hand-holding-heart"></i> تسليم مصاحف
         </button>
-        <button onclick="switchTab('track')" data-nav="track" class="nav-btn px-2.5 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5">
+        <button onclick="switchTab('track')" data-nav="track" class="nav-btn px-3 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5">
           <i class="fa-solid fa-route"></i> تتبع الأثر
         </button>
-        <button onclick="switchTab('dropoff')" data-nav="dropoff" class="nav-btn px-2.5 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5">
+        <button onclick="switchTab('dropoff')" data-nav="dropoff" class="nav-btn px-3 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5">
           <i class="fa-solid fa-car-side"></i> سيارات الاستلام
         </button>
-        <button onclick="switchTab('profile')" data-nav="profile" class="nav-btn px-2.5 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5">
+        <button onclick="switchTab('profile')" data-nav="profile" class="nav-btn px-3 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5">
           <i class="fa-solid fa-award"></i> سجلي
-        </button>
-        <button onclick="switchTab('admin')" data-nav="admin" class="nav-btn px-2.5 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5">
-          <i class="fa-solid fa-user-shield"></i> الإدارة
         </button>
       </nav>
 
@@ -312,7 +309,7 @@
         </div>
       </div>
 
-      <!-- Interactive Impact Calculator (حاسبة الأثر: 320,000 حرف للمصحف الواحد سنوياً) -->
+      <!-- Interactive Impact Calculator -->
       <div class="bg-gradient-to-br from-white to-gold-50/70 rounded-3xl p-6 border border-gold-200/80 shadow-sm">
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4">
           <div>
@@ -464,12 +461,12 @@
             </div>
           </div>
 
-          <!-- Dynamic Drop-off / Vehicle Selection Field (Hidden by default) -->
+          <!-- Dynamic Drop-off / Vehicle Selection Field -->
           <div id="dropoff-fields" class="hidden space-y-4 pt-2 border-t border-slate-100">
             <div>
               <label class="block text-sm font-bold text-slate-700 mb-1.5">اختر سيارة الاستلام / الموقع المعتمد للتسليم *</label>
               <select id="form-dropoff-point" class="w-full p-3.5 rounded-2xl bg-slate-50 border border-slate-200 text-sm font-bold text-slate-800 focus:border-emerald-600 focus:outline-none">
-                <!-- Populated dynamically from DB/state -->
+                <!-- Populated dynamically -->
               </select>
               <p class="text-xs text-emerald-700 mt-1.5 flex items-center gap-1">
                 <i class="fa-solid fa-car-side"></i>
@@ -513,7 +510,6 @@
 
     <!-- ==================== 3. JOURNEY TRACKING TAB (تتبع الأثر) ==================== -->
     <section id="tab-track" class="tab-section hidden space-y-6">
-      <!-- Search Bar -->
       <div class="bg-white rounded-3xl p-5 sm:p-6 border border-slate-200/80 shadow-sm">
         <h2 class="text-xl font-extrabold text-emerald-950 mb-1">تتبع رحلة المصاحف</h2>
         <p class="text-xs sm:text-sm text-slate-500 mb-4">أدخل رقم التتبع الخاص بطلبك أو اختر أحد طلباتك أدناه لمشاهدة مراحل الجمع والفرز والصيانة والمعالجة الشرعية.</p>
@@ -525,17 +521,13 @@
           </button>
         </div>
 
-        <!-- Quick Select Pills for User's Donations -->
         <div class="mt-4">
           <span class="text-xs font-bold text-slate-400 block mb-2">طلباتك المسجلة (اضغط للمعاينة):</span>
           <div id="tracking-pills" class="flex flex-wrap gap-2"></div>
         </div>
       </div>
 
-      <!-- Active Tracking Timeline Card -->
-      <div id="tracking-detail-card" class="bg-white rounded-3xl p-5 sm:p-8 border border-slate-200/80 shadow-sm">
-        <!-- Populated dynamically via JS -->
-      </div>
+      <div id="tracking-detail-card" class="bg-white rounded-3xl p-5 sm:p-8 border border-slate-200/80 shadow-sm"></div>
     </section>
 
     <!-- ==================== 4. VEHICLE PICKUP LOCATIONS TAB (مواقع سيارات الاستلام) ==================== -->
@@ -546,7 +538,6 @@
             <h2 class="text-xl font-extrabold text-emerald-950">مواقع سيارات الاستلام الميدانية</h2>
             <p class="text-xs sm:text-sm text-slate-500 mt-0.5">مواقع تمركز سيارات الاستلام المعتمدة ومسماها المحدث مباشرة من لوحة الإدارة</p>
           </div>
-          <!-- Area Filter -->
           <div class="flex flex-wrap gap-1.5">
             <button onclick="filterDropoffs('all')" data-filter="all" class="filter-btn bg-emerald-800 text-white text-xs font-bold px-3.5 py-2 rounded-xl transition">الكل</button>
             <button onclick="filterDropoffs('شمال')" data-filter="شمال" class="filter-btn bg-slate-100 text-slate-600 hover:bg-slate-200 text-xs font-bold px-3.5 py-2 rounded-xl transition">شمال الرياض</button>
@@ -555,7 +546,6 @@
           </div>
         </div>
 
-        <!-- Visual Stylized Map Banner -->
         <div class="relative rounded-2xl bg-emerald-950 text-white p-5 mb-6 overflow-hidden border border-emerald-800">
           <div class="relative z-10 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div class="flex items-center gap-3">
@@ -572,20 +562,15 @@
               حالة مباشرة للسيارات
             </span>
           </div>
-          <!-- Decorative Grid Lines -->
           <div class="absolute inset-0 opacity-10 pointer-events-none" style="background-image: linear-gradient(#fff 1px, transparent 1px), linear-gradient(90deg, #fff 1px, transparent 1px); background-size: 24px 24px;"></div>
         </div>
 
-        <!-- Drop-off / Vehicle Cards Grid -->
-        <div id="dropoff-list" class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <!-- Populated dynamically via JS -->
-        </div>
+        <div id="dropoff-list" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
       </div>
     </section>
 
     <!-- ==================== 5. MY PROFILE & CERTIFICATES TAB (سجلي) ==================== -->
     <section id="tab-profile" class="tab-section hidden space-y-6">
-      <!-- Donor Summary Banner -->
       <div class="bg-gradient-to-l from-emerald-950 via-emerald-900 to-emerald-800 rounded-3xl p-6 sm:p-8 text-white shadow-md relative overflow-hidden">
         <div class="relative z-10 flex flex-col sm:flex-row sm:items-center justify-between gap-6">
           <div class="flex items-center gap-4">
@@ -613,9 +598,7 @@
         </div>
       </div>
 
-      <!-- Badges & Certificate Action -->
       <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <!-- Badges Card -->
         <div class="md:col-span-2 bg-white rounded-3xl p-5 sm:p-6 border border-slate-200/80 shadow-sm">
           <h3 class="text-base font-extrabold text-slate-800 mb-4 flex items-center gap-2">
             <i class="fa-solid fa-medal text-gold-500"></i>
@@ -646,7 +629,6 @@
           </div>
         </div>
 
-        <!-- Electronic Certificate Trigger Card -->
         <div class="bg-gradient-to-br from-gold-100 to-gold-50 rounded-3xl p-5 sm:p-6 border border-gold-300 shadow-sm flex flex-col justify-between">
           <div>
             <div class="w-11 h-11 rounded-2xl bg-emerald-900 text-gold-400 flex items-center justify-center text-xl mb-3">
@@ -662,146 +644,9 @@
         </div>
       </div>
 
-      <!-- Donation History List -->
       <div class="bg-white rounded-3xl p-5 sm:p-6 border border-slate-200/80 shadow-sm">
         <h3 class="text-base font-extrabold text-slate-800 mb-4">سجل طلباتي السابقة والحالية</h3>
-        <div id="profile-history-list" class="space-y-3">
-          <!-- Populated dynamically via JS -->
-        </div>
-      </div>
-    </section>
-
-    <!-- ==================== 6. ADMIN DASHBOARD TAB (صفحة الإدارة) ==================== -->
-    <section id="tab-admin" class="tab-section hidden space-y-6">
-      <!-- Admin Header & DB Connection Status -->
-      <div class="bg-white rounded-3xl p-5 sm:p-7 border border-slate-200/80 shadow-sm space-y-5">
-        <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 border-b border-slate-100 pb-5">
-          <div>
-            <div class="inline-flex items-center gap-2 text-xs font-extrabold bg-emerald-50 text-emerald-800 border border-emerald-200 px-3 py-1 rounded-full mb-2">
-              <i class="fa-solid fa-database"></i>
-              <span id="db-connection-badge">متصل بقاعدة البيانات (Supabase + مزامنة محلية تلقائية)</span>
-            </div>
-            <h2 class="text-xl sm:text-2xl font-black text-emerald-950">لوحة الإدارة • مواقع سيارات الاستلام والطلبات</h2>
-            <p class="text-xs sm:text-sm text-slate-500 mt-1">إضافة وتعديل وحذف مواقع سيارات الاستلام ومسمياتها، وتحديث حالة الطلبات وإرسال تذكير واتساب.</p>
-          </div>
-          <div class="flex flex-wrap gap-2">
-            <button onclick="syncAllFromDatabase(true)" class="bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-extrabold px-4 py-2.5 rounded-xl transition flex items-center gap-1.5">
-              <i class="fa-solid fa-rotate"></i>
-              <span>تحديث البيانات</span>
-            </button>
-            <button onclick="toggleDbConfigPanel()" class="bg-emerald-900 hover:bg-emerald-800 text-white text-xs font-extrabold px-4 py-2.5 rounded-xl transition flex items-center gap-1.5">
-              <i class="fa-solid fa-gear"></i>
-              <span>ربط Supabase</span>
-            </button>
-          </div>
-        </div>
-
-        <!-- Optional Supabase Live Credentials Panel -->
-        <div id="db-config-panel" class="hidden rounded-2xl bg-slate-50 border border-slate-200 p-4 sm:p-5 space-y-4">
-          <div class="flex items-center justify-between">
-            <div>
-              <h3 class="text-sm font-black text-emerald-950">إعدادات اتصال Supabase الفعلي</h3>
-              <p class="text-xs text-slate-500 mt-0.5">أدخل رابط المشروع ومفتاح Anon Key لحفظ الطلبات ومواقع سيارات الاستلام سحابياً مباشرة، أو استمر بالوضع المحلي الفوري.</p>
-            </div>
-            <button onclick="copySupabaseSql()" class="text-xs font-extrabold bg-gold-100 hover:bg-gold-200 text-emerald-950 border border-gold-300 px-3 py-1.5 rounded-xl transition">
-              <i class="fa-solid fa-code ml-1"></i> نسخ سكربت SQL للجداول
-            </button>
-          </div>
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            <div>
-              <label class="block text-xs font-bold text-slate-700 mb-1">Supabase Project URL</label>
-              <input id="admin-sb-url" type="url" placeholder="https://xxxxxxxxxxxx.supabase.co" dir="ltr" class="w-full p-3 rounded-xl bg-white border border-slate-200 text-xs font-mono text-left focus:border-emerald-600 focus:outline-none" />
-            </div>
-            <div>
-              <label class="block text-xs font-bold text-slate-700 mb-1">Supabase Anon Key</label>
-              <input id="admin-sb-key" type="password" placeholder="eyJhbGciOiJIUzI1NiIs..." dir="ltr" class="w-full p-3 rounded-xl bg-white border border-slate-200 text-xs font-mono text-left focus:border-emerald-600 focus:outline-none" />
-            </div>
-          </div>
-          <div class="flex flex-wrap items-center gap-2">
-            <button onclick="saveSupabaseConfig()" class="bg-emerald-800 hover:bg-emerald-700 text-white text-xs font-extrabold px-4 py-2.5 rounded-xl transition">
-              حفظ والاتصال بقاعدة البيانات
-            </button>
-            <button onclick="clearSupabaseConfig()" class="bg-white hover:bg-slate-100 text-slate-600 border border-slate-200 text-xs font-bold px-4 py-2.5 rounded-xl transition">
-              العودة للوضع المحلي السريع
-            </button>
-          </div>
-        </div>
-
-        <!-- Add / Edit Pickup Vehicle Location Form -->
-        <div class="rounded-2xl bg-gold-50/50 border border-gold-200/90 p-4 sm:p-5">
-          <div class="flex items-center justify-between gap-2 mb-4">
-            <h3 id="vehicle-form-title" class="text-sm sm:text-base font-black text-emerald-950 flex items-center gap-2">
-              <i class="fa-solid fa-car-side text-[#8C9B1E]"></i>
-              <span>إضافة موقع سيارة استلام جديدة</span>
-            </h3>
-            <button id="cancel-vehicle-edit-btn" onclick="resetVehicleForm()" class="hidden text-xs font-bold text-slate-600 hover:text-slate-900 bg-white border border-slate-200 px-3 py-1 rounded-lg">
-              إلغاء التعديل
-            </button>
-          </div>
-
-          <form id="vehicle-location-form" onsubmit="handleVehicleFormSubmit(event)" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5">
-            <input type="hidden" id="vehicle-edit-id" value="" />
-            <div>
-              <label class="block text-xs font-bold text-slate-700 mb-1">مسمى سيارة الاستلام / الموقع *</label>
-              <input id="vehicle-name" type="text" required placeholder="مثال: سيارة الاستلام رقم (1) - حي النرجس" class="w-full p-3 rounded-xl bg-white border border-slate-200 text-xs sm:text-sm font-bold text-slate-800 focus:border-emerald-600 focus:outline-none" />
-            </div>
-            <div>
-              <label class="block text-xs font-bold text-slate-700 mb-1">القطاع / المنطقة *</label>
-              <select id="vehicle-area" class="w-full p-3 rounded-xl bg-white border border-slate-200 text-xs sm:text-sm font-bold text-slate-800 focus:border-emerald-600 focus:outline-none">
-                <option value="شمال">شمال الرياض</option>
-                <option value="شرق">شرق الرياض</option>
-                <option value="غرب">غرب وجنوب الرياض</option>
-              </select>
-            </div>
-            <div>
-              <label class="block text-xs font-bold text-slate-700 mb-1">موقع تمركز السيارة الحالي *</label>
-              <input id="vehicle-address" type="text" required placeholder="مثال: طريق الملك سلمان - تقاطع أبو بكر" class="w-full p-3 rounded-xl bg-white border border-slate-200 text-xs sm:text-sm font-bold text-slate-800 focus:border-emerald-600 focus:outline-none" />
-            </div>
-            <div>
-              <label class="block text-xs font-bold text-slate-700 mb-1">أوقات تواجد السيارة *</label>
-              <input id="vehicle-hours" type="text" required value="يومياً من 4:00 عصراً - 10:00 مساءً" class="w-full p-3 rounded-xl bg-white border border-slate-200 text-xs sm:text-sm font-bold text-slate-800 focus:border-emerald-600 focus:outline-none" />
-            </div>
-            <div>
-              <label class="block text-xs font-bold text-slate-700 mb-1">حالة السيارة *</label>
-              <select id="vehicle-status" class="w-full p-3 rounded-xl bg-white border border-slate-200 text-xs sm:text-sm font-bold text-slate-800 focus:border-emerald-600 focus:outline-none">
-                <option value="متاح">متاح للاستقبال</option>
-                <option value="جولة استلام">في جولة استلام</option>
-                <option value="شبه ممتلئ">قارب على الامتلاء</option>
-              </select>
-            </div>
-            <div>
-              <label class="block text-xs font-bold text-slate-700 mb-1">نسبة الحمولة الحالية (%)</label>
-              <input id="vehicle-capacity" type="number" min="0" max="100" value="25" class="w-full p-3 rounded-xl bg-white border border-slate-200 text-xs sm:text-sm font-bold text-slate-800 focus:border-emerald-600 focus:outline-none" />
-            </div>
-            <div class="sm:col-span-2 lg:col-span-3 flex justify-end pt-1">
-              <button type="submit" id="vehicle-submit-btn" class="bg-emerald-800 hover:bg-emerald-700 text-white text-xs sm:text-sm font-extrabold px-6 py-3 rounded-xl shadow-sm transition flex items-center gap-2">
-                <i class="fa-solid fa-floppy-disk"></i>
-                <span>حفظ موقع السيارة في قاعدة البيانات</span>
-              </button>
-            </div>
-          </form>
-        </div>
-
-        <!-- Manage Existing Pickup Vehicles Table / Cards -->
-        <div>
-          <h3 class="text-sm sm:text-base font-black text-emerald-950 mb-3">قائمة مواقع سيارات الاستلام ومسمياتها (تعديل سريع)</h3>
-          <div id="admin-vehicles-list" class="space-y-3">
-            <!-- Populated via JS -->
-          </div>
-        </div>
-      </div>
-
-      <!-- Admin Orders & WhatsApp Reminder Management -->
-      <div class="bg-white rounded-3xl p-5 sm:p-7 border border-slate-200/80 shadow-sm">
-        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4">
-          <div>
-            <h3 class="text-base sm:text-lg font-black text-emerald-950">إدارة طلبات تسليم المصاحف وتذكير الواتساب</h3>
-            <p class="text-xs text-slate-500 mt-0.5">تحديث مرحلة الطلب أو إرسال رسالة تذكير واتساب مباشرة لصاحب الطلب</p>
-          </div>
-        </div>
-        <div id="admin-orders-list" class="space-y-3">
-          <!-- Populated via JS -->
-        </div>
+        <div id="profile-history-list" class="space-y-3"></div>
       </div>
     </section>
 
@@ -824,31 +669,27 @@
   </footer>
 
   <!-- Mobile Bottom Navigation Bar -->
-  <nav class="no-print md:hidden fixed bottom-0 inset-x-0 z-40 bg-white/95 backdrop-blur-md border-t border-slate-200 px-1.5 py-1.5 shadow-[0_-4px_20px_rgba(0,0,0,0.05)]">
-    <div class="grid grid-cols-6 gap-0.5">
+  <nav class="no-print md:hidden fixed bottom-0 inset-x-0 z-40 bg-white/95 backdrop-blur-md border-t border-slate-200 px-2 py-1.5 shadow-[0_-4px_20px_rgba(0,0,0,0.05)]">
+    <div class="grid grid-cols-5 gap-1">
       <button onclick="switchTab('home')" data-nav="home" class="mobile-nav-btn flex flex-col items-center justify-center py-1.5 rounded-xl text-emerald-800 font-bold">
         <i class="fa-solid fa-house text-base mb-0.5"></i>
-        <span class="text-[9px]">الرئيسية</span>
+        <span class="text-[10px]">الرئيسية</span>
       </button>
       <button onclick="switchTab('donate')" data-nav="donate" class="mobile-nav-btn flex flex-col items-center justify-center py-1.5 rounded-xl text-slate-500 font-medium">
         <i class="fa-solid fa-hand-holding-heart text-base mb-0.5"></i>
-        <span class="text-[9px]">تسليم</span>
+        <span class="text-[10px]">تسليم</span>
       </button>
       <button onclick="switchTab('track')" data-nav="track" class="mobile-nav-btn flex flex-col items-center justify-center py-1.5 rounded-xl text-slate-500 font-medium">
         <i class="fa-solid fa-route text-base mb-0.5"></i>
-        <span class="text-[9px]">التتبع</span>
+        <span class="text-[10px]">التتبع</span>
       </button>
       <button onclick="switchTab('dropoff')" data-nav="dropoff" class="mobile-nav-btn flex flex-col items-center justify-center py-1.5 rounded-xl text-slate-500 font-medium">
         <i class="fa-solid fa-car-side text-base mb-0.5"></i>
-        <span class="text-[9px]">السيارات</span>
+        <span class="text-[10px]">السيارات</span>
       </button>
       <button onclick="switchTab('profile')" data-nav="profile" class="mobile-nav-btn flex flex-col items-center justify-center py-1.5 rounded-xl text-slate-500 font-medium">
         <i class="fa-solid fa-award text-base mb-0.5"></i>
-        <span class="text-[9px]">سجلي</span>
-      </button>
-      <button onclick="switchTab('admin')" data-nav="admin" class="mobile-nav-btn flex flex-col items-center justify-center py-1.5 rounded-xl text-slate-500 font-medium">
-        <i class="fa-solid fa-user-shield text-base mb-0.5"></i>
-        <span class="text-[9px]">الإدارة</span>
+        <span class="text-[10px]">سجلي</span>
       </button>
     </div>
   </nav>
@@ -856,7 +697,6 @@
   <!-- ==================== CERTIFICATE MODAL ==================== -->
   <div id="certificate-modal" class="fixed inset-0 z-50 hidden bg-slate-950/70 backdrop-blur-sm flex items-center justify-center p-4">
     <div class="bg-white rounded-3xl max-w-2xl w-full overflow-hidden shadow-2xl animate-[fadeSlideUp_0.25s_ease-out]">
-      <!-- Modal Top Actions -->
       <div class="no-print flex items-center justify-between px-5 py-3.5 bg-slate-50 border-b border-slate-200">
         <span class="text-sm font-extrabold text-slate-800">شهادة شكر وتقدير إلكترونية</span>
         <div class="flex items-center gap-2">
@@ -870,10 +710,8 @@
         </div>
       </div>
 
-      <!-- Printable Certificate Design -->
       <div id="certificate-printable" class="p-6 sm:p-10 bg-gold-50 relative">
         <div class="border-4 border-double border-gold-500 rounded-2xl p-6 sm:p-8 text-center bg-white relative overflow-hidden">
-          <!-- Corner Ornaments -->
           <div class="w-12 h-12 border-t-4 border-r-4 border-emerald-800 absolute top-3 right-3 rounded-tr-lg"></div>
           <div class="w-12 h-12 border-t-4 border-l-4 border-emerald-800 absolute top-3 left-3 rounded-tl-lg"></div>
           <div class="w-12 h-12 border-b-4 border-r-4 border-emerald-800 absolute bottom-3 right-3 rounded-br-lg"></div>
@@ -1095,24 +933,11 @@
         if (!raw) return;
         const cfg = JSON.parse(raw);
         if (cfg.url && cfg.key && window.supabase) {
-          document.getElementById('admin-sb-url').value = cfg.url;
-          document.getElementById('admin-sb-key').value = cfg.key;
           appState.supabaseClient = window.supabase.createClient(cfg.url, cfg.key);
           appState.supabaseConnected = true;
-          updateDbBadge();
         }
       } catch (err) {
         console.warn('Supabase init warning:', err);
-      }
-    }
-
-    function updateDbBadge() {
-      const badge = document.getElementById('db-connection-badge');
-      if (!badge) return;
-      if (appState.supabaseConnected) {
-        badge.innerHTML = 'متصل سحابياً بـ Supabase • مزامنة حية للطلبات ومواقع السيارات';
-      } else {
-        badge.innerHTML = 'متصل بقاعدة البيانات المحلية (Local DB) • جاهز للربط السحابي بـ Supabase';
       }
     }
 
@@ -1164,41 +989,9 @@
           if (showFeedback) showToast('تمت مزامنة البيانات من قاعدة بيانات Supabase بنجاح');
         } catch (err) {
           console.warn('Sync error, falling back to local DB:', err);
-          if (showFeedback) showToast('تم عرض البيانات المحفوظة محلياً (تحقق من إعدادات Supabase)', 'info');
         }
-      } else if (showFeedback) {
-        showToast('تم تحديث بيانات قاعدة البيانات المحلية بنجاح');
       }
-
       refreshAllViews();
-    }
-
-    async function dbSaveVehicle(vehicleObj, isEdit) {
-      if (appState.supabaseConnected && appState.supabaseClient) {
-        const payload = {
-          id: vehicleObj.id,
-          name: vehicleObj.name,
-          area: vehicleObj.area,
-          address: vehicleObj.address,
-          distance: vehicleObj.distance,
-          hours: vehicleObj.hours,
-          status: vehicleObj.status,
-          capacity_percent: vehicleObj.capacityPercent
-        };
-        const { error } = isEdit
-          ? await appState.supabaseClient.from('pickup_vehicles').update(payload).eq('id', vehicleObj.id)
-          : await appState.supabaseClient.from('pickup_vehicles').insert(payload);
-        if (error) throw error;
-      }
-      persistLocalData();
-    }
-
-    async function dbDeleteVehicle(vehicleId) {
-      if (appState.supabaseConnected && appState.supabaseClient) {
-        const { error } = await appState.supabaseClient.from('pickup_vehicles').delete().eq('id', vehicleId);
-        if (error) throw error;
-      }
-      persistLocalData();
     }
 
     async function dbSaveOrder(orderObj, isUpdate = false) {
@@ -1223,63 +1016,6 @@
       persistLocalData();
     }
 
-    function toggleDbConfigPanel() {
-      document.getElementById('db-config-panel').classList.toggle('hidden');
-    }
-
-    function saveSupabaseConfig() {
-      const url = document.getElementById('admin-sb-url').value.trim();
-      const key = document.getElementById('admin-sb-key').value.trim();
-      if (!url || !key || !window.supabase) {
-        showToast('يرجى إدخال رابط المشروع ومفتاح Anon Key بشكل صحيح', 'info');
-        return;
-      }
-      localStorage.setItem(STORAGE_KEYS.SB_CONFIG, JSON.stringify({ url, key }));
-      appState.supabaseClient = window.supabase.createClient(url, key);
-      appState.supabaseConnected = true;
-      updateDbBadge();
-      showToast('تم ربط Supabase بنجاح!');
-      syncAllFromDatabase(false);
-    }
-
-    function clearSupabaseConfig() {
-      localStorage.removeItem(STORAGE_KEYS.SB_CONFIG);
-      appState.supabaseClient = null;
-      appState.supabaseConnected = false;
-      updateDbBadge();
-      showToast('تمت العودة للوضع المحلي السريع', 'info');
-    }
-
-    function copySupabaseSql() {
-      const sql = `create table if not exists pickup_vehicles (
-  id bigint primary key,
-  name text not null,
-  area text not null,
-  address text not null,
-  distance text default 'قريب',
-  hours text not null,
-  status text default 'متاح',
-  capacity_percent int default 25
-);
-
-create table if not exists mushaf_orders (
-  id bigserial primary key,
-  tracking_code text unique not null,
-  donor_name text not null,
-  donor_phone text not null,
-  quantity int not null,
-  condition text not null,
-  method text not null,
-  location text not null,
-  order_date text not null,
-  step int default 1,
-  processing_summary jsonb,
-  created_at timestamptz default now()
-);`;
-      copyTextToClipboard(sql, 'تم نسخ سكربت إنشاء جداول قاعدة البيانات SQL بنجاح!');
-    }
-
-    // --- Initialization ---
     document.addEventListener('DOMContentLoaded', () => {
       const tomorrow = new Date();
       tomorrow.setDate(tomorrow.getDate() + 1);
@@ -1299,8 +1035,6 @@ create table if not exists mushaf_orders (
     function refreshAllViews() {
       populateVehicleSelectOptions();
       renderDropoffPoints(appState.currentDropoffFilter);
-      renderAdminVehicles();
-      renderAdminOrders();
       renderTrackingPills();
       renderTrackingDetails(appState.selectedTrackingId);
       renderProfileData();
@@ -1314,7 +1048,6 @@ create table if not exists mushaf_orders (
       if (el) el.textContent = total.toLocaleString('en-US');
     }
 
-    // --- Tab Navigation ---
     function switchTab(tabId) {
       appState.currentTab = tabId;
 
@@ -1346,7 +1079,6 @@ create table if not exists mushaf_orders (
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
-    // --- Toast & Clipboard Helpers ---
     function showToast(message, type = 'success') {
       const container = document.getElementById('toast-container');
       const toast = document.createElement('div');
@@ -1377,7 +1109,6 @@ create table if not exists mushaf_orders (
       showToast(successMsg);
     }
 
-    // --- Impact Calculator Logic ---
     function updateImpactCalculator(val) {
       const count = parseInt(val, 10) || 1;
       document.getElementById('calc-mushaf-count').textContent = count;
@@ -1396,7 +1127,6 @@ create table if not exists mushaf_orders (
       switchTab('donate');
     }
 
-    // --- Donation / Collection Form & WhatsApp Reminder ---
     function startDonationMode(method) {
       switchTab('donate');
       setDonationMethod(method);
@@ -1534,7 +1264,6 @@ create table if not exists mushaf_orders (
       switchTab('track');
     }
 
-    // --- Journey Tracking Logic ---
     function renderTrackingPills() {
       const container = document.getElementById('tracking-pills');
       if (!container) return;
@@ -1717,7 +1446,6 @@ create table if not exists mushaf_orders (
       if (order) openWhatsAppModal(order);
     }
 
-    // --- Pickup Vehicles (مواقع سيارات الاستلام) ---
     function populateVehicleSelectOptions() {
       const select = document.getElementById('form-dropoff-point');
       if (!select) return;
@@ -1818,130 +1546,6 @@ create table if not exists mushaf_orders (
       }
     }
 
-    // --- Admin Vehicle CRUD & Orders Management ---
-    function renderAdminVehicles() {
-      const container = document.getElementById('admin-vehicles-list');
-      if (!container) return;
-
-      container.innerHTML = appState.dropoffPoints.map(v => `
-        <div class="p-4 rounded-2xl border border-slate-200/90 bg-slate-50/60 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-          <div class="space-y-1">
-            <div class="flex flex-wrap items-center gap-2">
-              <span class="font-black text-sm text-emerald-950">${v.name}</span>
-              <span class="text-[11px] font-bold bg-emerald-100 text-emerald-800 px-2.5 py-0.5 rounded-full">قطاع ${v.area}</span>
-              <span class="text-[11px] font-bold bg-white text-slate-600 border border-slate-200 px-2.5 py-0.5 rounded-full">${v.status} • ${v.capacityPercent}%</span>
-            </div>
-            <div class="text-xs text-slate-600"><i class="fa-solid fa-location-dot text-emerald-700 ml-1"></i>${v.address} • <span class="text-slate-500">${v.hours}</span></div>
-          </div>
-          <div class="flex items-center gap-2 self-end sm:self-center shrink-0">
-            <button onclick="startEditVehicle(${v.id})" class="bg-gold-500 hover:bg-gold-400 text-emerald-950 text-xs font-extrabold px-3.5 py-2 rounded-xl transition flex items-center gap-1">
-              <i class="fa-solid fa-pen-to-square"></i>
-              <span>تعديل المسمى والموقع</span>
-            </button>
-            <button onclick="deleteVehicleLocation(${v.id})" class="bg-white hover:bg-red-50 text-red-600 border border-red-200 text-xs font-bold px-3 py-2 rounded-xl transition">
-              <i class="fa-solid fa-trash"></i>
-            </button>
-          </div>
-        </div>
-      `).join('');
-    }
-
-    function startEditVehicle(id) {
-      const v = appState.dropoffPoints.find(item => item.id === id);
-      if (!v) return;
-      document.getElementById('vehicle-edit-id').value = v.id;
-      document.getElementById('vehicle-name').value = v.name;
-      document.getElementById('vehicle-area').value = v.area;
-      document.getElementById('vehicle-address').value = v.address;
-      document.getElementById('vehicle-hours').value = v.hours;
-      document.getElementById('vehicle-status').value = v.status;
-      document.getElementById('vehicle-capacity').value = v.capacityPercent;
-
-      document.getElementById('vehicle-form-title').innerHTML = '<i class="fa-solid fa-pen-to-square text-gold-600"></i><span>تعديل مسمى وموقع سيارة الاستلام</span>';
-      document.getElementById('vehicle-submit-btn').innerHTML = '<i class="fa-solid fa-check"></i><span>حفظ التعديلات</span>';
-      document.getElementById('cancel-vehicle-edit-btn').classList.remove('hidden');
-      document.getElementById('vehicle-location-form').scrollIntoView({ behavior: 'smooth', block: 'center' });
-    }
-
-    function resetVehicleForm() {
-      document.getElementById('vehicle-edit-id').value = '';
-      document.getElementById('vehicle-location-form').reset();
-      document.getElementById('vehicle-hours').value = 'يومياً من 4:00 عصراً - 10:00 مساءً';
-      document.getElementById('vehicle-capacity').value = 25;
-      document.getElementById('vehicle-form-title').innerHTML = '<i class="fa-solid fa-car-side text-[#8C9B1E]"></i><span>إضافة موقع سيارة استلام جديدة</span>';
-      document.getElementById('vehicle-submit-btn').innerHTML = '<i class="fa-solid fa-floppy-disk"></i><span>حفظ موقع السيارة في قاعدة البيانات</span>';
-      document.getElementById('cancel-vehicle-edit-btn').classList.add('hidden');
-    }
-
-    async function handleVehicleFormSubmit(e) {
-      e.preventDefault();
-      const editIdRaw = document.getElementById('vehicle-edit-id').value;
-      const isEdit = Boolean(editIdRaw);
-      const vehicleObj = {
-        id: isEdit ? Number(editIdRaw) : Date.now(),
-        name: document.getElementById('vehicle-name').value.trim(),
-        area: document.getElementById('vehicle-area').value,
-        address: document.getElementById('vehicle-address').value.trim(),
-        distance: 'مباشر',
-        hours: document.getElementById('vehicle-hours').value.trim(),
-        status: document.getElementById('vehicle-status').value,
-        capacityPercent: Math.max(0, Math.min(100, parseInt(document.getElementById('vehicle-capacity').value, 10) || 0))
-      };
-
-      if (isEdit) {
-        const idx = appState.dropoffPoints.findIndex(v => v.id === vehicleObj.id);
-        if (idx !== -1) appState.dropoffPoints[idx] = vehicleObj;
-      } else {
-        appState.dropoffPoints.unshift(vehicleObj);
-      }
-
-      await dbSaveVehicle(vehicleObj, isEdit);
-      resetVehicleForm();
-      refreshAllViews();
-      showToast(isEdit ? 'تم تحديث مسمى وموقع سيارة الاستلام بنجاح!' : 'تمت إضافة موقع سيارة الاستلام بنجاح!');
-    }
-
-    async function deleteVehicleLocation(id) {
-      if (appState.dropoffPoints.length <= 1) {
-        showToast('يجب الإبقاء على موقع سيارة استلام واحد على الأقل', 'info');
-        return;
-      }
-      appState.dropoffPoints = appState.dropoffPoints.filter(v => v.id !== id);
-      await dbDeleteVehicle(id);
-      refreshAllViews();
-      showToast('تم حذف موقع سيارة الاستلام');
-    }
-
-    function renderAdminOrders() {
-      const container = document.getElementById('admin-orders-list');
-      if (!container) return;
-
-      container.innerHTML = appState.donations.map(d => `
-        <div class="p-4 rounded-2xl border border-slate-200/90 bg-slate-50/50 flex flex-col lg:flex-row lg:items-center justify-between gap-3">
-          <div class="space-y-1">
-            <div class="flex flex-wrap items-center gap-2">
-              <span class="font-black text-sm text-emerald-950">${d.id}</span>
-              <span class="text-xs font-bold text-slate-700">${d.donorName || 'مساهم'} • <span dir="ltr">${d.donorPhone || '0554899929'}</span></span>
-              <span class="text-[11px] font-bold bg-emerald-50 text-emerald-800 border border-emerald-200 px-2.5 py-0.5 rounded-full">المرحلة ${d.step} من 4</span>
-            </div>
-            <div class="text-xs text-slate-600">${d.quantity} مصاحف • ${d.location} • ${d.date}</div>
-          </div>
-          <div class="flex flex-wrap items-center gap-2 shrink-0">
-            <button onclick="openWhatsAppReminderById('${d.id}')" class="bg-emerald-700 hover:bg-emerald-600 text-white text-xs font-extrabold px-3.5 py-2 rounded-xl transition flex items-center gap-1.5">
-              <i class="fa-brands fa-whatsapp"></i>
-              <span>إرسال تذكير واتساب</span>
-            </button>
-            ${d.step < 4 ? `
-              <button onclick="advanceDemoStep('${d.id}')" class="bg-gold-500 hover:bg-gold-400 text-emerald-950 text-xs font-extrabold px-3.5 py-2 rounded-xl transition">
-                تحديث المرحلة
-              </button>
-            ` : ''}
-          </div>
-        </div>
-      `).join('');
-    }
-
-    // --- Profile & Certificate Logic ---
     function renderProfileData() {
       const totalMushafs = appState.donations.reduce((sum, d) => sum + (Number(d.quantity) || 0), 0);
       document.getElementById('profile-user-name').textContent = appState.donorName;
