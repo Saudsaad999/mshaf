@@ -102,32 +102,12 @@
         transform: translateY(0);
       }
     }
-
-    @media print {
-      body * {
-        visibility: hidden;
-      }
-      #certificate-printable, #certificate-printable * {
-        visibility: visible;
-      }
-      #certificate-printable {
-        position: fixed;
-        inset: 0;
-        width: 100%;
-        height: auto;
-        margin: 0;
-        box-shadow: none !important;
-      }
-      .no-print {
-        display: none !important;
-      }
-    }
   </style>
 </head>
 <body class="min-h-screen flex flex-col pt-28 sm:pt-32 md:pt-0 pb-24 md:pb-10">
 
   <!-- Fixed Top-Right Association Logo Badge -->
-  <div id="fixed-association-logo" class="no-print fixed top-2.5 right-2.5 sm:top-3.5 sm:right-4 z-50 bg-white border-2 border-[#8C9B1E]/45 shadow-xl rounded-2xl px-3 sm:px-4 py-2 sm:py-2.5 flex flex-col items-center justify-center text-center select-none w-32 sm:w-40">
+  <div id="fixed-association-logo" class="fixed top-2.5 right-2.5 sm:top-3.5 sm:right-4 z-50 bg-white border-2 border-[#8C9B1E]/45 shadow-xl rounded-2xl px-3 sm:px-4 py-2 sm:py-2.5 flex flex-col items-center justify-center text-center select-none w-32 sm:w-40">
     <img id="association-logo-jpg" src="logo.jpg" alt="شعار جمعية العناية بالمصحف" class="h-12 sm:h-16 w-auto max-w-full object-contain rounded-lg shrink-0" onerror="this.style.display='none'; document.getElementById('logo-jpg-fallback').classList.remove('hidden');" />
     <span id="logo-jpg-fallback" class="hidden w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-[#8C9B1E] text-white flex items-center justify-center text-xl shrink-0">
       <i class="fa-solid fa-book-quran"></i>
@@ -158,20 +138,17 @@
       </div>
 
       <nav class="hidden md:flex items-center gap-1 bg-slate-100/80 p-1 rounded-2xl border border-slate-200/70">
-        <button onclick="switchTab('home')" data-nav="home" class="nav-btn px-3 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5">
+        <button onclick="switchTab('home')" data-nav="home" class="nav-btn px-3.5 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5">
           <i class="fa-solid fa-house"></i> الرئيسية
         </button>
-        <button onclick="switchTab('donate')" data-nav="donate" class="nav-btn px-3 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5">
+        <button onclick="switchTab('donate')" data-nav="donate" class="nav-btn px-3.5 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5">
           <i class="fa-solid fa-hand-holding-heart"></i> تسليم مصاحف
         </button>
-        <button onclick="switchTab('track')" data-nav="track" class="nav-btn px-3 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5">
+        <button onclick="switchTab('track')" data-nav="track" class="nav-btn px-3.5 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5">
           <i class="fa-solid fa-route"></i> تتبع الأثر
         </button>
-        <button onclick="switchTab('dropoff')" data-nav="dropoff" class="nav-btn px-3 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5">
+        <button onclick="switchTab('dropoff')" data-nav="dropoff" class="nav-btn px-3.5 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5">
           <i class="fa-solid fa-car-side"></i> سيارات الاستلام
-        </button>
-        <button onclick="switchTab('profile')" data-nav="profile" class="nav-btn px-3 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5">
-          <i class="fa-solid fa-award"></i> سجلي
         </button>
       </nav>
 
@@ -447,12 +424,12 @@
 
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2 border-t border-slate-100">
             <div>
-              <label class="block text-sm font-bold text-slate-700 mb-1.5">الاسم الكريم (يظهر في شهادة الشكر) *</label>
-              <input id="form-donor-name" type="text" required value="سعود سعد العمار" placeholder="أدخل اسمك الكريم" class="w-full p-3.5 rounded-2xl bg-slate-50 border border-slate-200 text-sm font-bold text-slate-800 focus:border-emerald-600 focus:outline-none" />
+              <label class="block text-sm font-bold text-slate-700 mb-1.5">الاسم الكريم *</label>
+              <input id="form-donor-name" type="text" required value="" placeholder="أدخل الاسم" class="w-full p-3.5 rounded-2xl bg-slate-50 border border-slate-200 text-sm font-bold text-slate-800 focus:border-emerald-600 focus:outline-none" />
             </div>
             <div>
-              <label class="block text-sm font-bold text-slate-700 mb-1.5">رقم الجوال (للتواصل وإرسال التحديثات) *</label>
-              <input id="form-donor-phone" type="tel" required value="0534494111" placeholder="05XXXXXXXX" dir="ltr" class="w-full p-3.5 rounded-2xl bg-slate-50 border border-slate-200 text-sm font-bold text-slate-800 text-right focus:border-emerald-600 focus:outline-none" />
+              <label class="block text-sm font-bold text-slate-700 mb-1.5">رقم الجوال *</label>
+              <input id="form-donor-phone" type="tel" required value="" placeholder="05XXXXXXXX" dir="ltr" class="w-full p-3.5 rounded-2xl bg-slate-50 border border-slate-200 text-sm font-bold text-slate-800 text-right focus:border-emerald-600 focus:outline-none" />
             </div>
           </div>
 
@@ -536,89 +513,8 @@
       </div>
     </section>
 
-    <!-- ==================== 5. MY PROFILE & CERTIFICATES TAB (سجلي) ==================== -->
-    <section id="tab-profile" class="tab-section hidden space-y-6">
-      <div class="bg-gradient-to-l from-emerald-950 via-emerald-900 to-emerald-800 rounded-3xl p-6 sm:p-8 text-white shadow-md relative overflow-hidden">
-        <div class="relative z-10 flex flex-col sm:flex-row sm:items-center justify-between gap-6">
-          <div class="flex items-center gap-4">
-            <div class="w-16 h-16 rounded-2xl bg-gold-500 text-emerald-950 flex items-center justify-center text-2xl font-black shadow-lg border-2 border-gold-200">
-              <i class="fa-solid fa-user-check"></i>
-            </div>
-            <div>
-              <span class="text-xs font-bold text-gold-300">مساهم في جمع المصاحف المخالفة</span>
-              <h2 id="profile-user-name" class="text-xl sm:text-2xl font-extrabold mt-0.5">سعود سعد العمار</h2>
-              <p class="text-xs text-emerald-200 mt-1">جمعية العناية بالمصحف • ترخيص رقم 1000629800</p>
-            </div>
-          </div>
-
-          <div class="flex items-center gap-4 bg-white/10 backdrop-blur-sm px-5 py-3.5 rounded-2xl border border-white/15">
-            <div class="text-center">
-              <div id="profile-total-mushafs" class="text-2xl sm:text-3xl font-black text-gold-400">23</div>
-              <div class="text-[11px] text-emerald-100">إجمالي المصاحف</div>
-            </div>
-            <div class="w-px h-10 bg-white/20"></div>
-            <div class="text-center">
-              <div id="profile-total-orders" class="text-2xl sm:text-3xl font-black text-white">2</div>
-              <div class="text-[11px] text-emerald-100">طلبات مسجلة</div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div class="md:col-span-2 bg-white rounded-3xl p-5 sm:p-6 border border-slate-200/80 shadow-sm">
-          <h3 class="text-base font-extrabold text-slate-800 mb-4 flex items-center gap-2">
-            <i class="fa-solid fa-medal text-gold-500"></i>
-            <span>أوسمة العطاء المكتسبة</span>
-          </h3>
-          <div class="grid grid-cols-3 gap-3">
-            <div class="p-3.5 rounded-2xl bg-gold-50 border border-gold-200 text-center">
-              <div class="w-11 h-11 mx-auto rounded-full bg-gold-500 text-white flex items-center justify-center text-lg shadow-sm mb-2">
-                <i class="fa-solid fa-sun"></i>
-              </div>
-              <div class="text-xs sm:text-sm font-extrabold text-emerald-950">حافظ الأمانة</div>
-              <div class="text-[10px] text-slate-500 mt-0.5">ساهم بأكثر من 10 مصاحف</div>
-            </div>
-            <div class="p-3.5 rounded-2xl bg-emerald-50 border border-emerald-200 text-center">
-              <div class="w-11 h-11 mx-auto rounded-full bg-emerald-700 text-white flex items-center justify-center text-lg shadow-sm mb-2">
-                <i class="fa-solid fa-hand-holding-seedling"></i>
-              </div>
-              <div class="text-xs sm:text-sm font-extrabold text-emerald-950">بصمة عناية</div>
-              <div class="text-[10px] text-slate-500 mt-0.5">أول طلب تسليم ناجح</div>
-            </div>
-            <div class="p-3.5 rounded-2xl bg-slate-50 border border-slate-200 text-center opacity-75">
-              <div class="w-11 h-11 mx-auto rounded-full bg-slate-300 text-white flex items-center justify-center text-lg mb-2">
-                <i class="fa-solid fa-crown"></i>
-              </div>
-              <div class="text-xs sm:text-sm font-extrabold text-slate-600">راعي الصيانة</div>
-              <div class="text-[10px] text-slate-400 mt-0.5">يتطلب 50 مصحفاً</div>
-            </div>
-          </div>
-        </div>
-
-        <div class="bg-gradient-to-br from-gold-100 to-gold-50 rounded-3xl p-5 sm:p-6 border border-gold-300 shadow-sm flex flex-col justify-between">
-          <div>
-            <div class="w-11 h-11 rounded-2xl bg-emerald-900 text-gold-400 flex items-center justify-center text-xl mb-3">
-              <i class="fa-solid fa-scroll"></i>
-            </div>
-            <h3 class="text-base font-extrabold text-emerald-950">شهادة شكر وتقدير</h3>
-            <p class="text-xs text-slate-600 mt-1 leading-relaxed">احصل على شهادتك الإلكترونية الموثقة من جمعية العناية بالمصحف واطبعها أو احفظها كـ PDF.</p>
-          </div>
-          <button onclick="openCertificateModal()" class="mt-4 w-full bg-emerald-900 hover:bg-emerald-800 text-white font-bold text-xs sm:text-sm py-3 px-4 rounded-xl shadow transition flex items-center justify-center gap-2">
-            <i class="fa-solid fa-eye"></i>
-            <span>استعراض وطباعة الشهادة</span>
-          </button>
-        </div>
-      </div>
-
-      <div class="bg-white rounded-3xl p-5 sm:p-6 border border-slate-200/80 shadow-sm">
-        <h3 class="text-base font-extrabold text-slate-800 mb-4">سجل الطلبات السابقة والحالية</h3>
-        <div id="profile-history-list" class="space-y-3"></div>
-      </div>
-    </section>
-
     <!-- ==================== تراخيصنا ==================== -->
-    <section id="licenses-section" class="no-print bg-white rounded-3xl p-5 sm:p-7 border border-slate-200/80 shadow-sm space-y-4">
+    <section id="licenses-section" class="bg-white rounded-3xl p-5 sm:p-7 border border-slate-200/80 shadow-sm space-y-4">
       <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 pb-4">
         <div class="flex items-center gap-2.5">
           <div class="w-10 h-10 rounded-2xl bg-emerald-50 text-emerald-800 border border-emerald-200 flex items-center justify-center text-base">
@@ -690,7 +586,7 @@
 
   </main>
 
-  <footer class="no-print bg-white border-t border-slate-200/80 py-5 mt-8">
+  <footer class="bg-white border-t border-slate-200/80 py-5 mt-8">
     <div class="max-w-6xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-slate-500">
       <div class="font-bold text-emerald-950">
         جمعية العناية بالمصحف • مبادرة جمع المصاحف المخالفة (ترخيص 1000629800)
@@ -705,8 +601,8 @@
     </div>
   </footer>
 
-  <nav class="no-print md:hidden fixed bottom-0 inset-x-0 z-40 bg-white/95 backdrop-blur-md border-t border-slate-200 px-2 py-1.5 shadow-[0_-4px_20px_rgba(0,0,0,0.05)]">
-    <div class="grid grid-cols-5 gap-1">
+  <nav class="md:hidden fixed bottom-0 inset-x-0 z-40 bg-white/95 backdrop-blur-md border-t border-slate-200 px-2 py-1.5 shadow-[0_-4px_20px_rgba(0,0,0,0.05)]">
+    <div class="grid grid-cols-4 gap-1">
       <button onclick="switchTab('home')" data-nav="home" class="mobile-nav-btn flex flex-col items-center justify-center py-1.5 rounded-xl text-emerald-800 font-bold">
         <i class="fa-solid fa-house text-base mb-0.5"></i>
         <span class="text-[10px]">الرئيسية</span>
@@ -723,69 +619,8 @@
         <i class="fa-solid fa-car-side text-base mb-0.5"></i>
         <span class="text-[10px]">السيارات</span>
       </button>
-      <button onclick="switchTab('profile')" data-nav="profile" class="mobile-nav-btn flex flex-col items-center justify-center py-1.5 rounded-xl text-slate-500 font-medium">
-        <i class="fa-solid fa-award text-base mb-0.5"></i>
-        <span class="text-[10px]">سجلي</span>
-      </button>
     </div>
   </nav>
-
-  <!-- ==================== CERTIFICATE MODAL ==================== -->
-  <div id="certificate-modal" class="fixed inset-0 z-50 hidden bg-slate-950/70 backdrop-blur-sm flex items-center justify-center p-4">
-    <div class="bg-white rounded-3xl max-w-2xl w-full overflow-hidden shadow-2xl animate-[fadeSlideUp_0.25s_ease-out]">
-      <div class="no-print flex items-center justify-between px-5 py-3.5 bg-slate-50 border-b border-slate-200">
-        <span class="text-sm font-extrabold text-slate-800">شهادة شكر وتقدير إلكترونية</span>
-        <div class="flex items-center gap-2">
-          <button onclick="window.print()" class="bg-emerald-800 hover:bg-emerald-700 text-white text-xs font-bold px-3.5 py-2 rounded-xl flex items-center gap-1.5 transition">
-            <i class="fa-solid fa-print"></i>
-            <span>طباعة / حفظ PDF</span>
-          </button>
-          <button onclick="closeCertificateModal()" class="w-8 h-8 rounded-xl bg-slate-200 hover:bg-slate-300 text-slate-700 flex items-center justify-center transition">
-            <i class="fa-solid fa-xmark"></i>
-          </button>
-        </div>
-      </div>
-
-      <div id="certificate-printable" class="p-6 sm:p-10 bg-gold-50 relative">
-        <div class="border-4 border-double border-gold-500 rounded-2xl p-6 sm:p-8 text-center bg-white relative overflow-hidden">
-          <div class="w-12 h-12 border-t-4 border-r-4 border-emerald-800 absolute top-3 right-3 rounded-tr-lg"></div>
-          <div class="w-12 h-12 border-t-4 border-l-4 border-emerald-800 absolute top-3 left-3 rounded-tl-lg"></div>
-          <div class="w-12 h-12 border-b-4 border-r-4 border-emerald-800 absolute bottom-3 right-3 rounded-br-lg"></div>
-          <div class="w-12 h-12 border-b-4 border-l-4 border-emerald-800 absolute bottom-3 left-3 rounded-bl-lg"></div>
-
-          <div class="w-14 h-14 mx-auto rounded-2xl bg-emerald-900 text-gold-400 flex items-center justify-center text-2xl mb-3 shadow">
-            <i class="fa-solid fa-book-quran"></i>
-          </div>
-          <div class="text-xs font-bold text-[#8C9B1E] tracking-wide">المملكة العربية السعودية • جمعية العناية بالمصحف (ترخيص 1000629800)</div>
-          <h2 class="font-serif text-3xl sm:text-4xl font-bold text-emerald-950 mt-2">شهادة شكر وتقدير</h2>
-          <p class="text-xs sm:text-sm text-slate-500 mt-2">تتقدم إدارة مبادرة <strong class="text-emerald-800">«جمع المصاحف المخالفة»</strong> بجزيل الشكر وعظيم الامتنان إلى:</p>
-
-          <div id="cert-donor-name" class="font-serif text-2xl sm:text-3xl font-bold text-gold-600 my-4 py-2 border-y border-gold-200 inline-block px-8">
-            سعود سعد العمار
-          </div>
-
-          <p class="text-sm sm:text-base text-slate-700 leading-relaxed max-w-lg mx-auto">
-            وذلك نظير مساهمته المباركة في جمع وصيانة <strong id="cert-mushaf-count" class="text-emerald-900">23 مصحفاً</strong>، سائلين المولى عز وجل أن يجعل ذلك في موازين حسناته.
-          </p>
-
-          <div class="mt-8 pt-4 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500 px-4">
-            <div class="text-right">
-              <div class="font-bold text-emerald-900">جمعية العناية بالمصحف</div>
-              <div class="text-[11px] text-slate-600 mt-0.5">هاتف: 0534494111</div>
-            </div>
-            <div class="w-14 h-14 rounded-full border-2 border-[#8C9B1E]/50 flex flex-col items-center justify-center text-[9px] font-bold text-emerald-900 rotate-[-8deg]">
-              <span>العناية بالمصحف</span>
-              <span>معتمد ✓</span>
-            </div>
-            <div class="text-left">
-              <div class="font-bold text-emerald-900">تاريخ الإصدار</div>
-              <div id="cert-date" class="mt-0.5">20 نوفمبر 2026</div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
 
   <!-- ==================== WHATSAPP REMINDER MODAL ==================== -->
   <div id="whatsapp-modal" class="fixed inset-0 z-50 hidden bg-slate-950/70 backdrop-blur-sm flex items-center justify-center p-4">
@@ -853,8 +688,8 @@
     const DEFAULT_DONATIONS = [
       {
         id: 'QCA-2026-849',
-        donorName: 'سعود سعد العمار',
-        donorPhone: ASSOCIATION_PHONE,
+        donorName: '',
+        donorPhone: '',
         quantity: 15,
         condition: 'مصاحف مخالفة للطبعة المعتمدة',
         method: 'استلام من الموقع (مندوب)',
@@ -870,8 +705,8 @@
       },
       {
         id: 'QCA-2026-912',
-        donorName: 'سعود سعد العمار',
-        donorPhone: ASSOCIATION_PHONE,
+        donorName: '',
+        donorPhone: '',
         quantity: 8,
         condition: 'تحتاج صيانة وترميم (10 ريال)',
         method: 'تسليم لسيارة الاستلام',
@@ -887,7 +722,6 @@
       donationMethod: 'pickup',
       currentDropoffFilter: 'all',
       selectedTrackingId: 'QCA-2026-849',
-      donorName: 'سعود سعد العمار',
       totalAssociationMushafs: 14820,
       supabaseClient: null,
       supabaseConnected: false,
@@ -920,7 +754,6 @@
 
       if (appState.donations.length > 0) {
         appState.selectedTrackingId = appState.donations[0].id;
-        appState.donorName = appState.donations[0].donorName || 'سعود سعد العمار';
       }
     }
 
@@ -1003,8 +836,8 @@
           if (!dErr && Array.isArray(dData) && dData.length > 0) {
             appState.donations = dData.map(row => ({
               id: row.tracking_code || row.id,
-              donorName: row.donor_name || 'سعود سعد العمار',
-              donorPhone: row.donor_phone || ASSOCIATION_PHONE,
+              donorName: row.donor_name || '',
+              donorPhone: row.donor_phone || '',
               quantity: Number(row.quantity || 1),
               condition: row.condition || 'مصاحف مخالفة للطبعة المعتمدة',
               method: row.method || 'استلام من الموقع (مندوب)',
@@ -1072,7 +905,6 @@
       renderDropoffPoints(appState.currentDropoffFilter);
       renderTrackingPills();
       renderTrackingDetails(appState.selectedTrackingId);
-      renderProfileData();
       updateHomeStats();
     }
 
@@ -1245,7 +1077,8 @@
     function buildWhatsAppReminderMessage(order) {
       const dateStr = order.preferredDate ? `${order.date} (${order.preferredDate})` : order.date;
       const slotStr = order.timeSlot ? ` - ${order.timeSlot}` : '';
-      return `السلام عليكم ورحمة الله وبركاته، حياك الله أ/ ${order.donorName} 🌸
+      const namePart = order.donorName ? `أ/ ${order.donorName}` : 'بالضيف الكريم';
+      return `السلام عليكم ورحمة الله وبركاته، حياك الله ${namePart} 🌸
 تذكير من *جمعية العناية بالمصحف* (مبادرة جمع المصاحف المخالفة - ترخيص 1000629800):
 ✅ تم تسجيل طلبك رقم: *${order.id}*
 📖 العدد: *${order.quantity} مصاحف* (${order.condition})
@@ -1266,7 +1099,7 @@
     function openWhatsAppModal(order) {
       const waPhone = formatPhoneForWhatsApp(order.donorPhone);
       const msg = buildWhatsAppReminderMessage(order);
-      document.getElementById('wa-target-phone').textContent = order.donorPhone || ASSOCIATION_PHONE;
+      document.getElementById('wa-target-phone').textContent = order.donorPhone || '';
       document.getElementById('wa-target-code').textContent = order.id;
       const textarea = document.getElementById('wa-message-text');
       textarea.value = msg;
@@ -1294,8 +1127,8 @@
       e.preventDefault();
       const quantity = parseInt(document.getElementById('form-quantity').value, 10) || 1;
       const condition = document.querySelector('input[name="condition"]:checked').value;
-      const donorName = document.getElementById('form-donor-name').value.trim() || 'مساهم كريم';
-      const donorPhone = document.getElementById('form-donor-phone').value.trim() || ASSOCIATION_PHONE;
+      const donorName = document.getElementById('form-donor-name').value.trim();
+      const donorPhone = document.getElementById('form-donor-phone').value.trim();
       const randomNum = Math.floor(100 + Math.random() * 899);
       const trackingCode = `QCA-2026-${randomNum}`;
 
@@ -1333,7 +1166,6 @@
 
       appState.donations.unshift(newDonation);
       appState.selectedTrackingId = trackingCode;
-      appState.donorName = donorName;
 
       try {
         await dbSaveOrder(newDonation, false);
@@ -1463,13 +1295,7 @@
             </div>
             <span class="text-xs font-bold bg-white text-emerald-800 px-3 py-1 rounded-xl border border-emerald-200">${donation.processingSummary.completedDate}</span>
           </div>
-          <p class="text-xs sm:text-sm text-slate-700 leading-relaxed mb-4">${donation.processingSummary.notes}</p>
-          <div class="flex flex-wrap gap-2">
-            <button onclick="openCertificateModal()" class="bg-emerald-800 hover:bg-emerald-700 text-white text-xs font-bold px-4 py-2.5 rounded-xl transition flex items-center gap-1.5">
-              <i class="fa-solid fa-award"></i>
-              <span>عرض شهادة التقدير</span>
-            </button>
-          </div>
+          <p class="text-xs sm:text-sm text-slate-700 leading-relaxed">${donation.processingSummary.notes}</p>
         </div>
       ` : `
         <div class="mt-6 pt-4 border-t border-slate-100 flex flex-wrap items-center justify-between gap-3">
@@ -1608,53 +1434,6 @@
           break;
         }
       }
-    }
-
-    function renderProfileData() {
-      const totalMushafs = appState.donations.reduce((sum, d) => sum + (Number(d.quantity) || 0), 0);
-      document.getElementById('profile-user-name').textContent = appState.donorName;
-      document.getElementById('profile-total-mushafs').textContent = totalMushafs;
-      document.getElementById('profile-total-orders').textContent = appState.donations.length;
-
-      const historyContainer = document.getElementById('profile-history-list');
-      historyContainer.innerHTML = appState.donations.map(d => {
-        const isDone = d.step === 4;
-        const badgeClass = isDone
-          ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
-          : 'bg-gold-50 text-gold-600 border-gold-200';
-        const statusText = isDone ? 'تمت الصيانة / المعالجة ✓' : 'قيد الفرز والصيانة';
-
-        return `
-          <div class="p-4 rounded-2xl border border-slate-200/80 bg-slate-50/50 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-            <div>
-              <div class="flex items-center gap-2">
-                <span class="font-extrabold text-emerald-950 text-sm">${d.id}</span>
-                <span class="text-[11px] font-bold px-2.5 py-0.5 rounded-full border ${badgeClass}">${statusText}</span>
-              </div>
-              <div class="text-xs text-slate-600 mt-1">${d.quantity} مصاحف (${d.condition}) • ${d.location} • ${d.date}</div>
-            </div>
-            <div class="flex items-center gap-2 self-start sm:self-auto">
-              <button onclick="openWhatsAppReminderById('${d.id}')" class="bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200 text-xs font-bold px-3 py-2 rounded-xl transition">
-                <i class="fa-brands fa-whatsapp"></i> تذكير
-              </button>
-              <button onclick="selectTracking('${d.id}'); switchTab('track');" class="bg-white hover:bg-emerald-50 text-emerald-800 border border-emerald-200 text-xs font-bold px-3.5 py-2 rounded-xl transition">
-                تفاصيل الرحلة
-              </button>
-            </div>
-          </div>
-        `;
-      }).join('');
-    }
-
-    function openCertificateModal() {
-      const totalMushafs = appState.donations.reduce((sum, d) => sum + (Number(d.quantity) || 0), 0);
-      document.getElementById('cert-donor-name').textContent = appState.donorName;
-      document.getElementById('cert-mushaf-count').textContent = `${totalMushafs} مصحفاً`;
-      document.getElementById('certificate-modal').classList.remove('hidden');
-    }
-
-    function closeCertificateModal() {
-      document.getElementById('certificate-modal').classList.add('hidden');
     }
   </script>
 </body>
