@@ -234,8 +234,7 @@
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <!-- ترخيص 1 -->
-          <div class="rounded-2xl p-4 sm:p-5 bg-gradient-to-br from-emerald-50/70 to-white border border-emerald-200/90 hover:border-emerald-400 transition flex flex-col justify-between gap-4 shadow-2xs">
+          <div class="rounded-2xl p-4 sm:p-5 bg-gradient-to-br from-emerald-50/70 to-white border border-emerald-200/90 hover:border-emerald-400 transition flex flex-col justify-between gap-4">
             <div class="space-y-2">
               <div class="flex items-center justify-between gap-2">
                 <span class="text-xs font-black text-emerald-950 flex items-center gap-1.5">
@@ -260,8 +259,7 @@
             </div>
           </div>
 
-          <!-- ترخيص 2 -->
-          <div class="rounded-2xl p-4 sm:p-5 bg-gradient-to-br from-gold-50/70 to-white border border-gold-200/90 hover:border-gold-400 transition flex flex-col justify-between gap-4 shadow-2xs">
+          <div class="rounded-2xl p-4 sm:p-5 bg-gradient-to-br from-gold-50/70 to-white border border-gold-200/90 hover:border-gold-400 transition flex flex-col justify-between gap-4">
             <div class="space-y-2">
               <div class="flex items-center justify-between gap-2">
                 <span class="text-xs font-black text-emerald-950 flex items-center gap-1.5">
@@ -323,6 +321,8 @@
   <script>
     const DEFAULT_SB_URL = 'https://hhlhmlvkclpkjjapwlfv.supabase.co';
     const DEFAULT_SB_KEY = 'sb_publishable_zbaTUGPjuDaTMYxvQC_0Qw_6GECR4q5';
+    const ASSOCIATION_PHONE = '0534494111';
+    const ASSOCIATION_WA_PHONE = '966534494111';
 
     const STORAGE_KEYS = {
       DONATIONS: 'qca_mushaf_donations_v1',
@@ -351,7 +351,7 @@
       {
         id: 'QCA-2026-849',
         donorName: 'سعود سعد العمار',
-        donorPhone: '0554899929',
+        donorPhone: ASSOCIATION_PHONE,
         quantity: 15,
         condition: 'مصاحف مخالفة للطبعة المعتمدة',
         method: 'استلام من الموقع (مندوب)',
@@ -368,7 +368,7 @@
       {
         id: 'QCA-2026-912',
         donorName: 'سعود سعد العمار',
-        donorPhone: '0554899929',
+        donorPhone: ASSOCIATION_PHONE,
         quantity: 8,
         condition: 'تحتاج صيانة وترميم (10 ريال)',
         method: 'تسليم لسيارة الاستلام',
@@ -540,7 +540,7 @@
             state.donations = dData.map(row => ({
               id: row.tracking_code || row.id,
               donorName: row.donor_name || 'سعود سعد العمار',
-              donorPhone: row.donor_phone || '0554899929',
+              donorPhone: row.donor_phone || ASSOCIATION_PHONE,
               quantity: Number(row.quantity || 1),
               condition: row.condition || '',
               method: row.method || '',
@@ -801,7 +801,7 @@
           <div class="space-y-1">
             <div class="flex flex-wrap items-center gap-2">
               <span class="font-black text-sm text-emerald-950">${d.id}</span>
-              <span class="text-xs font-bold text-slate-700">${d.donorName || 'مساهم'} • <span dir="ltr">${d.donorPhone || '0554899929'}</span></span>
+              <span class="text-xs font-bold text-slate-700">${d.donorName || 'مساهم'} • <span dir="ltr">${d.donorPhone || ASSOCIATION_PHONE}</span></span>
               <span class="text-[11px] font-bold bg-emerald-50 text-emerald-800 border border-emerald-200 px-2.5 py-0.5 rounded-full">المرحلة ${d.step} من 4</span>
             </div>
             <div class="text-xs text-slate-600">${d.quantity} مصاحف • ${d.location} • ${d.date}</div>
@@ -822,7 +822,7 @@
       if (digits.startsWith('966')) return digits;
       if (digits.startsWith('05') && digits.length === 10) return '966' + digits.slice(1);
       if (digits.startsWith('5') && digits.length === 9) return '966' + digits;
-      return digits || '966554899929';
+      return digits || ASSOCIATION_WA_PHONE;
     }
 
     function openWhatsAppReminderById(orderId) {
@@ -836,8 +836,8 @@
 🚗 الموقع: *${order.location}*
 📅 الموعد: *${order.date}*
 
-للاستفسار: 0554899929`;
-      document.getElementById('wa-target-phone').textContent = order.donorPhone || '0554899929';
+للاستفسار: ${ASSOCIATION_PHONE}`;
+      document.getElementById('wa-target-phone').textContent = order.donorPhone || ASSOCIATION_PHONE;
       document.getElementById('wa-target-code').textContent = order.id;
       const ta = document.getElementById('wa-message-text');
       ta.value = msg;
@@ -848,7 +848,7 @@
 
     function updateWhatsAppLinkBeforeOpen() {
       const ta = document.getElementById('wa-message-text');
-      document.getElementById('wa-send-link').href = `https://wa.me/${ta.dataset.waPhone || '966554899929'}?text=${encodeURIComponent(ta.value)}`;
+      document.getElementById('wa-send-link').href = `https://wa.me/${ta.dataset.waPhone || ASSOCIATION_WA_PHONE}?text=${encodeURIComponent(ta.value)}`;
     }
 
     function copyWhatsAppMessage() {
