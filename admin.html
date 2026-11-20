@@ -63,8 +63,8 @@
               <i class="fa-solid fa-database"></i>
               <span id="db-connection-badge">متصل سحابياً بـ Supabase</span>
             </div>
-            <h2 class="text-xl sm:text-2xl font-black text-emerald-950">إدارة مواقع سيارات الاستلام والطلبات</h2>
-            <p class="text-xs text-slate-500 mt-1">دخول مباشر لإضافة وتعديل وحذف سيارات الاستلام وتحديث الطلبات وإرسال تذكير الواتساب</p>
+            <h2 class="text-xl sm:text-2xl font-black text-emerald-950">إدارة مواقع الاستلام من الموقع والسيارات والطلبات</h2>
+            <p class="text-xs text-slate-500 mt-1">إضافة وتعديل وحذف مواقع استلام المندوب وسيارات الاستلام، وتحديث الطلبات وإرسال تذكير الواتساب</p>
           </div>
           <div class="flex flex-wrap gap-2">
             <button onclick="syncAllFromDatabase(true)" class="bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-extrabold px-4 py-2.5 rounded-xl transition flex items-center gap-1.5">
@@ -97,7 +97,56 @@
           </div>
         </div>
 
-        <!-- Vehicle Form -->
+        <!-- Pickup Locations Form (استلام من الموقع - مندوب) -->
+        <div class="rounded-2xl bg-emerald-50/50 border border-emerald-200/90 p-4 sm:p-5 space-y-4">
+          <div class="flex items-center justify-between gap-2">
+            <h3 id="pickup-form-title" class="text-sm sm:text-base font-black text-emerald-950 flex items-center gap-2">
+              <i class="fa-solid fa-truck text-emerald-700"></i>
+              <span>إضافة / تعديل موقع استلام من الموقع (مندوب)</span>
+            </h3>
+            <button id="cancel-pickup-edit-btn" onclick="resetPickupForm()" class="hidden text-xs font-bold text-slate-600 hover:text-slate-900 bg-white border border-slate-200 px-3 py-1 rounded-lg">
+              إلغاء التعديل
+            </button>
+          </div>
+
+          <form id="pickup-location-form" onsubmit="handlePickupFormSubmit(event)" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
+            <input type="hidden" id="pickup-edit-id" value="" />
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-1">مسمى الحي / موقع الاستلام *</label>
+              <input id="pickup-name" type="text" required placeholder="مثال: حي النرجس - شمال الرياض" class="w-full p-3 rounded-xl bg-white border border-slate-200 text-xs sm:text-sm font-bold text-slate-800 focus:border-emerald-600 focus:outline-none" />
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-1">القطاع *</label>
+              <select id="pickup-area" class="w-full p-3 rounded-xl bg-white border border-slate-200 text-xs sm:text-sm font-bold text-slate-800 focus:border-emerald-600 focus:outline-none">
+                <option value="شمال">شمال الرياض</option>
+                <option value="شرق">شرق الرياض</option>
+                <option value="غرب">غرب وجنوب الرياض</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-1">تفاصيل الموقع / النطاق *</label>
+              <input id="pickup-address" type="text" required placeholder="مثال: طريق الملك سلمان / المساجد والمنازل" class="w-full p-3 rounded-xl bg-white border border-slate-200 text-xs sm:text-sm font-bold text-slate-800 focus:border-emerald-600 focus:outline-none" />
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-1">أوقات خدمة المندوب *</label>
+              <input id="pickup-hours" type="text" required value="يومياً من 9:00 ص - 10:00 م" class="w-full p-3 rounded-xl bg-white border border-slate-200 text-xs sm:text-sm font-bold text-slate-800 focus:border-emerald-600 focus:outline-none" />
+            </div>
+            <div class="sm:col-span-2 lg:col-span-4 flex flex-wrap items-center justify-between gap-2 pt-1">
+              <span class="text-[11px] text-amber-800 font-bold">
+                <i class="fa-solid fa-circle-info ml-1"></i>
+                إذا تم حذف جميع مواقع الاستلام من الموقع، يتحول التطبيق تلقائياً إلى «تسليم لسيارة الاستلام».
+              </span>
+              <button type="submit" id="pickup-submit-btn" class="bg-emerald-800 hover:bg-emerald-700 text-white text-xs sm:text-sm font-extrabold px-6 py-3 rounded-xl shadow-sm transition flex items-center gap-2">
+                <i class="fa-solid fa-floppy-disk"></i>
+                <span>حفظ موقع المندوب</span>
+              </button>
+            </div>
+          </form>
+
+          <div id="admin-pickup-locations-list" class="space-y-2.5 pt-2"></div>
+        </div>
+
+        <!-- Vehicle Form (سيارات الاستلام) -->
         <div class="rounded-2xl bg-gold-50/50 border border-gold-200/90 p-4 sm:p-5">
           <div class="flex items-center justify-between gap-2 mb-4">
             <h3 id="vehicle-form-title" class="text-sm sm:text-base font-black text-emerald-950 flex items-center gap-2">
@@ -205,8 +254,16 @@
     const STORAGE_KEYS = {
       DONATIONS: 'qca_mushaf_donations_v1',
       VEHICLES: 'qca_pickup_vehicles_v1',
+      PICKUP_LOCATIONS: 'qca_pickup_locations_v1',
       SB_CONFIG: 'qca_supabase_config_v1'
     };
+
+    const DEFAULT_PICKUP_LOCATIONS = [
+      { id: 101, name: 'حي النرجس - شمال الرياض', area: 'شمال', address: 'شمال الرياض - منازل ومساجد', hours: 'يومياً من 9:00 ص - 10:00 م', status: 'متاح' },
+      { id: 102, name: 'حي الياسمين - شمال الرياض', area: 'شمال', address: 'شمال الرياض - منازل ومساجد', hours: 'يومياً من 9:00 ص - 10:00 م', status: 'متاح' },
+      { id: 103, name: 'حي الروضة - شرق الرياض', area: 'شرق', address: 'شرق الرياض - منازل ومساجد', hours: 'يومياً من 9:00 ص - 10:00 م', status: 'متاح' },
+      { id: 104, name: 'حي السويدي - غرب الرياض', area: 'غرب', address: 'غرب الرياض - منازل ومساجد', hours: 'يومياً من 9:00 ص - 10:00 م', status: 'متاح' }
+    ];
 
     const DEFAULT_VEHICLES = [
       { id: 1, name: 'سيارة الاستلام (1) - حي الروضة', area: 'شرق', address: 'مقر جمعية العناية بالمصحف - حي الروضة، الرياض', distance: '1.8 كم', hours: 'مفتوح 24 ساعة (استقبال مباشر وميداني)', status: 'متاح', capacityPercent: 32 },
@@ -253,7 +310,8 @@
       supabaseClient: null,
       supabaseConnected: false,
       donations: [],
-      dropoffPoints: []
+      dropoffPoints: [],
+      pickupLocations: []
     };
 
     function showToast(message, type = 'success') {
@@ -274,6 +332,12 @@
         state.dropoffPoints = structuredClone(DEFAULT_VEHICLES);
       }
       try {
+        const p = localStorage.getItem(STORAGE_KEYS.PICKUP_LOCATIONS);
+        state.pickupLocations = p ? JSON.parse(p) : structuredClone(DEFAULT_PICKUP_LOCATIONS);
+      } catch {
+        state.pickupLocations = structuredClone(DEFAULT_PICKUP_LOCATIONS);
+      }
+      try {
         const d = localStorage.getItem(STORAGE_KEYS.DONATIONS);
         state.donations = d ? JSON.parse(d) : structuredClone(DEFAULT_DONATIONS);
       } catch {
@@ -283,6 +347,7 @@
 
     function persistLocalData() {
       localStorage.setItem(STORAGE_KEYS.VEHICLES, JSON.stringify(state.dropoffPoints));
+      localStorage.setItem(STORAGE_KEYS.PICKUP_LOCATIONS, JSON.stringify(state.pickupLocations));
       localStorage.setItem(STORAGE_KEYS.DONATIONS, JSON.stringify(state.donations));
     }
 
@@ -344,6 +409,21 @@
     async function syncAllFromDatabase(showFeedback = false) {
       if (state.supabaseConnected && state.supabaseClient) {
         try {
+          const { data: pData, error: pErr } = await state.supabaseClient
+            .from('pickup_locations')
+            .select('*')
+            .order('id', { ascending: true });
+          if (!pErr && Array.isArray(pData)) {
+            state.pickupLocations = pData.map(row => ({
+              id: row.id,
+              name: row.name,
+              area: row.area || 'شمال',
+              address: row.address || '',
+              hours: row.hours || 'يومياً',
+              status: row.status || 'متاح'
+            }));
+          }
+
           const { data: vData, error: vErr } = await state.supabaseClient
             .from('pickup_vehicles')
             .select('*')
@@ -387,8 +467,106 @@
       } else if (showFeedback) {
         showToast('تم تحديث العرض من البيانات المحفوظة محلياً');
       }
+      renderAdminPickupLocations();
       renderAdminVehicles();
       renderAdminOrders();
+    }
+
+    function renderAdminPickupLocations() {
+      const container = document.getElementById('admin-pickup-locations-list');
+      if (!state.pickupLocations.length) {
+        container.innerHTML = `<div class="p-3.5 rounded-xl bg-amber-50 border border-amber-200 text-xs font-bold text-amber-800">لا توجد مواقع استلام من الموقع حالياً — التطبيق سيحوّل تلقائياً إلى «تسليم لسيارة الاستلام».</div>`;
+        return;
+      }
+      container.innerHTML = state.pickupLocations.map(p => `
+        <div class="p-3.5 rounded-2xl border border-emerald-200/80 bg-white flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div class="space-y-0.5">
+            <div class="flex flex-wrap items-center gap-2">
+              <span class="font-black text-sm text-emerald-950">${p.name}</span>
+              <span class="text-[11px] font-bold bg-emerald-100 text-emerald-800 px-2.5 py-0.5 rounded-full">قطاع ${p.area}</span>
+            </div>
+            <div class="text-xs text-slate-600">${p.address} • <span class="text-slate-500">${p.hours}</span></div>
+          </div>
+          <div class="flex items-center gap-2 self-end sm:self-center shrink-0">
+            <button onclick="startEditPickupLocation(${p.id})" class="bg-emerald-700 hover:bg-emerald-600 text-white text-xs font-extrabold px-3 py-1.5 rounded-xl transition flex items-center gap-1">
+              <i class="fa-solid fa-pen-to-square"></i>
+              <span>تعديل</span>
+            </button>
+            <button onclick="deletePickupLocation(${p.id})" class="bg-white hover:bg-red-50 text-red-600 border border-red-200 text-xs font-bold px-3 py-1.5 rounded-xl transition">
+              <i class="fa-solid fa-trash"></i>
+            </button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function startEditPickupLocation(id) {
+      const p = state.pickupLocations.find(item => item.id === id);
+      if (!p) return;
+      document.getElementById('pickup-edit-id').value = p.id;
+      document.getElementById('pickup-name').value = p.name;
+      document.getElementById('pickup-area').value = p.area;
+      document.getElementById('pickup-address').value = p.address;
+      document.getElementById('pickup-hours').value = p.hours;
+      document.getElementById('pickup-submit-btn').innerHTML = '<i class="fa-solid fa-check"></i><span>حفظ التعديل</span>';
+      document.getElementById('cancel-pickup-edit-btn').classList.remove('hidden');
+    }
+
+    function resetPickupForm() {
+      document.getElementById('pickup-edit-id').value = '';
+      document.getElementById('pickup-location-form').reset();
+      document.getElementById('pickup-hours').value = 'يومياً من 9:00 ص - 10:00 م';
+      document.getElementById('pickup-submit-btn').innerHTML = '<i class="fa-solid fa-floppy-disk"></i><span>حفظ موقع المندوب</span>';
+      document.getElementById('cancel-pickup-edit-btn').classList.add('hidden');
+    }
+
+    async function handlePickupFormSubmit(e) {
+      e.preventDefault();
+      const editIdRaw = document.getElementById('pickup-edit-id').value;
+      const isEdit = Boolean(editIdRaw);
+      const item = {
+        id: isEdit ? Number(editIdRaw) : Date.now(),
+        name: document.getElementById('pickup-name').value.trim(),
+        area: document.getElementById('pickup-area').value,
+        address: document.getElementById('pickup-address').value.trim(),
+        hours: document.getElementById('pickup-hours').value.trim(),
+        status: 'متاح'
+      };
+
+      if (isEdit) {
+        const idx = state.pickupLocations.findIndex(x => x.id === item.id);
+        if (idx !== -1) state.pickupLocations[idx] = item;
+      } else {
+        state.pickupLocations.unshift(item);
+      }
+
+      if (state.supabaseConnected && state.supabaseClient) {
+        const { error } = isEdit
+          ? await state.supabaseClient.from('pickup_locations').update(item).eq('id', item.id)
+          : await state.supabaseClient.from('pickup_locations').insert(item);
+        if (error) {
+          showToast('تم الحفظ محلياً؛ تحقق من سياسات جدول pickup_locations', 'info');
+        }
+      }
+
+      persistLocalData();
+      resetPickupForm();
+      renderAdminPickupLocations();
+      showToast(isEdit ? 'تم تحديث موقع الاستلام من الموقع' : 'تمت إضافة موقع استلام من الموقع');
+    }
+
+    async function deletePickupLocation(id) {
+      state.pickupLocations = state.pickupLocations.filter(x => x.id !== id);
+      if (state.supabaseConnected && state.supabaseClient) {
+        await state.supabaseClient.from('pickup_locations').delete().eq('id', id);
+      }
+      persistLocalData();
+      renderAdminPickupLocations();
+      if (!state.pickupLocations.length) {
+        showToast('أصبحت مواقع المندوب فارغة؛ سيتم التحويل التلقائي للسيارات في الصفحة الرئيسية', 'info');
+      } else {
+        showToast('تم حذف موقع الاستلام');
+      }
     }
 
     function renderAdminVehicles() {
@@ -399,7 +577,7 @@
             <div class="flex flex-wrap items-center gap-2">
               <span class="font-black text-sm text-emerald-950">${v.name}</span>
               <span class="text-[11px] font-bold bg-emerald-100 text-emerald-800 px-2.5 py-0.5 rounded-full">قطاع ${v.area}</span>
-              <span class="text-[11px] font-bold bg-white text-slate-600 border border-slate-200 px-2.5 py-0.5 rounded-full">${v.status} •${v.capacityPercent}%</span>
+              <span class="text-[11px] font-bold bg-white text-slate-600 border border-slate-200 px-2.5 py-0.5 rounded-full">${v.status} • ${v.capacityPercent}%</span>
             </div>
             <div class="text-xs text-slate-600"><i class="fa-solid fa-location-dot text-emerald-700 ml-1"></i>${v.address} • <span class="text-slate-500">${v.hours}</span></div>
           </div>
@@ -502,7 +680,7 @@
       showToast('تم حذف الموقع');
     }
 
- async function advanceOrderStep(orderId) {
+    async function advanceOrderStep(orderId) {
       const d = state.donations.find(item => item.id === orderId);
       if (!d || d.step >= 4) return;
       d.step += 1;
@@ -594,10 +772,10 @@
     document.addEventListener('DOMContentLoaded', () => {
       loadLocalData();
       initSupabase();
+      renderAdminPickupLocations();
       renderAdminVehicles();
       renderAdminOrders();
       syncAllFromDatabase(false);
-    
     });
   </script>
 </body>
