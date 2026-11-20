@@ -1088,24 +1088,22 @@
 للاستفسار أو المتابعة: ${ASSOCIATION_PHONE}`;
     }
 
-    function formatPhoneForWhatsApp(phone) {
-      const digits = (phone || '').replace(/\D/g, '');
-      if (digits.startsWith('966')) return digits;
-      if (digits.startsWith('05') && digits.length === 10) return '966' + digits.slice(1);
-      if (digits.startsWith('5') && digits.length === 9) return '966' + digits;
-      return digits || ASSOCIATION_WA_PHONE;
+    function formatPhoneForWhatsApp() {
+  return ASSOCIATION_WA_PHONE;
+}
     }
 
-    function openWhatsAppModal(order) {
-      const waPhone = formatPhoneForWhatsApp(order.donorPhone);
-      const msg = buildWhatsAppReminderMessage(order);
-      document.getElementById('wa-target-phone').textContent = order.donorPhone || '';
-      document.getElementById('wa-target-code').textContent = order.id;
-      const textarea = document.getElementById('wa-message-text');
-      textarea.value = msg;
-      textarea.dataset.waPhone = waPhone;
-      document.getElementById('wa-send-link').href = `https://wa.me/${waPhone}?text=${encodeURIComponent(msg)}`;
-      document.getElementById('whatsapp-modal').classList.remove('hidden');
+  function openWhatsAppModal(order) {
+  const waPhone = formatPhoneForWhatsApp(order.donorPhone);
+  const msg = buildWhatsAppReminderMessage(order);
+  document.getElementById('wa-target-phone').textContent = ASSOCIATION_PHONE;
+  document.getElementById('wa-target-code').textContent = order.id;
+  const textarea = document.getElementById('wa-message-text');
+  textarea.value = msg;
+  textarea.dataset.waPhone = waPhone;
+  document.getElementById('wa-send-link').href = `https://wa.me/${waPhone}?text=${encodeURIComponent(msg)}`;
+  document.getElementById('whatsapp-modal').classList.remove('hidden');
+}
     }
 
     function updateWhatsAppLinkBeforeOpen() {
