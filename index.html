@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>أثر | مبادرة استلام المصاحف وتتبع الأثر</title>
+  <title>جمع المصاحف المخالفة | جمعية العناية بالمصحف الشريف</title>
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- Google Fonts: Tajawal & Amiri for Certificate -->
@@ -30,6 +30,13 @@
               800: '#065f46',
               900: '#064e3b',
               950: '#022c22',
+            },
+            olive: {
+              50: '#f8f9ee',
+              100: '#eef1d5',
+              600: '#8C9B1E',
+              700: '#727e16',
+              800: '#596311',
             },
             gold: {
               50: '#fdfbf7',
@@ -125,55 +132,80 @@
 </head>
 <body class="min-h-screen flex flex-col pb-24 md:pb-10">
 
+  <!-- Fixed Top-Right Association Logo Badge (ثابت في أعلى اليمين) -->
+  <div id="fixed-association-logo" class="no-print fixed top-3 right-3 z-50 bg-white/95 backdrop-blur-md border border-[#8C9B1E]/35 shadow-lg rounded-2xl px-3 py-1.5 flex items-center gap-2.5 select-none">
+    <svg viewBox="0 0 220 115" class="h-10 w-auto shrink-0" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="شعار جمعية العناية بالمصحف">
+      <!-- Quran Book Frame in Olive Green (#8C9B1E) -->
+      <path d="M122 18C122 18 144 13 168 13C192 13 212 20 212 20V82C212 82 192 75 168 75C144 75 122 82 122 82V18Z" fill="#8C9B1E"/>
+      <line x1="134" y1="30" x2="198" y2="30" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" opacity="0.85"/>
+      <line x1="134" y1="42" x2="198" y2="42" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" opacity="0.85"/>
+      <line x1="134" y1="54" x2="198" y2="54" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" opacity="0.85"/>
+      <!-- Supporting Hand in Gray (#808285) -->
+      <path d="M62 84C76 74 96 64 118 58C136 53 162 56 174 60C162 72 138 86 112 90C90 93 74 92 62 84Z" fill="#808285"/>
+      <path d="M95 62C108 50 126 42 142 40C134 50 118 60 95 62Z" fill="#808285"/>
+      <text x="112" y="106" text-anchor="middle" fill="#808285" font-size="13" font-family="Arial, sans-serif" font-weight="bold">Quran Care Association</text>
+    </svg>
+    <div class="border-r border-slate-200 pr-2.5 text-right leading-tight">
+      <div class="text-[11px] font-extrabold text-[#8C9B1E]">جمعية العناية بالمصحف</div>
+      <div class="text-[10px] font-bold text-[#808285]">جمع المصاحف المخالفة</div>
+    </div>
+  </div>
+
   <!-- Toast Notification Container -->
-  <div id="toast-container" class="fixed top-4 left-1/2 -translate-x-1/2 z-50 w-[92%] max-w-md pointer-events-none flex flex-col gap-2"></div>
+  <div id="toast-container" class="fixed top-16 left-1/2 -translate-x-1/2 z-50 w-[92%] max-w-md pointer-events-none flex flex-col gap-2"></div>
 
   <!-- Top Desktop & Mobile Header -->
   <header class="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-emerald-100 shadow-sm">
-    <div class="max-w-5xl mx-auto px-4 h-16 flex items-center justify-between">
-      <!-- Brand Identity -->
-      <div class="flex items-center gap-3 cursor-pointer" onclick="switchTab('home')">
-        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-800 to-emerald-600 flex items-center justify-center text-gold-400 shadow-md border border-gold-400/40">
-          <i class="fa-solid fa-book-quran text-lg"></i>
+    <div class="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between gap-2">
+      <!-- Brand Identity (padded on right so fixed top-right logo never overlaps) -->
+      <div class="flex items-center gap-2.5 cursor-pointer pr-44 sm:pr-56" onclick="switchTab('home')">
+        <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-[#8C9B1E] to-emerald-800 flex items-center justify-center text-white shadow-sm shrink-0">
+          <i class="fa-solid fa-book-quran text-sm"></i>
         </div>
         <div>
-          <div class="flex items-center gap-2">
-            <h1 class="text-xl font-extrabold text-emerald-950 tracking-tight">أثـر</h1>
-            <span class="text-[10px] font-bold bg-gold-100 text-gold-600 px-2 py-0.5 rounded-full border border-gold-200">جمعية الدعوة والإرشاد</span>
+          <div class="flex items-center gap-1.5 flex-wrap">
+            <h1 class="text-sm sm:text-lg font-black text-emerald-950 tracking-tight">جمع المصاحف المخالفة</h1>
+            <span class="hidden lg:inline-block text-[10px] font-bold bg-[#8C9B1E]/15 text-[#727e16] px-2 py-0.5 rounded-full border border-[#8C9B1E]/30">جمعية العناية بالمصحف</span>
           </div>
-          <p class="text-[11px] text-slate-500 hidden sm:block">مبادرة استلام المصاحف والعناية بها وتوزيعها</p>
+          <p class="text-[10px] sm:text-[11px] text-[#808285] hidden sm:block">ترخيص 1000629800 • جمع وفرز وصيانة دون توزيع</p>
         </div>
       </div>
 
       <!-- Desktop Navigation Links -->
       <nav class="hidden md:flex items-center gap-1 bg-slate-100/80 p-1 rounded-2xl border border-slate-200/70">
-        <button onclick="switchTab('home')" data-nav="home" class="nav-btn px-4 py-2 rounded-xl text-sm font-bold transition-all flex items-center gap-2">
+        <button onclick="switchTab('home')" data-nav="home" class="nav-btn px-3 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5">
           <i class="fa-solid fa-house"></i> الرئيسية
         </button>
-        <button onclick="switchTab('donate')" data-nav="donate" class="nav-btn px-4 py-2 rounded-xl text-sm font-bold transition-all flex items-center gap-2">
-          <i class="fa-solid fa-hand-holding-heart"></i> تبرع الآن
+        <button onclick="switchTab('donate')" data-nav="donate" class="nav-btn px-3 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5">
+          <i class="fa-solid fa-hand-holding-heart"></i> تسليم مصاحف
         </button>
-        <button onclick="switchTab('track')" data-nav="track" class="nav-btn px-4 py-2 rounded-xl text-sm font-bold transition-all flex items-center gap-2">
+        <button onclick="switchTab('track')" data-nav="track" class="nav-btn px-3 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5">
           <i class="fa-solid fa-route"></i> تتبع الأثر
         </button>
-        <button onclick="switchTab('dropoff')" data-nav="dropoff" class="nav-btn px-4 py-2 rounded-xl text-sm font-bold transition-all flex items-center gap-2">
+        <button onclick="switchTab('dropoff')" data-nav="dropoff" class="nav-btn px-3 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5">
           <i class="fa-solid fa-location-dot"></i> نقاط الإيداع
         </button>
-        <button onclick="switchTab('profile')" data-nav="profile" class="nav-btn px-4 py-2 rounded-xl text-sm font-bold transition-all flex items-center gap-2">
+        <button onclick="switchTab('profile')" data-nav="profile" class="nav-btn px-3 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5">
           <i class="fa-solid fa-award"></i> سجلي
         </button>
       </nav>
 
-      <!-- Quick CTA Button -->
-      <button onclick="switchTab('donate')" class="bg-emerald-800 hover:bg-emerald-700 active:scale-95 text-white text-xs sm:text-sm font-bold px-4 py-2.5 rounded-xl shadow-sm transition flex items-center gap-2">
-        <i class="fa-solid fa-plus"></i>
-        <span>أهدِ مصحفاً</span>
-      </button>
+      <!-- Quick CTA & Maintenance Link (10 SAR) -->
+      <div class="flex items-center gap-2 shrink-0">
+        <a href="https://store.holyqurancare.sa/%D8%AC%D9%85%D8%B9-%D9%88%D8%AA%D8%B1%D9%85%D9%8A%D9%85-%D8%A7%D9%84%D9%85%D8%B5%D8%A7%D8%AD%D9%81/p886756038" target="_blank" rel="noopener noreferrer" class="hidden sm:inline-flex items-center gap-1.5 bg-gold-500 hover:bg-gold-400 text-emerald-950 text-xs font-extrabold px-3 py-2 rounded-xl shadow-sm transition">
+          <i class="fa-solid fa-screwdriver-wrench"></i>
+          <span>صيانة مصحف (10 ريال)</span>
+        </a>
+        <button onclick="switchTab('donate')" class="bg-emerald-800 hover:bg-emerald-700 active:scale-95 text-white text-xs font-bold px-3.5 py-2 rounded-xl shadow-sm transition flex items-center gap-1.5">
+          <i class="fa-solid fa-plus"></i>
+          <span>تسليم مصاحف</span>
+        </button>
+      </div>
     </div>
   </header>
 
   <!-- Main Content Area -->
-  <main class="flex-1 max-w-5xl w-full mx-auto px-4 pt-5 sm:pt-7">
+  <main class="flex-1 max-w-6xl w-full mx-auto px-4 pt-5 sm:pt-7">
 
     <!-- ==================== 1. HOME TAB (الرئيسية) ==================== -->
     <section id="tab-home" class="tab-section space-y-6">
@@ -181,29 +213,34 @@
       <div class="islamic-pattern rounded-3xl p-6 sm:p-8 text-white relative overflow-hidden shadow-lg border border-emerald-700">
         <div class="relative z-10 max-w-2xl space-y-3">
           <div class="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm border border-gold-400/30 text-gold-200 text-xs font-bold px-3 py-1 rounded-full">
-            <i class="fa-solid fa-sparkles text-gold-400"></i>
-            <span>خيركم من تعلم القرآن وعلمه</span>
+            <i class="fa-solid fa-shield-halved text-gold-400"></i>
+            <span>جمعية العناية بالمصحف • ترخيص رقم 1000629800</span>
           </div>
           <h2 class="text-2xl sm:text-3xl font-extrabold leading-snug">
-            اجعل مصاحفك الفائضة <span class="text-gold-400">نُوراً يتجدد</span> في المساجد وحلقات التحفيظ
+            جمع المصاحف المخالفة.. <span class="text-gold-400">حفظٌ وصيانة</span> لكتاب الله
           </h2>
           <p class="text-emerald-100 text-sm sm:text-base leading-relaxed">
-            نستلم المصاحف الجديدة والمستعملة من باب منزلك أو عبر نقاط الإيداع الذكية، ونعتني بتنظيفها وتغليفها، ثم نوثق لك وصولها للمستفيدين.
+            منصة مخصصة لجمع المصاحف المخالفة والمستعملة والتالفة من المساجد والمنازل، وفرزها وصيانتها أو معالجتها بالطرق الشرعية المعتمدة دون توزيع.
           </p>
           <div class="pt-2 flex flex-wrap gap-3">
             <button onclick="startDonationMode('pickup')" class="bg-gold-500 hover:bg-gold-400 text-emerald-950 font-extrabold text-sm px-5 py-3 rounded-2xl shadow-md transition active:scale-95 flex items-center gap-2">
               <i class="fa-solid fa-truck-fast"></i>
               <span>اطلب مندوب استلام مجاني</span>
             </button>
-            <button onclick="switchTab('track')" class="bg-white/15 hover:bg-white/25 backdrop-blur-sm text-white border border-white/20 font-bold text-sm px-5 py-3 rounded-2xl transition active:scale-95 flex items-center gap-2">
+            <a href="https://store.holyqurancare.sa/%D8%AC%D9%85%D8%B9-%D9%88%D8%AA%D8%B1%D9%85%D9%8A%D9%85-%D8%A7%D9%84%D9%85%D8%B5%D8%A7%D8%AD%D9%81/p886756038" target="_blank" rel="noopener noreferrer" class="bg-white/15 hover:bg-white/25 backdrop-blur-sm text-white border border-gold-300/40 font-extrabold text-sm px-5 py-3 rounded-2xl transition active:scale-95 flex items-center gap-2">
+              <i class="fa-solid fa-screwdriver-wrench text-gold-400"></i>
+              <span>صيانة مصحف (10 ريال)</span>
+              <i class="fa-solid fa-arrow-up-left-from-square text-xs"></i>
+            </a>
+            <button onclick="switchTab('track')" class="bg-emerald-900/70 hover:bg-emerald-900 text-white border border-white/15 font-bold text-sm px-4 py-3 rounded-2xl transition active:scale-95 flex items-center gap-2">
               <i class="fa-solid fa-magnifying-glass-location"></i>
-              <span>تتبع أثر تبرعك</span>
+              <span>تتبع الطلب</span>
             </button>
           </div>
         </div>
-        <!-- Decorative Quran Icon -->
+        <!-- Decorative Icon -->
         <div class="hidden sm:flex absolute -left-6 -bottom-8 text-white/5 text-[180px] pointer-events-none">
-          <i class="fa-solid fa-mosque"></i>
+          <i class="fa-solid fa-book-quran"></i>
         </div>
       </div>
 
@@ -214,21 +251,21 @@
             <i class="fa-solid fa-book-open"></i>
           </div>
           <div class="text-xl sm:text-3xl font-black text-emerald-900" id="stat-total-mushafs">14,820</div>
-          <div class="text-xs sm:text-sm text-slate-500 font-medium mt-0.5">مصحف تم استلامه</div>
+          <div class="text-xs sm:text-sm text-slate-500 font-medium mt-0.5">مصحف تم جمعه وفرزه</div>
         </div>
         <div class="bg-white rounded-2xl p-4 sm:p-5 border border-slate-100 shadow-sm text-center">
           <div class="w-10 h-10 mx-auto mb-2 rounded-xl bg-gold-100 text-gold-600 flex items-center justify-center text-lg">
-            <i class="fa-solid fa-mosque"></i>
+            <i class="fa-solid fa-screwdriver-wrench"></i>
           </div>
-          <div class="text-xl sm:text-3xl font-black text-emerald-900">138</div>
-          <div class="text-xs sm:text-sm text-slate-500 font-medium mt-0.5">مسجد وحلقة مستفيدة</div>
+          <div class="text-xl sm:text-3xl font-black text-emerald-900">9,640</div>
+          <div class="text-xs sm:text-sm text-slate-500 font-medium mt-0.5">مصحف تمت صيانته</div>
         </div>
         <div class="bg-white rounded-2xl p-4 sm:p-5 border border-slate-100 shadow-sm text-center">
           <div class="w-10 h-10 mx-auto mb-2 rounded-xl bg-emerald-50 text-emerald-700 flex items-center justify-center text-lg">
             <i class="fa-solid fa-users"></i>
           </div>
           <div class="text-xl sm:text-3xl font-black text-emerald-900" id="stat-donors">3,412</div>
-          <div class="text-xs sm:text-sm text-slate-500 font-medium mt-0.5">متبرع شريك في الأجر</div>
+          <div class="text-xs sm:text-sm text-slate-500 font-medium mt-0.5">مساهم شريك في الأجر</div>
         </div>
       </div>
 
@@ -246,40 +283,43 @@
             </div>
             <div>
               <h4 class="font-extrabold text-slate-900 group-hover:text-emerald-800 transition">طلب مندوب استلام</h4>
-              <p class="text-xs text-slate-500 mt-1 leading-relaxed">يصلك مندوب الجمعية للمنزل أو المكتب لاستلام المصاحف مجاناً.</p>
+              <p class="text-xs text-slate-500 mt-1 leading-relaxed">يصلك مندوب الجمعية للمنزل أو المسجد لاستلام المصاحف المخالفة مجاناً.</p>
             </div>
           </div>
 
           <!-- Card 2 -->
           <div onclick="switchTab('dropoff')" class="group cursor-pointer bg-white hover:bg-emerald-50/50 rounded-2xl p-5 border border-slate-200/80 hover:border-emerald-300 shadow-sm transition-all flex items-start gap-4">
-            <div class="w-12 h-12 shrink-0 rounded-2xl bg-gold-500 text-emerald-950 flex items-center justify-center text-xl group-hover:scale-105 transition">
+            <div class="w-12 h-12 shrink-0 rounded-2xl bg-[#8C9B1E] text-white flex items-center justify-center text-xl group-hover:scale-105 transition">
               <i class="fa-solid fa-map-location-dot"></i>
             </div>
             <div>
               <h4 class="font-extrabold text-slate-900 group-hover:text-emerald-800 transition">نقاط الإيداع القريبة</h4>
-              <p class="text-xs text-slate-500 mt-1 leading-relaxed">استعرض أقرب الحاويات الذكية وفروع الجمعية لتسليم مصاحفك بنفسك.</p>
+              <p class="text-xs text-slate-500 mt-1 leading-relaxed">استعرض أقرب الحاويات الذكية وفروع الجمعية لتسليم المصاحف بنفسك.</p>
             </div>
           </div>
 
-          <!-- Card 3 -->
-          <div onclick="openWaqfModal()" class="group cursor-pointer bg-white hover:bg-emerald-50/50 rounded-2xl p-5 border border-slate-200/80 hover:border-emerald-300 shadow-sm transition-all flex items-start gap-4">
-            <div class="w-12 h-12 shrink-0 rounded-2xl bg-emerald-100 text-emerald-800 flex items-center justify-center text-xl group-hover:scale-105 transition">
-              <i class="fa-solid fa-seedling"></i>
+          <!-- Card 3: صيانة مصحف (10 ريال) + رابط المتجر الرسمي -->
+          <a href="https://store.holyqurancare.sa/%D8%AC%D9%85%D8%B9-%D9%88%D8%AA%D8%B1%D9%85%D9%8A%D9%85-%D8%A7%D9%84%D9%85%D8%B5%D8%A7%D8%AD%D9%81/p886756038" target="_blank" rel="noopener noreferrer" class="group bg-white hover:bg-gold-50/60 rounded-2xl p-5 border border-gold-300/80 hover:border-gold-500 shadow-sm transition-all flex items-start gap-4">
+            <div class="w-12 h-12 shrink-0 rounded-2xl bg-gold-500 text-emerald-950 flex items-center justify-center text-xl group-hover:scale-105 transition">
+              <i class="fa-solid fa-screwdriver-wrench"></i>
             </div>
             <div>
-              <h4 class="font-extrabold text-slate-900 group-hover:text-emerald-800 transition">وقف طباعة مصحف</h4>
-              <p class="text-xs text-slate-500 mt-1 leading-relaxed">ساهم بطباعة مصحف جديد صدقة جارية عنك أو عن والديك بـ 25 ريالاً.</p>
+              <div class="flex items-center gap-2">
+                <h4 class="font-extrabold text-slate-900 group-hover:text-emerald-800 transition">صيانة مصحف</h4>
+                <span class="text-[11px] font-black bg-emerald-900 text-gold-400 px-2 py-0.5 rounded-full">10 ريال</span>
+              </div>
+              <p class="text-xs text-slate-500 mt-1 leading-relaxed">ساهم في ترميم وصيانة المصاحف عبر الموقع الإلكتروني الرسمي للجمعية.</p>
             </div>
-          </div>
+          </a>
         </div>
       </div>
 
-      <!-- Interactive Impact Calculator (حاسبة الأثر) -->
+      <!-- Interactive Impact Calculator (حاسبة الأثر: 320,000 حرف للمصحف الواحد سنوياً) -->
       <div class="bg-gradient-to-br from-white to-gold-50/70 rounded-3xl p-6 border border-gold-200/80 shadow-sm">
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4">
           <div>
             <span class="text-xs font-bold text-gold-600 bg-gold-100 px-2.5 py-1 rounded-full">حاسبة الأثر التفاعلية</span>
-            <h3 class="text-lg sm:text-xl font-extrabold text-emerald-950 mt-1.5">تخيّل عظيم الأجر من تبرعك بالمصاحف</h3>
+            <h3 class="text-lg sm:text-xl font-extrabold text-emerald-950 mt-1.5">تقدير الأجر من العناية بالمصاحف وصيانتها</h3>
           </div>
           <div class="bg-emerald-900 text-white px-4 py-2 rounded-2xl text-center self-start sm:self-auto">
             <span class="text-xs text-emerald-200 block">عدد المصاحف</span>
@@ -301,38 +341,41 @@
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 mt-4">
           <div class="bg-white/90 rounded-2xl p-4 border border-emerald-100">
             <div class="text-xs text-slate-500 font-medium">تقدير الحروف المقروءة سنوياً</div>
-            <div id="calc-letters" class="text-xl font-black text-emerald-800 mt-1">19,200,000+</div>
-            <div class="text-[11px] text-emerald-600 mt-0.5">بكل حرف حسنة والحسنة بعشر أمثالها</div>
+            <div id="calc-letters" class="text-xl font-black text-emerald-800 mt-1">1,600,000</div>
+            <div class="text-[11px] text-emerald-600 mt-0.5">بمعدل 320,000 حرف لكل مصحف (ختمة سنوياً)</div>
           </div>
           <div class="bg-white/90 rounded-2xl p-4 border border-emerald-100">
-            <div class="text-xs text-slate-500 font-medium">عدد المستفيدين المتوقع</div>
-            <div id="calc-readers" class="text-xl font-black text-emerald-800 mt-1">25 مصلّياً وطالباً</div>
-            <div class="text-[11px] text-slate-500 mt-0.5">في المساجد وحلقات التحفيظ</div>
+            <div class="text-xs text-slate-500 font-medium">تكلفة صيانة المصاحف (10 ريال)</div>
+            <div id="calc-maintenance-cost" class="text-xl font-black text-[#8C9B1E] mt-1">50 ريال</div>
+            <div class="text-[11px] text-slate-500 mt-0.5">قيمة الصيانة للمصحف الواحد 10 ريال</div>
           </div>
-          <div class="bg-white/90 rounded-2xl p-4 border border-emerald-100 flex flex-col justify-between">
-            <div class="text-xs text-slate-500 font-medium">ابدأ بهذه الكمية الآن</div>
-            <button onclick="applyCalcAndDonate()" class="mt-2 w-full bg-emerald-800 hover:bg-emerald-700 text-white text-xs font-bold py-2.5 px-3 rounded-xl transition flex items-center justify-center gap-1.5">
-              <span>تبرع بـ <span id="calc-btn-num">5</span> مصاحف</span>
+          <div class="bg-white/90 rounded-2xl p-4 border border-emerald-100 flex flex-col justify-between gap-2">
+            <button onclick="applyCalcAndDonate()" class="w-full bg-emerald-800 hover:bg-emerald-700 text-white text-xs font-bold py-2.5 px-3 rounded-xl transition flex items-center justify-center gap-1.5">
+              <span>تسليم <span id="calc-btn-num">5</span> مصاحف مخالفة</span>
               <i class="fa-solid fa-arrow-left"></i>
             </button>
+            <a href="https://store.holyqurancare.sa/%D8%AC%D9%85%D8%B9-%D9%88%D8%AA%D8%B1%D9%85%D9%8A%D9%85-%D8%A7%D9%84%D9%85%D8%B5%D8%A7%D8%AD%D9%81/p886756038" target="_blank" rel="noopener noreferrer" class="w-full bg-gold-500 hover:bg-gold-400 text-emerald-950 text-xs font-extrabold py-2 px-3 rounded-xl transition flex items-center justify-center gap-1.5">
+              <span>صيانة مصحف (10 ريال)</span>
+              <i class="fa-solid fa-arrow-up-left-from-square text-[10px]"></i>
+            </a>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- ==================== 2. DONATE NOW TAB (تبرع الآن) ==================== -->
+    <!-- ==================== 2. DONATE / COLLECTION TAB (تسليم مصاحف) ==================== -->
     <section id="tab-donate" class="tab-section hidden space-y-6">
       <div class="bg-white rounded-3xl p-5 sm:p-8 border border-slate-200/80 shadow-sm">
         <div class="mb-6">
-          <h2 class="text-xl sm:text-2xl font-extrabold text-emerald-950">تبرع بالمصاحف</h2>
-          <p class="text-sm text-slate-500 mt-1">اختر طريقة التسليم المناسبة لك وسنتكفل بالباقي بكل عناية واهتمام.</p>
+          <h2 class="text-xl sm:text-2xl font-extrabold text-emerald-950">طلب تسليم مصاحف مخالفة</h2>
+          <p class="text-sm text-slate-500 mt-1">اختر طريقة التسليم المناسبة لجمع وفرز وصيانة المصاحف وفق الضوابط الشرعية.</p>
         </div>
 
         <!-- Delivery Mode Switcher -->
         <div class="grid grid-cols-2 gap-3 p-1.5 bg-slate-100 rounded-2xl mb-6">
           <button type="button" id="mode-btn-pickup" onclick="setDonationMethod('pickup')" class="py-3 px-4 rounded-xl text-sm font-extrabold transition-all flex items-center justify-center gap-2 bg-emerald-800 text-white shadow-sm">
             <i class="fa-solid fa-truck"></i>
-            <span>استلام من المنزل (مندوب)</span>
+            <span>استلام من الموقع (مندوب)</span>
           </button>
           <button type="button" id="mode-btn-dropoff" onclick="setDonationMethod('dropoff')" class="py-3 px-4 rounded-xl text-sm font-extrabold transition-all flex items-center justify-center gap-2 text-slate-600 hover:text-slate-900">
             <i class="fa-solid fa-box-open"></i>
@@ -360,27 +403,27 @@
 
             <!-- Condition Selector -->
             <div>
-              <label class="block text-sm font-bold text-slate-700 mb-2">حالة المصاحف *</label>
+              <label class="block text-sm font-bold text-slate-700 mb-2">حالة / تصنيف المصاحف *</label>
               <div class="grid grid-cols-1 gap-2">
                 <label class="cursor-pointer flex items-center gap-3 p-3 rounded-xl border border-slate-200 has-[:checked]:border-emerald-600 has-[:checked]:bg-emerald-50/70 transition">
-                  <input type="radio" name="condition" value="مستعملة بحالة ممتازة" checked class="accent-emerald-700 w-4 h-4" />
+                  <input type="radio" name="condition" value="مصاحف مخالفة للطبعة المعتمدة" checked class="accent-emerald-700 w-4 h-4" />
                   <div>
-                    <div class="text-sm font-bold text-slate-800">مستعملة بحالة ممتازة</div>
-                    <div class="text-[11px] text-slate-500">تُنظف وتُغلف وتُوزع مباشرة للمساجد</div>
+                    <div class="text-sm font-bold text-slate-800">مصاحف مخالفة للطبعة المعتمدة</div>
+                    <div class="text-[11px] text-slate-500">تُفرز وتُعالج وفق الضوابط الشرعية والنظامية</div>
                   </div>
                 </label>
                 <label class="cursor-pointer flex items-center gap-3 p-3 rounded-xl border border-slate-200 has-[:checked]:border-emerald-600 has-[:checked]:bg-emerald-50/70 transition">
-                  <input type="radio" name="condition" value="جديدة غير مستعملة" class="accent-emerald-700 w-4 h-4" />
+                  <input type="radio" name="condition" value="تحتاج صيانة وترميم (10 ريال)" class="accent-emerald-700 w-4 h-4" />
                   <div>
-                    <div class="text-sm font-bold text-slate-800">جديدة (طباعة مجمع الملك فهد وغيرها)</div>
-                    <div class="text-[11px] text-slate-500">تُهدى لحلقات التحفيظ والمصلين الجدد</div>
+                    <div class="text-sm font-bold text-slate-800">تحتاج صيانة وترميم</div>
+                    <div class="text-[11px] text-slate-500">تُحال لقسم الصيانة والترميم بالجمعية</div>
                   </div>
                 </label>
                 <label class="cursor-pointer flex items-center gap-3 p-3 rounded-xl border border-slate-200 has-[:checked]:border-emerald-600 has-[:checked]:bg-emerald-50/70 transition">
-                  <input type="radio" name="condition" value="تحتاج صيانة وتجليد" class="accent-emerald-700 w-4 h-4" />
+                  <input type="radio" name="condition" value="كمية من المساجد أو المدارس" class="accent-emerald-700 w-4 h-4" />
                   <div>
-                    <div class="text-sm font-bold text-slate-800">تحتاج صيانة / إعادة تجليد</div>
-                    <div class="text-[11px] text-slate-500">تُحال لقسم العناية والترميم بالجمعية</div>
+                    <div class="text-sm font-bold text-slate-800">كمية من المساجد أو المدارس</div>
+                    <div class="text-[11px] text-slate-500">يتم جدولة مركبة مخصصة للاستلام والفرز</div>
                   </div>
                 </label>
               </div>
@@ -402,7 +445,7 @@
                 </select>
               </div>
               <div>
-                <label class="block text-sm font-bold text-slate-700 mb-1.5">وصف مختصر للموقع / رقم المنزل</label>
+                <label class="block text-sm font-bold text-slate-700 mb-1.5">وصف مختصر للموقع / رقم المنزل أو المسجد</label>
                 <input id="form-address-note" type="text" placeholder="مثال: شارع الأمير فيصل، فيلا 14" class="w-full p-3.5 rounded-2xl bg-slate-50 border border-slate-200 text-sm focus:border-emerald-600 focus:outline-none" />
               </div>
             </div>
@@ -435,7 +478,7 @@
               </select>
               <p class="text-xs text-emerald-700 mt-1.5 flex items-center gap-1">
                 <i class="fa-solid fa-circle-info"></i>
-                <span>سيتم إصدار رقم تتبع خاص بك لإرفاقه مع المصاحف ومتابعة رحلتها.</span>
+                <span>سيتم إصدار رقم تتبع خاص بك لمتابعة مراحل الفرز والصيانة والمعالجة.</span>
               </p>
             </div>
           </div>
@@ -443,12 +486,12 @@
           <!-- Donor Info -->
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2 border-t border-slate-100">
             <div>
-              <label class="block text-sm font-bold text-slate-700 mb-1.5">اسم المتبرع (يظهر في شهادة الشكر) *</label>
-              <input id="form-donor-name" type="text" required value="عبدالله بن محمد العتيبي" placeholder="أدخل اسمك الكريم" class="w-full p-3.5 rounded-2xl bg-slate-50 border border-slate-200 text-sm font-bold text-slate-800 focus:border-emerald-600 focus:outline-none" />
+              <label class="block text-sm font-bold text-slate-700 mb-1.5">الاسم الكريم (يظهر في شهادة الشكر) *</label>
+              <input id="form-donor-name" type="text" required value="سعود سعد العمار" placeholder="أدخل اسمك الكريم" class="w-full p-3.5 rounded-2xl bg-slate-50 border border-slate-200 text-sm font-bold text-slate-800 focus:border-emerald-600 focus:outline-none" />
             </div>
             <div>
               <label class="block text-sm font-bold text-slate-700 mb-1.5">رقم الجوال (للتواصل وإرسال التحديثات) *</label>
-              <input id="form-donor-phone" type="tel" required value="0551234567" placeholder="05XXXXXXXX" dir="ltr" class="w-full p-3.5 rounded-2xl bg-slate-50 border border-slate-200 text-sm font-bold text-slate-800 text-right focus:border-emerald-600 focus:outline-none" />
+              <input id="form-donor-phone" type="tel" required value="0554899929" placeholder="05XXXXXXXX" dir="ltr" class="w-full p-3.5 rounded-2xl bg-slate-50 border border-slate-200 text-sm font-bold text-slate-800 text-right focus:border-emerald-600 focus:outline-none" />
             </div>
           </div>
 
@@ -458,6 +501,18 @@
             <span>تأكيد الطلب وإصدار رمز التتبع</span>
           </button>
         </form>
+
+        <!-- Direct Link to Website for Quran Maintenance (10 SAR) -->
+        <div class="mt-6 pt-5 border-t border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-gold-50/70 p-4 rounded-2xl border border-gold-200/80">
+          <div>
+            <div class="text-sm font-extrabold text-emerald-950">خدمة صيانة مصحف (10 ريال)</div>
+            <div class="text-xs text-slate-600 mt-0.5">للانتقال المباشر إلى صفحة جمع وترميم المصاحف في موقع الجمعية الرسمي</div>
+          </div>
+          <a href="https://store.holyqurancare.sa/%D8%AC%D9%85%D8%B9-%D9%88%D8%AA%D8%B1%D9%85%D9%8A%D9%85-%D8%A7%D9%84%D9%85%D8%B5%D8%A7%D8%AD%D9%81/p886756038" target="_blank" rel="noopener noreferrer" class="bg-gold-500 hover:bg-gold-400 text-emerald-950 text-xs font-extrabold px-4 py-2.5 rounded-xl transition flex items-center justify-center gap-1.5 shrink-0">
+            <span>صيانة مصحف (10 ريال)</span>
+            <i class="fa-solid fa-arrow-up-left-from-square"></i>
+          </a>
+        </div>
       </div>
     </section>
 
@@ -466,9 +521,9 @@
       <!-- Search Bar -->
       <div class="bg-white rounded-3xl p-5 sm:p-6 border border-slate-200/80 shadow-sm">
         <h2 class="text-xl font-extrabold text-emerald-950 mb-1">تتبع رحلة المصاحف</h2>
-        <p class="text-xs sm:text-sm text-slate-500 mb-4">أدخل رقم التتبع الخاص بتبرعك أو اختر أحد طلباتك أدناه لمشاهدة مراحل العناية والتوزيع.</p>
+        <p class="text-xs sm:text-sm text-slate-500 mb-4">أدخل رقم التتبع الخاص بطلبك أو اختر أحد طلباتك أدناه لمشاهدة مراحل الجمع والفرز والصيانة والمعالجة الشرعية.</p>
         <div class="flex gap-2">
-          <input id="track-search-input" type="text" placeholder="مثال: ATH-2026-849" class="flex-1 p-3.5 rounded-2xl bg-slate-50 border border-slate-200 text-sm font-bold uppercase focus:border-emerald-600 focus:outline-none" />
+          <input id="track-search-input" type="text" placeholder="مثال: QCA-2026-849" class="flex-1 p-3.5 rounded-2xl bg-slate-50 border border-slate-200 text-sm font-bold uppercase focus:border-emerald-600 focus:outline-none" />
           <button onclick="searchTrackingCode()" class="bg-emerald-800 hover:bg-emerald-700 text-white font-bold px-6 rounded-2xl transition flex items-center gap-2">
             <i class="fa-solid fa-magnifying-glass"></i>
             <span class="hidden sm:inline">بحث</span>
@@ -494,7 +549,7 @@
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-5">
           <div>
             <h2 class="text-xl font-extrabold text-emerald-950">نقاط الإيداع والحاويات الذكية</h2>
-            <p class="text-xs sm:text-sm text-slate-500 mt-0.5">أقرب المواقع المعتمدة لاستقبال المصاحف على مدار الساعة</p>
+            <p class="text-xs sm:text-sm text-slate-500 mt-0.5">أقرب المواقع المعتمدة لاستقبال المصاحف المخالفة</p>
           </div>
           <!-- Area Filter -->
           <div class="flex flex-wrap gap-1.5">
@@ -514,7 +569,7 @@
               </div>
               <div>
                 <div class="text-sm font-extrabold">تم تحديد موقعك التقريبي: مدينة الرياض</div>
-                <div class="text-xs text-emerald-200 mt-0.5">تتوفر 6 نقاط إيداع نشطة بالقرب منك مزودة بحساسات امتلاء ذكية</div>
+                <div class="text-xs text-emerald-200 mt-0.5">تتوفر 6 نقاط إيداع نشطة لجمعية العناية بالمصحف مزودة بحساسات امتلاء ذكية</div>
               </div>
             </div>
             <span class="inline-flex items-center gap-1.5 text-xs font-bold bg-emerald-800/90 text-emerald-100 px-3 py-1.5 rounded-xl border border-emerald-700 self-start sm:self-auto">
@@ -543,9 +598,9 @@
               <i class="fa-solid fa-user-check"></i>
             </div>
             <div>
-              <span class="text-xs font-bold text-gold-300">عضو مبادرة أثر</span>
-              <h2 id="profile-user-name" class="text-xl sm:text-2xl font-extrabold mt-0.5">عبدالله بن محمد العتيبي</h2>
-              <p class="text-xs text-emerald-200 mt-1">ساهم في إحياء كتاب الله منذ عام 2025</p>
+              <span class="text-xs font-bold text-gold-300">مساهم في جمع المصاحف المخالفة</span>
+              <h2 id="profile-user-name" class="text-xl sm:text-2xl font-extrabold mt-0.5">سعود سعد العمار</h2>
+              <p class="text-xs text-emerald-200 mt-1">جمعية العناية بالمصحف • ترخيص رقم 1000629800</p>
             </div>
           </div>
 
@@ -556,8 +611,8 @@
             </div>
             <div class="w-px h-10 bg-white/20"></div>
             <div class="text-center">
-              <div id="profile-total-orders" class="text-2xl sm:text-3xl font-black text-white">3</div>
-              <div class="text-[11px] text-emerald-100">مبادرات مكتملة</div>
+              <div id="profile-total-orders" class="text-2xl sm:text-3xl font-black text-white">2</div>
+              <div class="text-[11px] text-emerald-100">طلبات مسجلة</div>
             </div>
           </div>
         </div>
@@ -576,21 +631,21 @@
               <div class="w-11 h-11 mx-auto rounded-full bg-gold-500 text-white flex items-center justify-center text-lg shadow-sm mb-2">
                 <i class="fa-solid fa-sun"></i>
               </div>
-              <div class="text-xs sm:text-sm font-extrabold text-emerald-950">سفير النور</div>
-              <div class="text-[10px] text-slate-500 mt-0.5">تبرع بأكثر من 10 مصاحف</div>
+              <div class="text-xs sm:text-sm font-extrabold text-emerald-950">حافظ الأمانة</div>
+              <div class="text-[10px] text-slate-500 mt-0.5">ساهم بأكثر من 10 مصاحف</div>
             </div>
             <div class="p-3.5 rounded-2xl bg-emerald-50 border border-emerald-200 text-center">
               <div class="w-11 h-11 mx-auto rounded-full bg-emerald-700 text-white flex items-center justify-center text-lg shadow-sm mb-2">
                 <i class="fa-solid fa-hand-holding-seedling"></i>
               </div>
-              <div class="text-xs sm:text-sm font-extrabold text-emerald-950">بصمة خير</div>
-              <div class="text-[10px] text-slate-500 mt-0.5">أول مبادرة استلام ناجحة</div>
+              <div class="text-xs sm:text-sm font-extrabold text-emerald-950">بصمة عناية</div>
+              <div class="text-[10px] text-slate-500 mt-0.5">أول طلب تسليم ناجح</div>
             </div>
             <div class="p-3.5 rounded-2xl bg-slate-50 border border-slate-200 text-center opacity-75">
               <div class="w-11 h-11 mx-auto rounded-full bg-slate-300 text-white flex items-center justify-center text-lg mb-2">
                 <i class="fa-solid fa-crown"></i>
               </div>
-              <div class="text-xs sm:text-sm font-extrabold text-slate-600">راعي الحلقات</div>
+              <div class="text-xs sm:text-sm font-extrabold text-slate-600">راعي الصيانة</div>
               <div class="text-[10px] text-slate-400 mt-0.5">يتطلب 50 مصحفاً</div>
             </div>
           </div>
@@ -603,7 +658,7 @@
               <i class="fa-solid fa-scroll"></i>
             </div>
             <h3 class="text-base font-extrabold text-emerald-950">شهادة شكر وتقدير</h3>
-            <p class="text-xs text-slate-600 mt-1 leading-relaxed">احصل على شهادتك الإلكترونية الموثقة من الجمعية وشاركها مع من تحب لنشر الخير.</p>
+            <p class="text-xs text-slate-600 mt-1 leading-relaxed">احصل على شهادتك الإلكترونية الموثقة من جمعية العناية بالمصحف واطبعها أو احفظها كـ PDF.</p>
           </div>
           <button onclick="openCertificateModal()" class="mt-4 w-full bg-emerald-900 hover:bg-emerald-800 text-white font-bold text-xs sm:text-sm py-3 px-4 rounded-xl shadow transition flex items-center justify-center gap-2">
             <i class="fa-solid fa-eye"></i>
@@ -614,7 +669,7 @@
 
       <!-- Donation History List -->
       <div class="bg-white rounded-3xl p-5 sm:p-6 border border-slate-200/80 shadow-sm">
-        <h3 class="text-base font-extrabold text-slate-800 mb-4">سجل تبرعاتي السابقة والحالية</h3>
+        <h3 class="text-base font-extrabold text-slate-800 mb-4">سجل طلباتي السابقة والحالية</h3>
         <div id="profile-history-list" class="space-y-3">
           <!-- Populated dynamically via JS -->
         </div>
@@ -623,8 +678,24 @@
 
   </main>
 
+  <!-- Official Association Footer -->
+  <footer class="no-print bg-white border-t border-slate-200/80 py-5 mt-8">
+    <div class="max-w-6xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-slate-500">
+      <div class="font-bold text-emerald-950">
+        جمعية العناية بالمصحف • مبادرة جمع المصاحف المخالفة (ترخيص 1000629800)
+      </div>
+      <div class="flex flex-wrap items-center gap-4">
+        <span>الهاتف: <strong class="text-slate-700" dir="ltr">0554899929</strong></span>
+        <a href="https://store.holyqurancare.sa/%D8%AC%D9%85%D8%B9-%D9%88%D8%AA%D8%B1%D9%85%D9%8A%D9%85-%D8%A7%D9%84%D9%85%D8%B5%D8%A7%D8%AD%D9%81/p886756038" target="_blank" rel="noopener noreferrer" class="font-extrabold text-[#8C9B1E] hover:underline flex items-center gap-1">
+          <span>صيانة مصحف (10 ريال) — المتجر الرسمي</span>
+          <i class="fa-solid fa-arrow-up-left-from-square text-[10px]"></i>
+        </a>
+      </div>
+    </div>
+  </footer>
+
   <!-- Mobile Bottom Navigation Bar -->
-  <nav class="md:hidden fixed bottom-0 inset-x-0 z-40 bg-white/95 backdrop-blur-md border-t border-slate-200 px-2 py-1.5 shadow-[0_-4px_20px_rgba(0,0,0,0.05)]">
+  <nav class="no-print md:hidden fixed bottom-0 inset-x-0 z-40 bg-white/95 backdrop-blur-md border-t border-slate-200 px-2 py-1.5 shadow-[0_-4px_20px_rgba(0,0,0,0.05)]">
     <div class="grid grid-cols-5 gap-1">
       <button onclick="switchTab('home')" data-nav="home" class="mobile-nav-btn flex flex-col items-center justify-center py-1.5 rounded-xl text-emerald-800 font-bold">
         <i class="fa-solid fa-house text-lg mb-0.5"></i>
@@ -632,7 +703,7 @@
       </button>
       <button onclick="switchTab('donate')" data-nav="donate" class="mobile-nav-btn flex flex-col items-center justify-center py-1.5 rounded-xl text-slate-500 font-medium">
         <i class="fa-solid fa-hand-holding-heart text-lg mb-0.5"></i>
-        <span class="text-[10px]">تبرع الآن</span>
+        <span class="text-[10px]">تسليم مصاحف</span>
       </button>
       <button onclick="switchTab('track')" data-nav="track" class="mobile-nav-btn flex flex-col items-center justify-center py-1.5 rounded-xl text-slate-500 font-medium">
         <i class="fa-solid fa-route text-lg mb-0.5"></i>
@@ -678,74 +749,33 @@
           <div class="w-14 h-14 mx-auto rounded-2xl bg-emerald-900 text-gold-400 flex items-center justify-center text-2xl mb-3 shadow">
             <i class="fa-solid fa-book-quran"></i>
           </div>
-          <div class="text-xs font-bold text-emerald-700 tracking-wide">المملكة العربية السعودية • جمعية الدعوة والإرشاد</div>
+          <div class="text-xs font-bold text-[#8C9B1E] tracking-wide">المملكة العربية السعودية • جمعية العناية بالمصحف (ترخيص 1000629800)</div>
           <h2 class="font-serif text-3xl sm:text-4xl font-bold text-emerald-950 mt-2">شهادة شكر وتقدير</h2>
-          <p class="text-xs sm:text-sm text-slate-500 mt-2">تتقدم إدارة مبادرة <strong class="text-emerald-800">«أثر»</strong> للعناية بالمصاحف بجزيل الشكر وعظيم الامتنان إلى:</p>
+          <p class="text-xs sm:text-sm text-slate-500 mt-2">تتقدم إدارة مبادرة <strong class="text-emerald-800">«جمع المصاحف المخالفة»</strong> بجزيل الشكر وعظيم الامتنان إلى:</p>
 
           <div id="cert-donor-name" class="font-serif text-2xl sm:text-3xl font-bold text-gold-600 my-4 py-2 border-y border-gold-200 inline-block px-8">
-            عبدالله بن محمد العتيبي
+            سعود سعد العمار
           </div>
 
           <p class="text-sm sm:text-base text-slate-700 leading-relaxed max-w-lg mx-auto">
-            وذلك نظير مساهمته المباركة بالتبرع بـ <strong id="cert-mushaf-count" class="text-emerald-900">23 مصحفاً</strong>، سائلين المولى عز وجل أن يجعلها صدقة جارية ونوراً له في الدنيا والآخرة.
+            وذلك نظير مساهمته المباركة في جمع وصيانة <strong id="cert-mushaf-count" class="text-emerald-900">23 مصحفاً</strong>، سائلين المولى عز وجل أن يجعل ذلك في موازين حسناته.
           </p>
 
           <div class="mt-8 pt-4 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500 px-4">
             <div class="text-right">
-              <div class="font-bold text-emerald-900">المدير التنفيذي للمبادرة</div>
-              <div class="font-serif text-base text-slate-700 mt-0.5">أ. عبدالرحمن السديري</div>
+              <div class="font-bold text-emerald-900">جمعية العناية بالمصحف</div>
+              <div class="text-[11px] text-slate-600 mt-0.5">هاتف: 0554899929</div>
             </div>
-            <div class="w-14 h-14 rounded-full border-2 border-emerald-800/40 flex flex-col items-center justify-center text-[9px] font-bold text-emerald-900 rotate-[-8deg]">
-              <span>مبادرة أثر</span>
+            <div class="w-14 h-14 rounded-full border-2 border-[#8C9B1E]/50 flex flex-col items-center justify-center text-[9px] font-bold text-emerald-900 rotate-[-8deg]">
+              <span>العناية بالمصحف</span>
               <span>معتمد ✓</span>
             </div>
             <div class="text-left">
               <div class="font-bold text-emerald-900">تاريخ الإصدار</div>
-              <div id="cert-date" class="mt-0.5">16 نوفمبر 2026</div>
+              <div id="cert-date" class="mt-0.5">20 نوفمبر 2026</div>
             </div>
           </div>
         </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ==================== WAQF MODAL (وقف طباعة مصحف) ==================== -->
-  <div id="waqf-modal" class="fixed inset-0 z-50 hidden bg-slate-950/70 backdrop-blur-sm flex items-center justify-center p-4">
-    <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl animate-[fadeSlideUp_0.25s_ease-out]">
-      <div class="flex items-center justify-between mb-4">
-        <div class="flex items-center gap-2.5">
-          <div class="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-800 flex items-center justify-center text-lg">
-            <i class="fa-solid fa-seedling"></i>
-          </div>
-          <div>
-            <h3 class="font-extrabold text-slate-900">وقف طباعة مصحف جديد</h3>
-            <p class="text-xs text-slate-500">قيمة السهم الواحد: 25 ريال سعودي</p>
-          </div>
-        </div>
-        <button onclick="closeWaqfModal()" class="w-8 h-8 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-600 flex items-center justify-center">
-          <i class="fa-solid fa-xmark"></i>
-        </button>
-      </div>
-
-      <div class="space-y-4">
-        <div>
-          <label class="block text-xs font-bold text-slate-600 mb-2">اختر عدد المصاحف الوقفية:</label>
-          <div class="grid grid-cols-3 gap-2">
-            <button type="button" onclick="selectWaqfShares(1)" class="waqf-share-btn border-2 border-emerald-700 bg-emerald-50 text-emerald-900 font-extrabold py-2.5 rounded-xl text-sm">1 مصحف<br><span class="text-xs font-normal">25 ر.س</span></button>
-            <button type="button" onclick="selectWaqfShares(4)" class="waqf-share-btn border border-slate-200 text-slate-700 font-extrabold py-2.5 rounded-xl text-sm">4 مصاحف<br><span class="text-xs font-normal">100 ر.س</span></button>
-            <button type="button" onclick="selectWaqfShares(10)" class="waqf-share-btn border border-slate-200 text-slate-700 font-extrabold py-2.5 rounded-xl text-sm">10 مصاحف<br><span class="text-xs font-normal">250 ر.س</span></button>
-          </div>
-        </div>
-
-        <div>
-          <label class="block text-xs font-bold text-slate-600 mb-1">إهداء الوقف (اختياري):</label>
-          <input id="waqf-dedication" type="text" placeholder="مثال: عن والدي ووالدتي رحمهما الله" class="w-full p-3 rounded-xl bg-slate-50 border border-slate-200 text-sm focus:border-emerald-600 focus:outline-none" />
-        </div>
-
-        <button onclick="submitWaqf()" class="w-full bg-emerald-800 hover:bg-emerald-700 text-white font-extrabold py-3.5 rounded-2xl shadow transition flex items-center justify-center gap-2">
-          <i class="fa-solid fa-heart"></i>
-          <span>إتمام المساهمة الوقفية (<span id="waqf-total-sar">25</span> ر.س)</span>
-        </button>
       </div>
     </div>
   </div>
@@ -756,43 +786,42 @@
     const appState = {
       currentTab: 'home',
       donationMethod: 'pickup',
-      selectedTrackingId: 'ATH-2026-849',
-      selectedWaqfShares: 1,
-      donorName: 'عبدالله بن محمد العتيبي',
+      selectedTrackingId: 'QCA-2026-849',
+      donorName: 'سعود سعد العمار',
       totalAssociationMushafs: 14820,
       donations: [
         {
-          id: 'ATH-2026-849',
+          id: 'QCA-2026-849',
           quantity: 15,
-          condition: 'مستعملة بحالة ممتازة',
-          method: 'استلام من المنزل (مندوب)',
+          condition: 'مصاحف مخالفة للطبعة المعتمدة',
+          method: 'استلام من الموقع (مندوب)',
           location: 'حي النرجس - شمال الرياض',
           date: '10 نوفمبر 2026',
-          step: 4, // 1: Received, 2: Picked up, 3: Sorting & Care, 4: Distributed
-          beneficiary: {
-            mosque: 'جامع الراجحي - حلقة تحفيظ البنين',
-            district: 'حي الجزيرة، الرياض',
-            notes: 'تم تغليف جميع المصاحف وختمها بختم الوقف وتسليمها لـ 15 طالباً في حلقة التلاوة.',
-            deliveredDate: '14 نوفمبر 2026'
+          step: 4,
+          processingSummary: {
+            facility: 'مركز الفرز والعناية والمعالجة الشرعية - جمعية العناية بالمصحف',
+            district: 'الرياض',
+            notes: 'تم فرز المصاحف المخالفة وتصنيف الصالح منها للصيانة والترميم والمعالجة الشرعية المعتمدة دون توزيع.',
+            completedDate: '14 نوفمبر 2026'
           }
         },
         {
-          id: 'ATH-2026-912',
+          id: 'QCA-2026-912',
           quantity: 8,
-          condition: 'جديدة غير مستعملة',
+          condition: 'تحتاج صيانة وترميم (10 ريال)',
           method: 'تسليم لنقطة إيداع',
           location: 'حاوية جامع الراجحي الذكية - مخرج 15',
           date: '15 نوفمبر 2026',
-          step: 3, // Currently in Sorting & Care
-          beneficiary: null
+          step: 3,
+          processingSummary: null
         }
       ],
       dropoffPoints: [
         {
           id: 1,
-          name: 'مقر جمعية الدعوة والإرشاد الرئيسي',
+          name: 'مقر جمعية العناية بالمصحف الرئيسي',
           area: 'شرق',
-          address: 'حي الروضة، شارع الحسن بن علي',
+          address: 'حي الروضة، الرياض',
           distance: '1.8 كم',
           hours: 'مفتوح 24 ساعة (استقبال ذاتي ومباشر)',
           status: 'متاح',
@@ -820,7 +849,7 @@
         },
         {
           id: 4,
-          name: 'حاوية جامع الأميرة لطيفة بنت سلطان',
+          name: 'حاوية حي النرجس المعتمدة',
           area: 'شمال',
           address: 'حي النرجس، طريق عثمان بن عفان',
           distance: '6.1 كم',
@@ -830,9 +859,9 @@
         },
         {
           id: 5,
-          name: 'مركز إكرام المصاحف والعناية بها',
+          name: 'مركز فرز وصيانة المصاحف - السويدي',
           area: 'غرب',
-          address: 'حي السويدي، شارع عائشة بنت أبي بكر',
+          address: 'حي السويدي، الرياض',
           distance: '8.7 كم',
           hours: '4:00 عصراً - 10:00 مساءً',
           status: 'متاح',
@@ -840,7 +869,7 @@
         },
         {
           id: 6,
-          name: 'نقطة إيداع جامع البواردي',
+          name: 'نقطة إيداع العزيزية',
           area: 'غرب',
           address: 'حي العزيزية، الطريق الدائري الجنوبي',
           distance: '10.2 كم',
@@ -853,7 +882,6 @@
 
     // --- Initialization ---
     document.addEventListener('DOMContentLoaded', () => {
-      // Set default date in form to tomorrow
       const tomorrow = new Date();
       tomorrow.setDate(tomorrow.getDate() + 1);
       const dateInput = document.getElementById('form-date');
@@ -873,13 +901,10 @@
     function switchTab(tabId) {
       appState.currentTab = tabId;
 
-      // Hide all sections
       document.querySelectorAll('.tab-section').forEach(sec => sec.classList.add('hidden'));
-      // Show target section
       const target = document.getElementById(`tab-${tabId}`);
       if (target) target.classList.remove('hidden');
 
-      // Update Desktop Nav styling
       document.querySelectorAll('.nav-btn').forEach(btn => {
         if (btn.dataset.nav === tabId) {
           btn.classList.add('bg-emerald-800', 'text-white', 'shadow-sm');
@@ -890,7 +915,6 @@
         }
       });
 
-      // Update Mobile Nav styling
       document.querySelectorAll('.mobile-nav-btn').forEach(btn => {
         if (btn.dataset.nav === tabId) {
           btn.classList.add('text-emerald-800', 'font-extrabold', 'bg-emerald-50');
@@ -901,7 +925,6 @@
         }
       });
 
-      // Refresh dynamic sections when opened
       if (tabId === 'track') {
         renderTrackingPills();
         renderTrackingDetails(appState.selectedTrackingId);
@@ -939,12 +962,11 @@
       document.getElementById('calc-mushaf-count').textContent = count;
       document.getElementById('calc-btn-num').textContent = count;
 
-      // Estimated ~320,000 letters per Quran * ~12 full readings per year per active mosque Mushaf
-      const estimatedLetters = (count * 3840000).toLocaleString('en-US');
-      const estimatedReaders = count * 5;
+      const estimatedLetters = (count * 320000).toLocaleString('en-US');
+      const maintenanceSar = (count * 10).toLocaleString('en-US');
 
-      document.getElementById('calc-letters').textContent = `${estimatedLetters}+`;
-      document.getElementById('calc-readers').textContent = `${estimatedReaders} مصلّياً وطالباً`;
+      document.getElementById('calc-letters').textContent = estimatedLetters;
+      document.getElementById('calc-maintenance-cost').textContent = `${maintenanceSar} ريال`;
     }
 
     function applyCalcAndDonate() {
@@ -953,7 +975,7 @@
       switchTab('donate');
     }
 
-    // --- Donation Form Logic ---
+    // --- Donation / Collection Form Logic ---
     function startDonationMode(method) {
       switchTab('donate');
       setDonationMethod(method);
@@ -996,12 +1018,12 @@
       const condition = document.querySelector('input[name="condition"]:checked').value;
       const donorName = document.getElementById('form-donor-name').value.trim();
       const randomNum = Math.floor(100 + Math.random() * 899);
-      const trackingCode = `ATH-2026-${randomNum}`;
+      const trackingCode = `QCA-2026-${randomNum}`;
 
       let locationText = '';
       let methodText = '';
       if (appState.donationMethod === 'pickup') {
-        methodText = 'استلام من المنزل (مندوب)';
+        methodText = 'استلام من الموقع (مندوب)';
         const district = document.getElementById('form-district').value;
         const note = document.getElementById('form-address-note').value.trim();
         locationText = note ? `${district} (${note})` : district;
@@ -1016,9 +1038,9 @@
         condition,
         method: methodText,
         location: locationText,
-        date: '16 نوفمبر 2026',
-        step: 1, // Newly created -> Step 1: تم استلام الطلب
-        beneficiary: null
+        date: '20 نوفمبر 2026',
+        step: 1,
+        processingSummary: null
       };
 
       appState.donations.unshift(newDonation);
@@ -1026,10 +1048,9 @@
       appState.donorName = donorName;
       appState.totalAssociationMushafs += quantity;
 
-      // Update Home stat
       document.getElementById('stat-total-mushafs').textContent = appState.totalAssociationMushafs.toLocaleString('en-US');
 
-      showToast(`تم تسجيل طلبك بنجاح! رمز التتبع: ${trackingCode}`);
+      showToast(`تم تسجيل طلب تسليم المصاحف بنجاح! رمز التتبع: ${trackingCode}`);
       switchTab('track');
     }
 
@@ -1076,13 +1097,13 @@
       if (!donation || donation.step >= 4) return;
       donation.step += 1;
       if (donation.step === 4) {
-        donation.beneficiary = {
-          mosque: 'مسجد الفرقان - حلقة الإمام نافع للتحفيظ',
-          district: 'حي النرجس، الرياض',
-          notes: 'تم فحص المصاحف وتغليفها حرارياً وتسليمها للطلاب والمصلين بنجاح.',
-          deliveredDate: '16 نوفمبر 2026'
+        donation.processingSummary = {
+          facility: 'مركز الفرز والصيانة والمعالجة الشرعية - جمعية العناية بالمصحف',
+          district: 'الرياض',
+          notes: 'تم إتمام الفرز والصيانة أو المعالجة الشرعية للمصاحف المخالفة وفق الضوابط المعتمدة دون توزيع.',
+          completedDate: '20 نوفمبر 2026'
         };
-        showToast('تم تحديث الحالة: وصلت المصاحف للمسجد المستفيد!');
+        showToast('تم إتمام مرحلة الصيانة والمعالجة الشرعية بنجاح!');
       } else {
         showToast('تم تحديث مرحلة تتبع الطلب بنجاح');
       }
@@ -1102,26 +1123,26 @@
         {
           num: 1,
           title: 'تم استلام الطلب إلكترونياً',
-          desc: `تم تسجيل مبادرتك (${donation.quantity} مصاحف - ${donation.condition}) وجدولة الاستلام.`,
+          desc: `تم تسجيل طلب جمع المصاحف المخالفة (${donation.quantity} مصاحف - ${donation.condition}) وجدولة الاستلام.`,
           icon: 'fa-clipboard-check'
         },
         {
           num: 2,
           title: 'المندوب في الطريق / تم الاستلام',
-          desc: `نقطة الاستلام: ${donation.location}. تم استلام المصاحف بأمان ونقلها لمقر الجمعية.`,
+          desc: `نقطة الاستلام: ${donation.location}. تم جمع المصاحف ونقلها لمقر الجمعية.`,
           icon: 'fa-truck-fast'
         },
         {
           num: 3,
-          title: 'الفرز والعناية والتغليف',
-          desc: 'يقوم فريق العناية بالمصاحف بفحص الصفحات، التعطير، والتغليف الوقائي.',
-          icon: 'fa-wand-magic-sparkles'
+          title: 'الفرز والتصنيف الفني',
+          desc: 'يقوم فريق الجمعية بفحص الطبعات وتحديد المسار المناسب لكل نسخة (صيانة أو معالجة شرعية).',
+          icon: 'fa-layer-group'
         },
         {
           num: 4,
-          title: 'تم التوزيع ووصول الأثر',
-          desc: 'وصول المصاحف إلى أيدي المصلين وطلاب حلقات تحفيظ القرآن الكريم.',
-          icon: 'fa-mosque'
+          title: 'الصيانة والترميم أو المعالجة الشرعية الآمنة',
+          desc: 'إتمام أعمال الصيانة في معمل الجمعية أو المعالجة الشرعية المعتمدة دون توزيع.',
+          icon: 'fa-screwdriver-wrench'
         }
       ];
 
@@ -1152,21 +1173,21 @@
         `;
       }).join('');
 
-      const beneficiaryCard = donation.step === 4 && donation.beneficiary ? `
+      const summaryCard = donation.step === 4 && donation.processingSummary ? `
         <div class="mt-6 rounded-2xl bg-gradient-to-br from-emerald-50 to-gold-50/70 border border-emerald-200 p-5">
           <div class="flex items-start justify-between gap-3 mb-3">
             <div class="flex items-center gap-2.5">
               <div class="w-10 h-10 rounded-xl bg-emerald-800 text-gold-400 flex items-center justify-center text-lg">
-                <i class="fa-solid fa-mosque"></i>
+                <i class="fa-solid fa-circle-check"></i>
               </div>
               <div>
-                <span class="text-[11px] font-bold text-emerald-700">تقرير وجهة التوزيع</span>
-                <h4 class="font-extrabold text-emerald-950 text-base">${donation.beneficiary.mosque}</h4>
+                <span class="text-[11px] font-bold text-emerald-700">تقرير المعالجة والصيانة</span>
+                <h4 class="font-extrabold text-emerald-950 text-base">${donation.processingSummary.facility}</h4>
               </div>
             </div>
-            <span class="text-xs font-bold bg-white text-emerald-800 px-3 py-1 rounded-xl border border-emerald-200">${donation.beneficiary.deliveredDate}</span>
+            <span class="text-xs font-bold bg-white text-emerald-800 px-3 py-1 rounded-xl border border-emerald-200">${donation.processingSummary.completedDate}</span>
           </div>
-          <p class="text-xs sm:text-sm text-slate-700 leading-relaxed mb-4">${donation.beneficiary.notes}</p>
+          <p class="text-xs sm:text-sm text-slate-700 leading-relaxed mb-4">${donation.processingSummary.notes}</p>
           <div class="flex flex-wrap gap-2">
             <button onclick="openCertificateModal()" class="bg-emerald-800 hover:bg-emerald-700 text-white text-xs font-bold px-4 py-2.5 rounded-xl transition flex items-center gap-1.5">
               <i class="fa-solid fa-award"></i>
@@ -1198,7 +1219,7 @@
           </div>
         </div>
         <div>${stepsHtml}</div>
-        ${beneficiaryCard}
+        ${summaryCard}
       `;
     }
 
@@ -1242,7 +1263,6 @@
                 <span class="font-bold text-emerald-800"><i class="fa-solid fa-person-walking ml-1"></i>يبعد ${point.distance}</span>
                 <span><i class="fa-regular fa-clock ml-1 text-slate-400"></i>${point.hours}</span>
               </div>
-              <!-- Container Capacity Meter -->
               <div class="mt-3">
                 <div class="flex justify-between text-[11px] text-slate-500 mb-1">
                   <span>نسبة امتلاء الحاوية</span>
@@ -1283,7 +1303,6 @@
       switchTab('donate');
       setDonationMethod('dropoff');
       const select = document.getElementById('form-dropoff-point');
-      // Add option if not present
       let exists = false;
       for (let i = 0; i < select.options.length; i++) {
         if (select.options[i].value.includes(pointName)) {
@@ -1314,7 +1333,7 @@
         const badgeClass = isDone
           ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
           : 'bg-gold-50 text-gold-600 border-gold-200';
-        const statusText = isDone ? 'تم التوزيع بنجاح ✓' : 'قيد المعالجة والعناية';
+        const statusText = isDone ? 'تمت الصيانة / المعالجة ✓' : 'قيد الفرز والصيانة';
 
         return `
           <div class="p-4 rounded-2xl border border-slate-200/80 bg-slate-50/50 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
@@ -1342,53 +1361,6 @@
 
     function closeCertificateModal() {
       document.getElementById('certificate-modal').classList.add('hidden');
-    }
-
-    // --- Waqf Modal Logic ---
-    function openWaqfModal() {
-      document.getElementById('waqf-modal').classList.remove('hidden');
-    }
-
-    function closeWaqfModal() {
-      document.getElementById('waqf-modal').classList.add('hidden');
-    }
-
-    function selectWaqfShares(shares) {
-      appState.selectedWaqfShares = shares;
-      document.getElementById('waqf-total-sar').textContent = shares * 25;
-
-      document.querySelectorAll('.waqf-share-btn').forEach(btn => {
-        if (btn.textContent.startsWith(`${shares} `)) {
-          btn.className = 'waqf-share-btn border-2 border-emerald-700 bg-emerald-50 text-emerald-900 font-extrabold py-2.5 rounded-xl text-sm';
-        } else {
-          btn.className = 'waqf-share-btn border border-slate-200 text-slate-700 font-extrabold py-2.5 rounded-xl text-sm';
-        }
-      });
-    }
-
-    function submitWaqf() {
-      const shares = appState.selectedWaqfShares;
-      const dedication = document.getElementById('waqf-dedication').value.trim();
-      const trackingCode = `WQF-2026-${Math.floor(100 + Math.random() * 899)}`;
-
-      appState.donations.unshift({
-        id: trackingCode,
-        quantity: shares,
-        condition: 'وقف طباعة مصحف جديد',
-        method: dedication ? `وقف إلكتروني (${dedication})` : 'وقف إلكتروني',
-        location: 'مطبعة المصحف المعتمدة - الجمعية',
-        date: '16 نوفمبر 2026',
-        step: 3,
-        beneficiary: null
-      });
-
-      appState.totalAssociationMushafs += shares;
-      document.getElementById('stat-total-mushafs').textContent = appState.totalAssociationMushafs.toLocaleString('en-US');
-
-      closeWaqfModal();
-      showToast(`جزاك الله خيراً! تم تسجيل وقف ${shares} مصاحف برمز ${trackingCode}`);
-      selectTracking(trackingCode);
-      switchTab('track');
     }
   </script>
 </body>
