@@ -3,340 +3,678 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>لوحة الإدارة</title>
+  <title>لوحة الإدارة | جمع المصاحف المخالفة</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Tajawal', 'sans-serif'] },
+          colors: {
+            emerald: { 50: '#ecfdf5', 100: '#d1fae5', 600: '#059669', 700: '#047857', 800: '#065f46', 900: '#064e3b', 950: '#022c22' },
+            gold: { 50: '#fdfbf7', 100: '#fbf5e6', 200: '#f5e6c4', 400: '#e2b857', 500: '#d4a024', 600: '#b58115' }
+          }
+        }
+      }
+    };
+  </script>
   <style>
-    * { box-sizing: border-box; }
-    body {
-      font-family: Tahoma, Arial, sans-serif;
-      background: #f3f5f8;
-      margin: 0;
-      padding: 24px;
-      color: #111827;
-    }
-    .box {
-      max-width: 1050px;
-      margin: 24px auto;
-      background: #ffffff;
-      padding: 26px;
-      border-radius: 14px;
-      box-shadow: 0 6px 24px rgba(0, 0, 0, 0.06);
-    }
-    .hidden {
-      display: none !important;
-    }
-    .topbar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 12px;
-      margin-bottom: 20px;
-      padding-bottom: 14px;
-      border-bottom: 1px solid #e5e7eb;
-    }
-    .controls {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-      margin-bottom: 16px;
-    }
-    input, select, button {
-      padding: 10px 12px;
-      border-radius: 8px;
-      border: 1px solid #d1d5db;
-      font-family: inherit;
-      font-size: 14px;
-    }
-    button {
-      background: #111827;
-      color: #ffffff;
-      border: none;
-      cursor: pointer;
-      font-weight: bold;
-    }
-    button:hover {
-      background: #1f2937;
-    }
-    button.secondary {
-      background: #4b5563;
-    }
-    button.danger {
-      background: #dc2626;
-      padding: 7px 12px;
-      font-size: 13px;
-    }
-    button.danger:hover {
-      background: #b91c1c;
-    }
-    .login-box {
-      max-width: 420px;
-      margin: 40px auto;
-    }
-    .login-box input {
-      width: 100%;
-      margin-bottom: 12px;
-    }
-    .login-box button {
-      width: 100%;
-    }
-    .error-text {
-      color: #b91c1c;
-      font-size: 14px;
-      margin-top: 10px;
-    }
-    .table-wrap {
-      overflow-x: auto;
-    }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      min-width: 720px;
-    }
-    th, td {
-      padding: 12px 10px;
-      border-bottom: 1px solid #e5e7eb;
-      text-align: right;
-      vertical-align: middle;
-      font-size: 14px;
-    }
-    th {
-      background: #f9fafb;
-      font-weight: bold;
-    }
-    .muted {
-      color: #6b7280;
-      font-size: 12px;
-    }
+    body { font-family: 'Tajawal', sans-serif; background-color: #f8faf9; color: #1e293b; }
   </style>
 </head>
-<body>
-  <div id="login-section" class="box login-box">
-    <h2 style="margin-top:0;">تسجيل دخول الإدارة</h2>
-    <p class="muted" style="margin-bottom:16px;">الدخول مخصص لحسابات المشرفين المعتمدة فقط.</p>
-    <form id="login-form">
-      <input type="email" id="email" placeholder="البريد الإلكتروني" required />
-      <input type="password" id="password" placeholder="كلمة المرور" required />
-      <button type="submit" id="login-btn">دخول</button>
-    </form>
-    <div id="login-error" class="error-text"></div>
-  </div>
+<body class="min-h-screen flex flex-col">
 
-  <div id="admin-section" class="box hidden">
-    <div class="topbar">
-      <div>
-        <h2 style="margin:0;">لوحة إدارة السجلات</h2>
-        <span id="admin-email" class="muted"></span>
+  <!-- Toast -->
+  <div id="toast-container" class="fixed top-5 left-1/2 -translate-x-1/2 z-50 w-[92%] max-w-md pointer-events-none flex flex-col gap-2"></div>
+
+  <!-- Top Header -->
+  <header class="bg-white border-b border-emerald-100 shadow-sm sticky top-0 z-30">
+    <div class="max-w-6xl mx-auto px-4 py-3.5 flex items-center justify-between gap-3">
+      <div class="flex items-center gap-3">
+        <div class="w-11 h-11 rounded-2xl bg-gradient-to-br from-[#8C9B1E] to-emerald-800 text-white flex items-center justify-center text-lg shadow-sm">
+          <i class="fa-solid fa-user-shield"></i>
+        </div>
+        <div>
+          <h1 class="text-base sm:text-lg font-black text-emerald-950">لوحة الإدارة المستقلة — جمع المصاحف المخالفة</h1>
+          <p class="text-[11px] sm:text-xs text-slate-500">جمعية العناية بالمصحف • ترخيص 1000629800</p>
+        </div>
       </div>
-      <div style="display:flex; gap:8px;">
-        <button id="refresh-btn" class="secondary">تحديث</button>
-        <button id="logout-btn" class="danger">تسجيل الخروج</button>
+
+      <div class="flex items-center gap-2">
+        <a href="index.html" class="bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-extrabold px-3.5 py-2.5 rounded-xl transition flex items-center gap-1.5">
+          <i class="fa-solid fa-arrow-right"></i>
+          <span>الصفحة الرئيسية</span>
+        </a>
+        <button id="logout-btn" onclick="handleLogout()" class="hidden bg-red-600 hover:bg-red-700 text-white text-xs font-extrabold px-3.5 py-2.5 rounded-xl transition flex items-center gap-1.5">
+          <i class="fa-solid fa-right-from-bracket"></i>
+          <span>خروج</span>
+        </button>
       </div>
     </div>
+  </header>
 
-    <div class="controls">
-      <input type="text" id="search-input" placeholder="بحث بالعنوان أو الموقع أو التصنيف..." style="flex:1; min-width:220px;" />
-      <select id="status-filter">
-        <option value="all">كل الحالات</option>
-        <option value="pending">قيد المراجعة</option>
-        <option value="approved">معتمد</option>
-        <option value="completed">مكتمل</option>
-        <option value="rejected">مرفوض</option>
-      </select>
-    </div>
+  <main class="flex-1 max-w-6xl w-full mx-auto px-4 py-6">
 
-    <div class="table-wrap">
-      <table>
-        <thead>
-          <tr>
-            <th>العنوان</th>
-            <th>التصنيف</th>
-            <th>الكمية</th>
-            <th>الموقع</th>
-            <th>ملاحظات</th>
-            <th>الحالة</th>
-            <th>التاريخ</th>
-            <th>إجراء</th>
-          </tr>
-        </thead>
-        <tbody id="rows-body">
-          <tr><td colspan="8">جاري التحميل...</td></tr>
-        </tbody>
-      </table>
+    <!-- Login Gate -->
+    <section id="login-section" class="max-w-md mx-auto bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/80 shadow-sm mt-6 space-y-5">
+      <div class="text-center">
+        <div class="w-14 h-14 mx-auto rounded-2xl bg-emerald-900 text-gold-400 flex items-center justify-center text-2xl mb-3">
+          <i class="fa-solid fa-lock"></i>
+        </div>
+        <h2 class="text-xl font-black text-emerald-950">دخول مشرفي النظام</h2>
+        <p class="text-xs text-slate-500 mt-1">سجّل الدخول بحساب المشرف لإدارة سيارات الاستلام والطلبات</p>
+      </div>
+
+      <form id="login-form" onsubmit="handleLogin(event)" class="space-y-4">
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">البريد الإلكتروني</label>
+          <input id="login-email" type="email" required placeholder="admin@example.com" class="w-full p-3 rounded-xl bg-slate-50 border border-slate-200 text-sm font-bold focus:border-emerald-600 focus:outline-none" />
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">كلمة المرور</label>
+          <input id="login-password" type="password" required placeholder="••••••••" class="w-full p-3 rounded-xl bg-slate-50 border border-slate-200 text-sm font-bold focus:border-emerald-600 focus:outline-none" />
+        </div>
+        <button type="submit" id="login-submit-btn" class="w-full bg-emerald-800 hover:bg-emerald-700 text-white font-extrabold text-sm py-3.5 rounded-xl shadow transition">
+          تسجيل الدخول
+        </button>
+        <p id="login-error" class="text-xs font-bold text-red-600 text-center"></p>
+      </form>
+
+      <div class="pt-3 border-t border-slate-100">
+        <button type="button" onclick="toggleDbConfigPanel()" class="w-full text-xs font-bold text-emerald-800 hover:underline">
+          إعدادات اتصال Supabase (الرابط والمفتاح)
+        </button>
+      </div>
+    </section>
+
+    <!-- Admin Dashboard -->
+    <section id="admin-dashboard" class="hidden space-y-6">
+      <div class="bg-white rounded-3xl p-5 sm:p-7 border border-slate-200/80 shadow-sm space-y-5">
+        <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 border-b border-slate-100 pb-5">
+          <div>
+            <div class="inline-flex items-center gap-2 text-xs font-extrabold bg-emerald-50 text-emerald-800 border border-emerald-200 px-3 py-1 rounded-full mb-2">
+              <i class="fa-solid fa-database"></i>
+              <span id="db-connection-badge">متصل بقاعدة البيانات</span>
+            </div>
+            <h2 class="text-xl sm:text-2xl font-black text-emerald-950">إدارة مواقع سيارات الاستلام والطلبات</h2>
+            <p id="admin-session-info" class="text-xs text-slate-500 mt-1"></p>
+          </div>
+          <div class="flex flex-wrap gap-2">
+            <button onclick="syncAllFromDatabase(true)" class="bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-extrabold px-4 py-2.5 rounded-xl transition flex items-center gap-1.5">
+              <i class="fa-solid fa-rotate"></i>
+              <span>تحديث البيانات</span>
+            </button>
+            <button onclick="toggleDbConfigPanel()" class="bg-emerald-900 hover:bg-emerald-800 text-white text-xs font-extrabold px-4 py-2.5 rounded-xl transition flex items-center gap-1.5">
+              <i class="fa-solid fa-gear"></i>
+              <span>إعدادات Supabase</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Supabase Config Panel -->
+        <div id="db-config-panel" class="hidden rounded-2xl bg-slate-50 border border-slate-200 p-4 sm:p-5 space-y-4">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-1">Supabase Project URL</label>
+              <input id="admin-sb-url" type="url" placeholder="https://xxxxxxxxxxxx.supabase.co" dir="ltr" class="w-full p-3 rounded-xl bg-white border border-slate-200 text-xs font-mono text-left focus:border-emerald-600 focus:outline-none" />
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-1">Supabase Publishable / Anon Key</label>
+              <input id="admin-sb-key" type="text" dir="ltr" class="w-full p-3 rounded-xl bg-white border border-slate-200 text-xs font-mono text-left focus:border-emerald-600 focus:outline-none" />
+            </div>
+          </div>
+          <div class="flex flex-wrap gap-2">
+            <button onclick="saveSupabaseConfig()" class="bg-emerald-800 hover:bg-emerald-700 text-white text-xs font-extrabold px-4 py-2.5 rounded-xl transition">حفظ والاتصال</button>
+            <button onclick="toggleDbConfigPanel()" class="bg-white hover:bg-slate-100 text-slate-600 border border-slate-200 text-xs font-bold px-4 py-2.5 rounded-xl transition">إغلاق</button>
+          </div>
+        </div>
+
+        <!-- Vehicle Form -->
+        <div class="rounded-2xl bg-gold-50/50 border border-gold-200/90 p-4 sm:p-5">
+          <div class="flex items-center justify-between gap-2 mb-4">
+            <h3 id="vehicle-form-title" class="text-sm sm:text-base font-black text-emerald-950 flex items-center gap-2">
+              <i class="fa-solid fa-car-side text-[#8C9B1E]"></i>
+              <span>إضافة موقع سيارة استلام جديدة</span>
+            </h3>
+            <button id="cancel-vehicle-edit-btn" onclick="resetVehicleForm()" class="hidden text-xs font-bold text-slate-600 hover:text-slate-900 bg-white border border-slate-200 px-3 py-1 rounded-lg">
+              إلغاء التعديل
+            </button>
+          </div>
+
+          <form id="vehicle-location-form" onsubmit="handleVehicleFormSubmit(event)" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5">
+            <input type="hidden" id="vehicle-edit-id" value="" />
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-1">مسمى سيارة الاستلام / الموقع *</label>
+              <input id="vehicle-name" type="text" required placeholder="مثال: سيارة الاستلام (1) - حي النرجس" class="w-full p-3 rounded-xl bg-white border border-slate-200 text-xs sm:text-sm font-bold text-slate-800 focus:border-emerald-600 focus:outline-none" />
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-1">القطاع / المنطقة *</label>
+              <select id="vehicle-area" class="w-full p-3 rounded-xl bg-white border border-slate-200 text-xs sm:text-sm font-bold text-slate-800 focus:border-emerald-600 focus:outline-none">
+                <option value="شمال">شمال الرياض</option>
+                <option value="شرق">شرق الرياض</option>
+                <option value="غرب">غرب وجنوب الرياض</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-1">موقع تمركز السيارة الحالي *</label>
+              <input id="vehicle-address" type="text" required placeholder="مثال: طريق الملك سلمان - تقاطع أبو بكر" class="w-full p-3 rounded-xl bg-white border border-slate-200 text-xs sm:text-sm font-bold text-slate-800 focus:border-emerald-600 focus:outline-none" />
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-1">أوقات تواجد السيارة *</label>
+              <input id="vehicle-hours" type="text" required value="يومياً من 4:00 عصراً - 10:00 مساءً" class="w-full p-3 rounded-xl bg-white border border-slate-200 text-xs sm:text-sm font-bold text-slate-800 focus:border-emerald-600 focus:outline-none" />
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-1">حالة السيارة *</label>
+              <select id="vehicle-status" class="w-full p-3 rounded-xl bg-white border border-slate-200 text-xs sm:text-sm font-bold text-slate-800 focus:border-emerald-600 focus:outline-none">
+                <option value="متاح">متاح للاستقبال</option>
+                <option value="جولة استلام">في جولة استلام</option>
+                <option value="شبه ممتلئ">قارب على الامتلاء</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-1">نسبة الحمولة الحالية (%)</label>
+              <input id="vehicle-capacity" type="number" min="0" max="100" value="25" class="w-full p-3 rounded-xl bg-white border border-slate-200 text-xs sm:text-sm font-bold text-slate-800 focus:border-emerald-600 focus:outline-none" />
+            </div>
+            <div class="sm:col-span-2 lg:col-span-3 flex justify-end pt-1">
+              <button type="submit" id="vehicle-submit-btn" class="bg-emerald-800 hover:bg-emerald-700 text-white text-xs sm:text-sm font-extrabold px-6 py-3 rounded-xl shadow-sm transition flex items-center gap-2">
+                <i class="fa-solid fa-floppy-disk"></i>
+                <span>حفظ موقع السيارة في قاعدة البيانات</span>
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Existing Vehicles List -->
+        <div>
+          <h3 class="text-sm sm:text-base font-black text-emerald-950 mb-3">قائمة مواقع سيارات الاستلام ومسمياتها</h3>
+          <div id="admin-vehicles-list" class="space-y-3"></div>
+        </div>
+      </div>
+
+      <!-- Orders Management -->
+      <div class="bg-white rounded-3xl p-5 sm:p-7 border border-slate-200/80 shadow-sm">
+        <h3 class="text-base sm:text-lg font-black text-emerald-950 mb-1">إدارة طلبات تسليم المصاحف وتذكير الواتساب</h3>
+        <p class="text-xs text-slate-500 mb-4">تحديث مرحلة الطلب أو إرسال رسالة تذكير واتساب مباشرة لصاحب الطلب</p>
+        <div id="admin-orders-list" class="space-y-3"></div>
+      </div>
+    </section>
+  </main>
+
+  <!-- WhatsApp Reminder Modal -->
+  <div id="whatsapp-modal" class="fixed inset-0 z-50 hidden bg-slate-950/70 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-lg w-full overflow-hidden shadow-2xl">
+      <div class="flex items-center justify-between px-5 py-3.5 bg-emerald-950 text-white">
+        <div class="flex items-center gap-2">
+          <i class="fa-brands fa-whatsapp text-emerald-400 text-xl"></i>
+          <span class="text-sm font-extrabold">رسالة تذكير واتساب للطلب</span>
+        </div>
+        <button onclick="closeWhatsAppModal()" class="w-8 h-8 rounded-xl bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+      <div class="p-5 sm:p-6 space-y-4">
+        <div class="text-xs text-slate-500">
+          رقم الجوال: <strong id="wa-target-phone" dir="ltr" class="text-slate-800"></strong> • رمز الطلب: <strong id="wa-target-code" class="text-emerald-800"></strong>
+        </div>
+        <textarea id="wa-message-text" rows="6" class="w-full p-3.5 rounded-2xl bg-slate-50 border border-slate-200 text-xs sm:text-sm font-medium text-slate-800 leading-relaxed focus:border-emerald-600 focus:outline-none"></textarea>
+        <div class="flex flex-wrap gap-2">
+          <a id="wa-send-link" href="#" target="_blank" rel="noopener noreferrer" onclick="updateWhatsAppLinkBeforeOpen()" class="flex-1 bg-emerald-700 hover:bg-emerald-600 text-white text-xs sm:text-sm font-extrabold py-3 px-4 rounded-xl shadow transition flex items-center justify-center gap-2">
+            <i class="fa-brands fa-whatsapp text-base"></i>
+            <span>إرسال عبر واتساب الآن</span>
+          </a>
+          <button type="button" onclick="copyWhatsAppMessage()" class="bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-bold py-3 px-4 rounded-xl transition">
+            نسخ النص
+          </button>
+        </div>
+      </div>
     </div>
   </div>
 
   <script>
-    const SUPABASE_URL = "https://YOUR_PROJECT_REF.supabase.co";
-    const SUPABASE_KEY = "sb_publishable_rmIcCd4D8k2bdNutSukziA_fNZLus5Z";
-    const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    const DEFAULT_SB_URL = 'https://YOUR_PROJECT_REF.supabase.co';
+    const DEFAULT_SB_KEY = 'sb_publishable_rmIcCd4D8k2bdNutSukziA_fNZLus5Z';
 
-    const loginSection = document.getElementById("login-section");
-    const adminSection = document.getElementById("admin-section");
-    const loginForm = document.getElementById("login-form");
-    const loginBtn = document.getElementById("login-btn");
-    const loginError = document.getElementById("login-error");
-    const adminEmailEl = document.getElementById("admin-email");
-    const rowsBody = document.getElementById("rows-body");
-    const searchInput = document.getElementById("search-input");
-    const statusFilter = document.getElementById("status-filter");
-    const refreshBtn = document.getElementById("refresh-btn");
-    const logoutBtn = document.getElementById("logout-btn");
+    const STORAGE_KEYS = {
+      DONATIONS: 'qca_mushaf_donations_v1',
+      VEHICLES: 'qca_pickup_vehicles_v1',
+      SB_CONFIG: 'qca_supabase_config_v1'
+    };
 
-    let allRows = [];
+    const DEFAULT_VEHICLES = [
+      { id: 1, name: 'سيارة الاستلام (1) - حي الروضة', area: 'شرق', address: 'مقر جمعية العناية بالمصحف - حي الروضة، الرياض', distance: '1.8 كم', hours: 'مفتوح 24 ساعة (استقبال مباشر وميداني)', status: 'متاح', capacityPercent: 32 },
+      { id: 2, name: 'سيارة الاستلام (2) - جامع الراجحي', area: 'شرق', address: 'مخرج 15، البوابة الشمالية للجامع', distance: '3.2 كم', hours: 'يومياً من 4:00 عصراً - 10:30 مساءً', status: 'متاح', capacityPercent: 45 },
+      { id: 3, name: 'سيارة الاستلام (3) - حي الياسمين', area: 'شمال', address: 'حي الياسمين، طريق الملك عبدالعزيز', distance: '5.4 كم', hours: '8:00 صباحاً - 12:00 منتصف الليل', status: 'شبه ممتلئ', capacityPercent: 82 },
+      { id: 4, name: 'سيارة الاستلام (4) - حي النرجس', area: 'شمال', address: 'حي النرجس، طريق عثمان بن عفان', distance: '6.1 كم', hours: 'يومياً من 3:00 عصراً - 11:00 مساءً', status: 'متاح', capacityPercent: 20 },
+      { id: 5, name: 'سيارة الاستلام (5) - السويدي', area: 'غرب', address: 'حي السويدي، الرياض', distance: '8.7 كم', hours: '4:00 عصراً - 10:00 مساءً', status: 'متاح', capacityPercent: 40 },
+      { id: 6, name: 'سيارة الاستلام (6) - العزيزية', area: 'غرب', address: 'حي العزيزية، الطريق الدائري الجنوبي', distance: '10.2 كم', hours: 'يومياً من 4:00 عصراً - 10:00 مساءً', status: 'متاح', capacityPercent: 55 }
+    ];
 
-    function escapeHtml(value) {
-      return String(value ?? "")
-        .replace(/&/g, "&")
-        .replace(/</g, "<")
-        .replace(/>/g, ">")
-        .replace(/"/g, """)
-        .replace(/'/g, "'");
+    const DEFAULT_DONATIONS = [
+      {
+        id: 'QCA-2026-849',
+        donorName: 'سعود سعد العمار',
+        donorPhone: '0554899929',
+        quantity: 15,
+        condition: 'مصاحف مخالفة للطبعة المعتمدة',
+        method: 'استلام من الموقع (مندوب)',
+        location: 'حي النرجس - شمال الرياض',
+        date: '10 نوفمبر 2026',
+        step: 4,
+        processingSummary: {
+          facility: 'مركز الفرز والعناية والمعالجة الشرعية - جمعية العناية بالمصحف',
+          district: 'الرياض',
+          notes: 'تم فرز المصاحف المخالفة وتصنيف الصالح منها للصيانة والترميم والمعالجة الشرعية المعتمدة دون توزيع.',
+          completedDate: '14 نوفمبر 2026'
+        }
+      },
+      {
+        id: 'QCA-2026-912',
+        donorName: 'سعود سعد العمار',
+        donorPhone: '0554899929',
+        quantity: 8,
+        condition: 'تحتاج صيانة وترميم (10 ريال)',
+        method: 'تسليم لسيارة الاستلام',
+        location: 'سيارة الاستلام (2) - جامع الراجحي',
+        date: '15 نوفمبر 2026',
+        step: 3,
+        processingSummary: null
+      }
+    ];
+
+    const state = {
+      supabaseClient: null,
+      supabaseConnected: false,
+      donations: [],
+      dropoffPoints: []
+    };
+
+    function showToast(message, type = 'success') {
+      const container = document.getElementById('toast-container');
+      const toast = document.createElement('div');
+      const bgClass = type === 'success' ? 'bg-emerald-900 border-gold-400/50' : 'bg-slate-800 border-slate-600';
+      toast.className = `${bgClass} text-white px-4 py-3 rounded-2xl shadow-xl border flex items-center gap-3 text-sm font-bold pointer-events-auto`;
+      toast.innerHTML = `<i class="fa-solid fa-circle-check text-gold-400 text-lg"></i><span>${message}</span>`;
+      container.appendChild(toast);
+      setTimeout(() => toast.remove(), 3200);
     }
 
-    async function checkAuth() {
-      const { data: { session } } = await sb.auth.getSession();
-      if (session && session.user) {
-        loginSection.classList.add("hidden");
-        adminSection.classList.remove("hidden");
-        adminEmailEl.textContent = `المشرف: ${session.user.email}`;
-        await fetchRows();
+    function loadLocalData() {
+      try {
+        const v = localStorage.getItem(STORAGE_KEYS.VEHICLES);
+        state.dropoffPoints = v ? JSON.parse(v) : structuredClone(DEFAULT_VEHICLES);
+      } catch {
+        state.dropoffPoints = structuredClone(DEFAULT_VEHICLES);
+      }
+      try {
+        const d = localStorage.getItem(STORAGE_KEYS.DONATIONS);
+        state.donations = d ? JSON.parse(d) : structuredClone(DEFAULT_DONATIONS);
+      } catch {
+        state.donations = structuredClone(DEFAULT_DONATIONS);
+      }
+    }
+
+    function persistLocalData() {
+      localStorage.setItem(STORAGE_KEYS.VEHICLES, JSON.stringify(state.dropoffPoints));
+      localStorage.setItem(STORAGE_KEYS.DONATIONS, JSON.stringify(state.donations));
+    }
+
+    function initSupabase() {
+      let url = DEFAULT_SB_URL;
+      let key = DEFAULT_SB_KEY;
+      try {
+        const raw = localStorage.getItem(STORAGE_KEYS.SB_CONFIG);
+        if (raw) {
+          const cfg = JSON.parse(raw);
+          if (cfg.url) url = cfg.url;
+          if (cfg.key) key = cfg.key;
+        }
+      } catch {}
+
+      document.getElementById('admin-sb-url').value = url;
+      document.getElementById('admin-sb-key').value = key;
+
+      if (url && !url.includes('YOUR_PROJECT_REF') && key && window.supabase) {
+        state.supabaseClient = window.supabase.createClient(url, key);
+        state.supabaseConnected = true;
+        document.getElementById('db-connection-badge').textContent = 'متصل سحابياً بـ Supabase';
       } else {
-        adminSection.classList.add("hidden");
-        loginSection.classList.remove("hidden");
+        document.getElementById('db-connection-badge').textContent = 'متصل بالقاعدة المحلية (أدخل رابط Supabase لإدارة سحابية حية)';
       }
     }
 
-    loginForm.addEventListener("submit", async (e) => {
+    function toggleDbConfigPanel() {
+      document.getElementById('db-config-panel').classList.toggle('hidden');
+    }
+
+    function saveSupabaseConfig() {
+      const url = document.getElementById('admin-sb-url').value.trim();
+      const key = document.getElementById('admin-sb-key').value.trim();
+      localStorage.setItem(STORAGE_KEYS.SB_CONFIG, JSON.stringify({ url, key }));
+      initSupabase();
+      showToast('تم حفظ إعدادات Supabase');
+      syncAllFromDatabase(false);
+    }
+
+    async function checkAdminSession() {
+      if (state.supabaseConnected && state.supabaseClient) {
+        const { data: { session } } = await state.supabaseClient.auth.getSession();
+        if (session && session.user) {
+          showDashboard(session.user.email);
+          await syncAllFromDatabase(false);
+          return;
+        }
+      }
+      showLogin();
+    }
+
+    function showLogin() {
+      document.getElementById('login-section').classList.remove('hidden');
+      document.getElementById('admin-dashboard').classList.add('hidden');
+      document.getElementById('logout-btn').classList.add('hidden');
+    }
+
+    function showDashboard(emailLabel = 'الوضع المحلي') {
+      document.getElementById('login-section').classList.add('hidden');
+      document.getElementById('admin-dashboard').classList.remove('hidden');
+      document.getElementById('logout-btn').classList.remove('hidden');
+      document.getElementById('admin-session-info').textContent = `حساب الإدارة النشط: ${emailLabel}`;
+      renderAdminVehicles();
+      renderAdminOrders();
+    }
+
+    async function handleLogin(e) {
       e.preventDefault();
-      loginError.textContent = "";
-      loginBtn.disabled = true;
-      loginBtn.textContent = "جاري التحقق...";
+      const email = document.getElementById('login-email').value.trim();
+      const password = document.getElementById('login-password').value;
+      const errEl = document.getElementById('login-error');
+      const btn = document.getElementById('login-submit-btn');
+      errEl.textContent = '';
 
-      const email = document.getElementById("email").value.trim();
-      const password = document.getElementById("password").value;
-
-      const { error } = await sb.auth.signInWithPassword({ email, password });
-
-      loginBtn.disabled = false;
-      loginBtn.textContent = "دخول";
-
-      if (error) {
-        loginError.textContent = "تعذر تسجيل الدخول، تأكد من البريد الإلكتروني وكلمة المرور.";
+      if (!state.supabaseConnected || !state.supabaseClient) {
+        errEl.textContent = 'يرجى ضبط رابط Supabase الصحيح أولاً من إعدادات Supabase.';
         return;
       }
 
-      await checkAuth();
-    });
-
-    logoutBtn.addEventListener("click", async () => {
-      await sb.auth.signOut();
-      allRows = [];
-      await checkAuth();
-    });
-
-    refreshBtn.addEventListener("click", fetchRows);
-    searchInput.addEventListener("input", renderTable);
-    statusFilter.addEventListener("change", renderTable);
-
-    async function fetchRows() {
-      rowsBody.innerHTML = `<tr><td colspan="8">جاري تحميل البيانات...</td></tr>`;
-      const { data, error } = await sb
-        .from("items")
-        .select("*")
-        .order("created_at", { ascending: false });
+      btn.disabled = true;
+      btn.textContent = 'جاري التحقق...';
+      const { data, error } = await state.supabaseClient.auth.signInWithPassword({ email, password });
+      btn.disabled = false;
+      btn.textContent = 'تسجيل الدخول';
 
       if (error) {
-        console.error(error);
-        rowsBody.innerHTML = `<tr><td colspan="8" style="color:#b91c1c;">تعذر جلب البيانات، تحقق من صلاحيات RLS للمستخدم المسجل.</td></tr>`;
+        errEl.textContent = 'بيانات الدخول غير صحيحة أو الحساب غير مفعل.';
         return;
       }
 
-      allRows = data || [];
-      renderTable();
+      showDashboard(data.user?.email || email);
+      await syncAllFromDatabase(true);
     }
 
-    function renderTable() {
-      const q = searchInput.value.trim().toLowerCase();
-      const selectedStatus = statusFilter.value;
-
-      const filtered = allRows.filter((row) => {
-        const matchesStatus = selectedStatus === "all" || row.status === selectedStatus;
-        const haystack = `${row.title ?? ""} ${row.category ?? ""} ${row.location ?? ""} ${row.notes ?? ""}`.toLowerCase();
-        const matchesQuery = !q || haystack.includes(q);
-        return matchesStatus && matchesQuery;
-      });
-
-      if (!filtered.length) {
-        rowsBody.innerHTML = `<tr><td colspan="8">لا توجد سجلات مطابقة.</td></tr>`;
-        return;
+    async function handleLogout() {
+      if (state.supabaseClient) {
+        await state.supabaseClient.auth.signOut();
       }
-
-      rowsBody.innerHTML = filtered.map((row) => {
-        const dateStr = row.created_at
-          ? new Date(row.created_at).toLocaleString("ar-SA")
-          : "-";
-
-        return `
-          <tr>
-            <td><strong>${escapeHtml(row.title)}</strong></td>
-            <td>${escapeHtml(row.category || "-")}</td>
-            <td>${escapeHtml(row.quantity)}</td>
-            <td>${escapeHtml(row.location || "-")}</td>
-            <td>${escapeHtml(row.notes || "-")}</td>
-            <td>
-              <select onchange="handleStatusChange('${escapeHtml(row.id)}', this.value)">
-                <option value="pending" ${row.status === "pending" ? "selected" : ""}>قيد المراجعة</option>
-                <option value="approved" ${row.status === "approved" ? "selected" : ""}>معتمد</option>
-                <option value="completed" ${row.status === "completed" ? "selected" : ""}>مكتمل</option>
-                <option value="rejected" ${row.status === "rejected" ? "selected" : ""}>مرفوض</option>
-              </select>
-            </td>
-            <td class="muted">${escapeHtml(dateStr)}</td>
-            <td>
-              <button class="danger" onclick="handleDelete('${escapeHtml(row.id)}')">حذف</button>
-            </td>
-          </tr>
-        `;
-      }).join("");
+      showLogin();
     }
 
-    window.handleStatusChange = async (id, newStatus) => {
-      const { error } = await sb
-        .from("items")
-        .update({ status: newStatus })
-        .eq("id", id);
+    async function syncAllFromDatabase(showFeedback = false) {
+      if (state.supabaseConnected && state.supabaseClient) {
+        try {
+          const { data: vData, error: vErr } = await state.supabaseClient
+            .from('pickup_vehicles')
+            .select('*')
+            .order('id', { ascending: true });
+          if (!vErr && Array.isArray(vData) && vData.length > 0) {
+            state.dropoffPoints = vData.map(row => ({
+              id: row.id,
+              name: row.name,
+              area: row.area || 'شرق',
+              address: row.address || '',
+              distance: row.distance || 'مباشر',
+              hours: row.hours || 'يومياً',
+              status: row.status || 'متاح',
+              capacityPercent: Number(row.capacity_percent ?? 25)
+            }));
+          }
 
-      if (error) {
-        alert("تعذر تحديث الحالة");
-        await fetchRows();
-        return;
+          const { data: dData, error: dErr } = await state.supabaseClient
+            .from('mushaf_orders')
+            .select('*')
+            .order('created_at', { ascending: false });
+          if (!dErr && Array.isArray(dData) && dData.length > 0) {
+            state.donations = dData.map(row => ({
+              id: row.tracking_code || row.id,
+              donorName: row.donor_name || 'سعود سعد العمار',
+              donorPhone: row.donor_phone || '0554899929',
+              quantity: Number(row.quantity || 1),
+              condition: row.condition || '',
+              method: row.method || '',
+              location: row.location || '',
+              date: row.order_date || '',
+              step: Number(row.step || 1),
+              processingSummary: row.processing_summary || null
+            }));
+          }
+          persistLocalData();
+          if (showFeedback) showToast('تمت المزامنة من Supabase');
+        } catch (err) {
+          console.warn(err);
+        }
+      }
+      renderAdminVehicles();
+      renderAdminOrders();
+    }
+
+    function renderAdminVehicles() {
+      const container = document.getElementById('admin-vehicles-list');
+      container.innerHTML = state.dropoffPoints.map(v => `
+        <div class="p-4 rounded-2xl border border-slate-200/90 bg-slate-50/60 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div class="space-y-1">
+            <div class="flex flex-wrap items-center gap-2">
+              <span class="font-black text-sm text-emerald-950">${v.name}</span>
+              <span class="text-[11px] font-bold bg-emerald-100 text-emerald-800 px-2.5 py-0.5 rounded-full">قطاع ${v.area}</span>
+              <span class="text-[11px] font-bold bg-white text-slate-600 border border-slate-200 px-2.5 py-0.5 rounded-full">${v.status} • ${v.capacityPercent}%</span>
+            </div>
+            <div class="text-xs text-slate-600"><i class="fa-solid fa-location-dot text-emerald-700 ml-1"></i>${v.address} • <span class="text-slate-500">${v.hours}</span></div>
+          </div>
+          <div class="flex items-center gap-2 self-end sm:self-center shrink-0">
+            <button onclick="startEditVehicle(${v.id})" class="bg-gold-500 hover:bg-gold-400 text-emerald-950 text-xs font-extrabold px-3.5 py-2 rounded-xl transition flex items-center gap-1">
+              <i class="fa-solid fa-pen-to-square"></i>
+              <span>تعديل المسمى والموقع</span>
+            </button>
+            <button onclick="deleteVehicleLocation(${v.id})" class="bg-white hover:bg-red-50 text-red-600 border border-red-200 text-xs font-bold px-3 py-2 rounded-xl transition">
+              <i class="fa-solid fa-trash"></i>
+            </button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function startEditVehicle(id) {
+      const v = state.dropoffPoints.find(item => item.id === id);
+      if (!v) return;
+      document.getElementById('vehicle-edit-id').value = v.id;
+      document.getElementById('vehicle-name').value = v.name;
+      document.getElementById('vehicle-area').value = v.area;
+      document.getElementById('vehicle-address').value = v.address;
+      document.getElementById('vehicle-hours').value = v.hours;
+      document.getElementById('vehicle-status').value = v.status;
+      document.getElementById('vehicle-capacity').value = v.capacityPercent;
+      document.getElementById('vehicle-form-title').innerHTML = '<i class="fa-solid fa-pen-to-square text-gold-600"></i><span>تعديل مسمى وموقع سيارة الاستلام</span>';
+      document.getElementById('vehicle-submit-btn').innerHTML = '<i class="fa-solid fa-check"></i><span>حفظ التعديلات</span>';
+      document.getElementById('cancel-vehicle-edit-btn').classList.remove('hidden');
+    }
+
+    function resetVehicleForm() {
+      document.getElementById('vehicle-edit-id').value = '';
+      document.getElementById('vehicle-location-form').reset();
+      document.getElementById('vehicle-hours').value = 'يومياً من 4:00 عصراً - 10:00 مساءً';
+      document.getElementById('vehicle-capacity').value = 25;
+      document.getElementById('vehicle-form-title').innerHTML = '<i class="fa-solid fa-car-side text-[#8C9B1E]"></i><span>إضافة موقع سيارة استلام جديدة</span>';
+      document.getElementById('vehicle-submit-btn').innerHTML = '<i class="fa-solid fa-floppy-disk"></i><span>حفظ موقع السيارة في قاعدة البيانات</span>';
+      document.getElementById('cancel-vehicle-edit-btn').classList.add('hidden');
+    }
+
+    async function handleVehicleFormSubmit(e) {
+      e.preventDefault();
+      const editIdRaw = document.getElementById('vehicle-edit-id').value;
+      const isEdit = Boolean(editIdRaw);
+      const vehicleObj = {
+        id: isEdit ? Number(editIdRaw) : Date.now(),
+        name: document.getElementById('vehicle-name').value.trim(),
+        area: document.getElementById('vehicle-area').value,
+        address: document.getElementById('vehicle-address').value.trim(),
+        distance: 'مباشر',
+        hours: document.getElementById('vehicle-hours').value.trim(),
+        status: document.getElementById('vehicle-status').value,
+        capacityPercent: Math.max(0, Math.min(100, parseInt(document.getElementById('vehicle-capacity').value, 10) || 0))
+      };
+
+      if (isEdit) {
+        const idx = state.dropoffPoints.findIndex(v => v.id === vehicleObj.id);
+        if (idx !== -1) state.dropoffPoints[idx] = vehicleObj;
+      } else {
+        state.dropoffPoints.unshift(vehicleObj);
       }
 
-      const target = allRows.find((r) => r.id === id);
-      if (target) target.status = newStatus;
-      renderTable();
-    };
-
-    window.handleDelete = async (id) => {
-      const confirmed = confirm("هل أنت متأكد من حذف هذا السجل نهائياً؟");
-      if (!confirmed) return;
-
-      const { error } = await sb
-        .from("items")
-        .delete()
-        .eq("id", id);
-
-      if (error) {
-        alert("تعذر حذف السجل");
-        return;
+      if (state.supabaseConnected && state.supabaseClient) {
+        const payload = {
+          id: vehicleObj.id,
+          name: vehicleObj.name,
+          area: vehicleObj.area,
+          address: vehicleObj.address,
+          distance: vehicleObj.distance,
+          hours: vehicleObj.hours,
+          status: vehicleObj.status,
+          capacity_percent: vehicleObj.capacityPercent
+        };
+        const { error } = isEdit
+          ? await state.supabaseClient.from('pickup_vehicles').update(payload).eq('id', vehicleObj.id)
+          : await state.supabaseClient.from('pickup_vehicles').insert(payload);
+        if (error) {
+          showToast('تعذر الحفظ السحابي، تحقق من صلاحيات RLS', 'info');
+        }
       }
 
-      allRows = allRows.filter((r) => r.id !== id);
-      renderTable();
-    };
+      persistLocalData();
+      resetVehicleForm();
+      renderAdminVehicles();
+      showToast(isEdit ? 'تم تحديث بيانات سيارة الاستلام' : 'تمت إضافة سيارة الاستلام');
+    }
 
-    checkAuth();
+    async function deleteVehicleLocation(id) {
+      if (state.dropoffPoints.length <= 1) {
+        showToast('يجب الإبقاء على سيارة واحدة على الأقل', 'info');
+        return;
+      }
+      state.dropoffPoints = state.dropoffPoints.filter(v => v.id !== id);
+      if (state.supabaseConnected && state.supabaseClient) {
+        await state.supabaseClient.from('pickup_vehicles').delete().eq('id', id);
+      }
+      persistLocalData();
+      renderAdminVehicles();
+      showToast('تم حذف الموقع');
+    }
+
+    async function advanceOrderStep(orderId) {
+      const d = state.donations.find(item => item.id === orderId);
+      if (!d || d.step >= 4) return;
+      d.step += 1;
+      if (d.step === 4) {
+        d.processingSummary = {
+          facility: 'مركز الفرز والعناية والمعالجة الشرعية - جمعية العناية بالمصحف',
+          district: 'الرياض',
+          notes: 'تم إتمام الفرز والصيانة أو المعالجة الشرعية للمصاحف المخالفة وفق الضوابط المعتمدة دون توزيع.',
+          completedDate: '20 نوفمبر 2026'
+        };
+      }
+      if (state.supabaseConnected && state.supabaseClient) {
+        await state.supabaseClient.from('mushaf_orders').update({
+          step: d.step,
+          processing_summary: d.processingSummary
+        }).eq('tracking_code', d.id);
+      }
+      persistLocalData();
+      renderAdminOrders();
+      showToast(`تم تحديث الطلب ${d.id} للمرحلة ${d.step}`);
+    }
+
+    function renderAdminOrders() {
+      const container = document.getElementById('admin-orders-list');
+      container.innerHTML = state.donations.map(d => `
+        <div class="p-4 rounded-2xl border border-slate-200/90 bg-slate-50/50 flex flex-col lg:flex-row lg:items-center justify-between gap-3">
+          <div class="space-y-1">
+            <div class="flex flex-wrap items-center gap-2">
+              <span class="font-black text-sm text-emerald-950">${d.id}</span>
+              <span class="text-xs font-bold text-slate-700">${d.donorName || 'مساهم'} • <span dir="ltr">${d.donorPhone || '0554899929'}</span></span>
+              <span class="text-[11px] font-bold bg-emerald-50 text-emerald-800 border border-emerald-200 px-2.5 py-0.5 rounded-full">المرحلة ${d.step} من 4</span>
+            </div>
+            <div class="text-xs text-slate-600">${d.quantity} مصاحف • ${d.location} • ${d.date}</div>
+          </div>
+          <div class="flex flex-wrap items-center gap-2 shrink-0">
+            <button onclick="openWhatsAppReminderById('${d.id}')" class="bg-emerald-700 hover:bg-emerald-600 text-white text-xs font-extrabold px-3.5 py-2 rounded-xl transition flex items-center gap-1.5">
+              <i class="fa-brands fa-whatsapp"></i>
+              <span>إرسال تذكير واتساب</span>
+            </button>
+            ${d.step < 4 ? `<button onclick="advanceOrderStep('${d.id}')" class="bg-gold-500 hover:bg-gold-400 text-emerald-950 text-xs font-extrabold px-3.5 py-2 rounded-xl transition">تحديث المرحلة</button>` : ''}
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function formatPhoneForWhatsApp(phone) {
+      const digits = (phone || '').replace(/\D/g, '');
+      if (digits.startsWith('966')) return digits;
+      if (digits.startsWith('05') && digits.length === 10) return '966' + digits.slice(1);
+      if (digits.startsWith('5') && digits.length === 9) return '966' + digits;
+      return digits || '966554899929';
+    }
+
+    function openWhatsAppReminderById(orderId) {
+      const order = state.donations.find(d => d.id === orderId);
+      if (!order) return;
+      const waPhone = formatPhoneForWhatsApp(order.donorPhone);
+      const msg = `السلام عليكم ورحمة الله وبركاته، حياك الله أ/ ${order.donorName} 🌸
+تذكير من *جمعية العناية بالمصحف* (مبادرة جمع المصاحف المخالفة - ترخيص 1000629800):
+✅ رقم الطلب: *${order.id}*
+📖 العدد: *${order.quantity} مصاحف* (${order.condition})
+🚗 الموقع: *${order.location}*
+📅 الموعد: *${order.date}*
+
+للاستفسار: 0554899929`;
+      document.getElementById('wa-target-phone').textContent = order.donorPhone || '0554899929';
+      document.getElementById('wa-target-code').textContent = order.id;
+      const ta = document.getElementById('wa-message-text');
+      ta.value = msg;
+      ta.dataset.waPhone = waPhone;
+      document.getElementById('wa-send-link').href = `https://wa.me/${waPhone}?text=${encodeURIComponent(msg)}`;
+      document.getElementById('whatsapp-modal').classList.remove('hidden');
+    }
+
+    function updateWhatsAppLinkBeforeOpen() {
+      const ta = document.getElementById('wa-message-text');
+      document.getElementById('wa-send-link').href = `https://wa.me/${ta.dataset.waPhone || '966554899929'}?text=${encodeURIComponent(ta.value)}`;
+    }
+
+    function copyWhatsAppMessage() {
+      navigator.clipboard?.writeText(document.getElementById('wa-message-text').value);
+      showToast('تم نسخ رسالة التذكير');
+    }
+
+    function closeWhatsAppModal() {
+      document.getElementById('whatsapp-modal').classList.add('hidden');
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      loadLocalData();
+      initSupabase();
+      checkAdminSession();
+    });
   </script>
 </body>
 </html>
