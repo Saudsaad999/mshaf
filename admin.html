@@ -502,7 +502,7 @@
       showToast('تم حذف الموقع');
     }
 
-    async function advanceOrderStep(orderId) {
+ async function advanceOrderStep(orderId) {
       const d = state.donations.find(item => item.id === orderId);
       if (!d || d.step >= 4) return;
       d.step += 1;
@@ -535,7 +535,7 @@
               <span class="text-xs font-bold text-slate-700">${d.donorName || 'مساهم'} • <span dir="ltr">${d.donorPhone || '0554899929'}</span></span>
               <span class="text-[11px] font-bold bg-emerald-50 text-emerald-800 border border-emerald-200 px-2.5 py-0.5 rounded-full">المرحلة ${d.step} من 4</span>
             </div>
-            <div class="text-xs text-slate-600">${d.quantity} مصاحف • ${d.location} •${d.date}</div>
+            <div class="text-xs text-slate-600">${d.quantity} مصاحف • ${d.location} • ${d.date}</div>
           </div>
           <div class="flex flex-wrap items-center gap-2 shrink-0">
             <button onclick="openWhatsAppReminderById('${d.id}')" class="bg-emerald-700 hover:bg-emerald-600 text-white text-xs font-extrabold px-3.5 py-2 rounded-xl transition flex items-center gap-1.5">
@@ -579,7 +579,7 @@
 
     function updateWhatsAppLinkBeforeOpen() {
       const ta = document.getElementById('wa-message-text');
-      document.getElementById('wa-send-link').href = `https://wa.me/${ta.dataset.waPhone \vert{}\vert{} '966554899929'}?text=${encodeURIComponent(ta.value)}`;
+      document.getElementById('wa-send-link').href = `https://wa.me/${ta.dataset.waPhone || '966554899929'}?text=${encodeURIComponent(ta.value)}`;
     }
 
     function copyWhatsAppMessage() {
@@ -597,6 +597,7 @@
       renderAdminVehicles();
       renderAdminOrders();
       syncAllFromDatabase(false);
+    
     });
   </script>
 </body>
