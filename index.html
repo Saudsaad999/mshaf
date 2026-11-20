@@ -452,7 +452,7 @@
             </div>
             <div>
               <label class="block text-sm font-bold text-slate-700 mb-1.5">رقم الجوال (للتواصل وإرسال التحديثات) *</label>
-              <input id="form-donor-phone" type="tel" required value="0554899929" placeholder="05XXXXXXXX" dir="ltr" class="w-full p-3.5 rounded-2xl bg-slate-50 border border-slate-200 text-sm font-bold text-slate-800 text-right focus:border-emerald-600 focus:outline-none" />
+              <input id="form-donor-phone" type="tel" required value="0534494111" placeholder="05XXXXXXXX" dir="ltr" class="w-full p-3.5 rounded-2xl bg-slate-50 border border-slate-200 text-sm font-bold text-slate-800 text-right focus:border-emerald-600 focus:outline-none" />
             </div>
           </div>
 
@@ -636,7 +636,6 @@
       </div>
 
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <!-- ترخيص 1 -->
         <div class="rounded-2xl p-4 sm:p-5 bg-gradient-to-br from-emerald-50/70 to-white border border-emerald-200/90 hover:border-emerald-400 transition flex flex-col justify-between gap-4">
           <div class="space-y-2">
             <div class="flex items-center justify-between gap-2">
@@ -662,7 +661,6 @@
           </div>
         </div>
 
-        <!-- ترخيص 2 -->
         <div class="rounded-2xl p-4 sm:p-5 bg-gradient-to-br from-gold-50/70 to-white border border-gold-200/90 hover:border-gold-400 transition flex flex-col justify-between gap-4">
           <div class="space-y-2">
             <div class="flex items-center justify-between gap-2">
@@ -698,7 +696,7 @@
         جمعية العناية بالمصحف • مبادرة جمع المصاحف المخالفة (ترخيص 1000629800)
       </div>
       <div class="flex flex-wrap items-center gap-4">
-        <span>الهاتف: <strong class="text-slate-700" dir="ltr">0554899929</strong></span>
+        <span>الهاتف: <strong class="text-slate-700" dir="ltr">0534494111</strong></span>
         <a href="https://store.holyqurancare.sa/%D8%AC%D9%85%D8%B9-%D9%88%D8%AA%D8%B1%D9%85%D9%8A%D9%85-%D8%A7%D9%84%D9%85%D8%B5%D8%A7%D8%AD%D9%81/p886756038" target="_blank" rel="noopener noreferrer" class="font-extrabold text-[#8C9B1E] hover:underline flex items-center gap-1">
           <span>صيانة مصحف (10 ريال) — المتجر الرسمي</span>
           <i class="fa-solid fa-arrow-up-left-from-square text-[10px]"></i>
@@ -773,7 +771,7 @@
           <div class="mt-8 pt-4 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500 px-4">
             <div class="text-right">
               <div class="font-bold text-emerald-900">جمعية العناية بالمصحف</div>
-              <div class="text-[11px] text-slate-600 mt-0.5">هاتف: 0554899929</div>
+              <div class="text-[11px] text-slate-600 mt-0.5">هاتف: 0534494111</div>
             </div>
             <div class="w-14 h-14 rounded-full border-2 border-[#8C9B1E]/50 flex flex-col items-center justify-center text-[9px] font-bold text-emerald-900 rotate-[-8deg]">
               <span>العناية بالمصحف</span>
@@ -826,6 +824,8 @@
   <script>
     const DEFAULT_SB_URL = 'https://hhlhmlvkclpkjjapwlfv.supabase.co';
     const DEFAULT_SB_KEY = 'sb_publishable_zbaTUGPjuDaTMYxvQC_0Qw_6GECR4q5';
+    const ASSOCIATION_PHONE = '0534494111';
+    const ASSOCIATION_WA_PHONE = '966534494111';
 
     const STORAGE_KEYS = {
       DONATIONS: 'qca_mushaf_donations_v1',
@@ -854,7 +854,7 @@
       {
         id: 'QCA-2026-849',
         donorName: 'سعود سعد العمار',
-        donorPhone: '0554899929',
+        donorPhone: ASSOCIATION_PHONE,
         quantity: 15,
         condition: 'مصاحف مخالفة للطبعة المعتمدة',
         method: 'استلام من الموقع (مندوب)',
@@ -871,7 +871,7 @@
       {
         id: 'QCA-2026-912',
         donorName: 'سعود سعد العمار',
-        donorPhone: '0554899929',
+        donorPhone: ASSOCIATION_PHONE,
         quantity: 8,
         condition: 'تحتاج صيانة وترميم (10 ريال)',
         method: 'تسليم لسيارة الاستلام',
@@ -1004,7 +1004,7 @@
             appState.donations = dData.map(row => ({
               id: row.tracking_code || row.id,
               donorName: row.donor_name || 'سعود سعد العمار',
-              donorPhone: row.donor_phone || '0554899929',
+              donorPhone: row.donor_phone || ASSOCIATION_PHONE,
               quantity: Number(row.quantity || 1),
               condition: row.condition || 'مصاحف مخالفة للطبعة المعتمدة',
               method: row.method || 'استلام من الموقع (مندوب)',
@@ -1252,7 +1252,7 @@
 🚗 طريقة التسليم / الموقع: *${order.location}*
 📅 الموعد: *${dateStr}${slotStr}*
 
-للاستفسار أو المتابعة: 0554899929`;
+للاستفسار أو المتابعة: ${ASSOCIATION_PHONE}`;
     }
 
     function formatPhoneForWhatsApp(phone) {
@@ -1260,13 +1260,13 @@
       if (digits.startsWith('966')) return digits;
       if (digits.startsWith('05') && digits.length === 10) return '966' + digits.slice(1);
       if (digits.startsWith('5') && digits.length === 9) return '966' + digits;
-      return digits || '966554899929';
+      return digits || ASSOCIATION_WA_PHONE;
     }
 
     function openWhatsAppModal(order) {
       const waPhone = formatPhoneForWhatsApp(order.donorPhone);
       const msg = buildWhatsAppReminderMessage(order);
-      document.getElementById('wa-target-phone').textContent = order.donorPhone || '0554899929';
+      document.getElementById('wa-target-phone').textContent = order.donorPhone || ASSOCIATION_PHONE;
       document.getElementById('wa-target-code').textContent = order.id;
       const textarea = document.getElementById('wa-message-text');
       textarea.value = msg;
@@ -1277,7 +1277,7 @@
 
     function updateWhatsAppLinkBeforeOpen() {
       const textarea = document.getElementById('wa-message-text');
-      const waPhone = textarea.dataset.waPhone || '966554899929';
+      const waPhone = textarea.dataset.waPhone || ASSOCIATION_WA_PHONE;
       document.getElementById('wa-send-link').href = `https://wa.me/${waPhone}?text=${encodeURIComponent(textarea.value)}`;
     }
 
@@ -1295,7 +1295,7 @@
       const quantity = parseInt(document.getElementById('form-quantity').value, 10) || 1;
       const condition = document.querySelector('input[name="condition"]:checked').value;
       const donorName = document.getElementById('form-donor-name').value.trim() || 'مساهم كريم';
-      const donorPhone = document.getElementById('form-donor-phone').value.trim() || '0554899929';
+      const donorPhone = document.getElementById('form-donor-phone').value.trim() || ASSOCIATION_PHONE;
       const randomNum = Math.floor(100 + Math.random() * 899);
       const trackingCode = `QCA-2026-${randomNum}`;
 
