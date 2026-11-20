@@ -346,6 +346,11 @@
           <p class="text-sm text-slate-500 mt-1">اختر طريقة التسليم المناسبة لجمع وفرز وصيانة المصاحف وفق الضوابط الشرعية.</p>
         </div>
 
+        <div id="pickup-fallback-banner" class="hidden mb-4 p-3.5 rounded-2xl bg-amber-50 border border-amber-200 text-xs font-bold text-amber-800 flex items-center gap-2">
+          <i class="fa-solid fa-car-side text-amber-600"></i>
+          <span>مواقع «استلام من الموقع (مندوب)» غير متاحة حالياً؛ تم التحويل تلقائياً إلى «تسليم لسيارة الاستلام».</span>
+        </div>
+
         <div class="grid grid-cols-2 gap-3 p-1.5 bg-slate-100 rounded-2xl mb-6">
           <button type="button" id="mode-btn-pickup" onclick="setDonationMethod('pickup')" class="py-3 px-4 rounded-xl text-sm font-extrabold transition-all flex items-center justify-center gap-2 bg-emerald-800 text-white shadow-sm">
             <i class="fa-solid fa-truck"></i>
@@ -404,15 +409,8 @@
           <div id="pickup-fields" class="space-y-4 pt-2 border-t border-slate-100">
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label class="block text-sm font-bold text-slate-700 mb-1.5">الحي / المنطقة *</label>
-                <select id="form-district" class="w-full p-3.5 rounded-2xl bg-slate-50 border border-slate-200 text-sm font-bold text-slate-800 focus:border-emerald-600 focus:outline-none">
-                  <option value="حي النرجس - شمال الرياض">حي النرجس - شمال الرياض</option>
-                  <option value="حي الياسمين - شمال الرياض">حي الياسمين - شمال الرياض</option>
-                  <option value="حي الروضة - شرق الرياض">حي الروضة - شرق الرياض</option>
-                  <option value="حي الربوة - شرق الرياض">حي الربوة - شرق الرياض</option>
-                  <option value="حي السويدي - غرب الرياض">حي السويدي - غرب الرياض</option>
-                  <option value="حي العزيزية - جنوب الرياض">حي العزيزية - جنوب الرياض</option>
-                </select>
+                <label class="block text-sm font-bold text-slate-700 mb-1.5">الحي / موقع الاستلام من الموقع *</label>
+                <select id="form-district" class="w-full p-3.5 rounded-2xl bg-slate-50 border border-slate-200 text-sm font-bold text-slate-800 focus:border-emerald-600 focus:outline-none"></select>
               </div>
               <div>
                 <label class="block text-sm font-bold text-slate-700 mb-1.5">وصف مختصر للموقع / رقم المنزل أو المسجد</label>
@@ -759,8 +757,16 @@
     const STORAGE_KEYS = {
       DONATIONS: 'qca_mushaf_donations_v1',
       VEHICLES: 'qca_pickup_vehicles_v1',
+      PICKUP_LOCATIONS: 'qca_pickup_locations_v1',
       SB_CONFIG: 'qca_supabase_config_v1'
     };
+
+    const DEFAULT_PICKUP_LOCATIONS = [
+      { id: 101, name: 'حي النرجس - شمال الرياض', area: 'شمال', address: 'شمال الرياض - منازل ومساجد', hours: 'يومياً من 9:00 ص - 10:00 م', status: 'متاح' },
+      { id: 102, name: 'حي الياسمين - شمال الرياض', area: 'شمال', address: 'شمال الرياض - منازل ومساجد', hours: 'يومياً من 9:00 ص - 10:00 م', status: 'متاح' },
+      { id: 103, name: 'حي الروضة - شرق الرياض', area: 'شرق', address: 'شرق الرياض - منازل ومساجد', hours: 'يومياً من 9:00 ص - 10:00 م', status: 'متاح' },
+      { id: 104, name: 'حي السويدي - غرب الرياض', area: 'غرب', address: 'غرب الرياض - منازل ومساجد', hours: 'يومياً من 9:00 ص - 10:00 م', status: 'متاح' }
+    ];
 
     const DEFAULT_VEHICLES = [
       { id: 1, name: 'سيارة الاستلام (1) - حي الروضة', area: 'شرق', address: 'مقر جمعية العناية بالمصحف - حي الروضة، الرياض', distance: '1.8 كم', hours: 'مفتوح 24 ساعة (استقبال مباشر وميداني)', status: 'متاح', capacityPercent: 32 },
@@ -813,7 +819,8 @@
       supabaseClient: null,
       supabaseConnected: false,
       donations: [],
-      dropoffPoints: []
+      dropoffPoints: [],
+      pickupLocations: []
     };
 
     function loadLocalData() {
@@ -822,6 +829,13 @@
         appState.dropoffPoints = savedVehicles ? JSON.parse(savedVehicles) : structuredClone(DEFAULT_VEHICLES);
       } catch {
         appState.dropoffPoints = structuredClone(DEFAULT_VEHICLES);
+      }
+
+      try {
+        const savedPickups = localStorage.getItem(STORAGE_KEYS.PICKUP_LOCATIONS);
+        appState.pickupLocations = savedPickups ? JSON.parse(savedPickups) : structuredClone(DEFAULT_PICKUP_LOCATIONS);
+      } catch {
+        appState.pickupLocations = structuredClone(DEFAULT_PICKUP_LOCATIONS);
       }
 
       try {
@@ -839,6 +853,7 @@
 
     function persistLocalData() {
       localStorage.setItem(STORAGE_KEYS.VEHICLES, JSON.stringify(appState.dropoffPoints));
+      localStorage.setItem(STORAGE_KEYS.PICKUP_LOCATIONS, JSON.stringify(appState.pickupLocations));
       localStorage.setItem(STORAGE_KEYS.DONATIONS, JSON.stringify(appState.donations));
     }
 
@@ -873,6 +888,22 @@
     async function syncAllFromDatabase(showFeedback = false) {
       if (appState.supabaseConnected && appState.supabaseClient) {
         try {
+          const { data: pData, error: pErr } = await appState.supabaseClient
+            .from('pickup_locations')
+            .select('*')
+            .order('id', { ascending: true });
+
+          if (!pErr && Array.isArray(pData)) {
+            appState.pickupLocations = pData.map(row => ({
+              id: row.id,
+              name: row.name,
+              area: row.area || 'شمال',
+              address: row.address || '',
+              hours: row.hours || 'يومياً',
+              status: row.status || 'متاح'
+            }));
+          }
+
           const { data: vData, error: vErr } = await appState.supabaseClient
             .from('pickup_vehicles')
             .select('*')
@@ -962,12 +993,43 @@
     });
 
     function refreshAllViews() {
+      populatePickupSelectOptions();
       populateVehicleSelectOptions();
+      syncPickupAvailability();
       renderDropoffPoints(appState.currentDropoffFilter);
       renderTrackingPills();
       renderTrackingDetails(appState.selectedTrackingId);
       renderProfileData();
       updateHomeStats();
+    }
+
+    function populatePickupSelectOptions() {
+      const select = document.getElementById('form-district');
+      if (!select) return;
+      select.innerHTML = appState.pickupLocations.map(p =>
+        `<option value="${p.name}">${p.name} — ${p.address}</option>`
+      ).join('');
+    }
+
+    function syncPickupAvailability() {
+      const hasPickup = Array.isArray(appState.pickupLocations) && appState.pickupLocations.length > 0;
+      const pickupBtn = document.getElementById('mode-btn-pickup');
+      const banner = document.getElementById('pickup-fallback-banner');
+
+      if (pickupBtn) {
+        pickupBtn.disabled = !hasPickup;
+        pickupBtn.classList.toggle('opacity-40', !hasPickup);
+        pickupBtn.classList.toggle('cursor-not-allowed', !hasPickup);
+      }
+      if (banner) {
+        banner.classList.toggle('hidden', hasPickup);
+      }
+
+      if (!hasPickup && appState.donationMethod === 'pickup') {
+        setDonationMethod('dropoff');
+      } else {
+        setDonationMethod(hasPickup ? appState.donationMethod : 'dropoff');
+      }
     }
 
     function updateHomeStats() {
@@ -1058,24 +1120,31 @@
 
     function startDonationMode(method) {
       switchTab('donate');
+      if (method === 'pickup' && (!appState.pickupLocations || appState.pickupLocations.length === 0)) {
+        setDonationMethod('dropoff');
+        return;
+      }
       setDonationMethod(method);
     }
 
     function setDonationMethod(method) {
-      appState.donationMethod = method;
+      const hasPickup = Array.isArray(appState.pickupLocations) && appState.pickupLocations.length > 0;
+      const targetMethod = (method === 'pickup' && !hasPickup) ? 'dropoff' : method;
+      appState.donationMethod = targetMethod;
+
       const pickupBtn = document.getElementById('mode-btn-pickup');
       const dropoffBtn = document.getElementById('mode-btn-dropoff');
       const pickupFields = document.getElementById('pickup-fields');
       const dropoffFields = document.getElementById('dropoff-fields');
 
-      if (method === 'pickup') {
+      if (targetMethod === 'pickup') {
         pickupBtn.className = 'py-3 px-4 rounded-xl text-sm font-extrabold transition-all flex items-center justify-center gap-2 bg-emerald-800 text-white shadow-sm';
         dropoffBtn.className = 'py-3 px-4 rounded-xl text-sm font-extrabold transition-all flex items-center justify-center gap-2 text-slate-600 hover:text-slate-900';
         pickupFields.classList.remove('hidden');
         dropoffFields.classList.add('hidden');
       } else {
         dropoffBtn.className = 'py-3 px-4 rounded-xl text-sm font-extrabold transition-all flex items-center justify-center gap-2 bg-emerald-800 text-white shadow-sm';
-        pickupBtn.className = 'py-3 px-4 rounded-xl text-sm font-extrabold transition-all flex items-center justify-center gap-2 text-slate-600 hover:text-slate-900';
+        pickupBtn.className = `py-3 px-4 rounded-xl text-sm font-extrabold transition-all flex items-center justify-center gap-2 text-slate-600 hover:text-slate-900 ${!hasPickup ? 'opacity-40 cursor-not-allowed' : ''}`;
         dropoffFields.classList.remove('hidden');
         pickupFields.classList.add('hidden');
       }
