@@ -343,11 +343,6 @@
           <p class="text-sm text-slate-500 mt-1">اختر طريقة التسليم المناسبة لجمع وفرز وصيانة المصاحف وفق الضوابط الشرعية.</p>
         </div>
 
-        <div id="pickup-fallback-banner" class="hidden mb-4 p-3.5 rounded-2xl bg-amber-50 border border-amber-200 text-xs font-bold text-amber-800 flex items-center gap-2">
-          <i class="fa-solid fa-car-side text-amber-600"></i>
-          <span>مواقع «استلام من الموقع (مندوب)» غير متاحة حالياً؛ تم التحويل تلقائياً إلى «تسليم لسيارة الاستلام».</span>
-        </div>
-
         <div class="grid grid-cols-2 gap-3 p-1.5 bg-slate-100 rounded-2xl mb-6">
           <button type="button" id="mode-btn-pickup" onclick="setDonationMethod('pickup')" class="py-3 px-4 rounded-xl text-sm font-extrabold transition-all flex items-center justify-center gap-2 bg-emerald-800 text-white shadow-sm">
             <i class="fa-solid fa-truck"></i>
@@ -403,15 +398,67 @@
             </div>
           </div>
 
+          <!-- ==================== حقل موقعها ورفع رابط الإحداثية (Google Maps) ==================== -->
           <div id="pickup-fields" class="space-y-4 pt-2 border-t border-slate-100">
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div>
-                <label class="block text-sm font-bold text-slate-700 mb-1.5">الحي / موقع الاستلام من الموقع *</label>
-                <select id="form-district" class="w-full p-3.5 rounded-2xl bg-slate-50 border border-slate-200 text-sm font-bold text-slate-800 focus:border-emerald-600 focus:outline-none"></select>
+              <div class="rounded-2xl p-4 bg-gradient-to-br from-emerald-50/80 via-white to-gold-50/60 border border-emerald-200/90 shadow-sm space-y-2.5">
+                <div class="flex items-center justify-between gap-2">
+                  <label for="form-location-link" class="text-sm font-black text-emerald-950 flex items-center gap-1.5">
+                    <i class="fa-solid fa-map-location-dot text-emerald-700"></i>
+                    <span>موقعها (رابط الإحداثية) *</span>
+                  </label>
+                  <button
+                    type="button"
+                    id="btn-fetch-gps"
+                    onclick="captureCurrentLocationLink()"
+                    class="bg-emerald-800 hover:bg-emerald-700 active:scale-95 text-white text-xs font-extrabold px-3 py-1.5 rounded-xl shadow-sm transition flex items-center gap-1.5"
+                  >
+                    <i class="fa-solid fa-location-crosshairs text-gold-400"></i>
+                    <span>تحديد موقعي الآن</span>
+                  </button>
+                </div>
+
+                <div class="relative">
+                  <input
+                    id="form-location-link"
+                    type="text"
+                    required
+                    dir="ltr"
+                    oninput="handleLocationLinkInput(this.value)"
+                    placeholder="https://maps.google.com/?q=..."
+                    class="w-full p-3.5 pl-10 rounded-xl bg-white border border-slate-200 text-xs sm:text-sm font-bold text-slate-800 text-left focus:border-emerald-600 focus:outline-none"
+                  />
+                  <a id="location-preview-anchor" href="https://maps.google.com" target="_blank" rel="noopener noreferrer" title="معاينة على خرائط قوقل" class="absolute left-3 top-1/2 -translate-y-1/2 text-emerald-700 hover:text-emerald-600">
+                    <i class="fa-brands fa-google text-sm"></i>
+                  </a>
+                </div>
+
+                <!-- بطاقة التأكيد الأنيقة بعد التقاط أو لصق رابط الإحداثية -->
+                <div id="gps-success-card" class="hidden rounded-xl bg-emerald-900 text-white px-3.5 py-2.5 flex items-center justify-between gap-2 text-xs">
+                  <div class="flex items-center gap-2">
+                    <i class="fa-solid fa-circle-check text-gold-400 text-sm shrink-0"></i>
+                    <span class="font-bold leading-snug">حفظك الله، تم رفع رابط الإحداثية ليصلك فريقنا بكل يسر</span>
+                  </div>
+                  <a id="gps-open-map-btn" href="#" target="_blank" rel="noopener noreferrer" class="shrink-0 bg-gold-500 hover:bg-gold-400 text-emerald-950 font-extrabold px-2.5 py-1 rounded-lg text-[11px] transition">
+                    معاينة
+                  </a>
+                </div>
+
+                <p id="gps-status-hint" class="text-[11px] text-slate-600 leading-relaxed flex items-center gap-1.5">
+                  <i class="fa-solid fa-sparkles text-gold-600"></i>
+                  <span>اضغط <strong>«تحديد موقعي الآن»</strong> لرفع رابط الإحداثية بصيغة قوقل ماب تلقائياً أو الصق الرابط يدوياً.</span>
+                </p>
               </div>
-              <div>
-                <label class="block text-sm font-bold text-slate-700 mb-1.5">وصف مختصر للموقع / رقم المنزل أو المسجد</label>
-                <input id="form-address-note" type="text" placeholder="مثال: شارع الأمير فيصل، فيلا 14" class="w-full p-3.5 rounded-2xl bg-slate-50 border border-slate-200 text-sm focus:border-emerald-600 focus:outline-none" />
+
+              <div class="flex flex-col justify-between rounded-2xl p-4 bg-slate-50/70 border border-slate-200/80 space-y-2.5">
+                <div>
+                  <label for="form-address-note" class="block text-sm font-bold text-slate-700 mb-1.5">وصف مختصر للموقع / اسم الحي أو المسجد</label>
+                  <input id="form-address-note" type="text" placeholder="مثال: حي النرجس، بجوار مسجد الرحمة" class="w-full p-3.5 rounded-xl bg-white border border-slate-200 text-sm focus:border-emerald-600 focus:outline-none" />
+                </div>
+                <div class="text-[11px] text-emerald-800 bg-emerald-50/90 border border-emerald-100 rounded-xl px-3 py-2 flex items-center gap-2">
+                  <i class="fa-solid fa-hand-holding-heart text-emerald-700"></i>
+                  <span>دقة الإحداثية تيسّر وصول مندوب الجمعية وحفظ وقتكم المبارك.</span>
+                </div>
               </div>
             </div>
 
@@ -455,7 +502,7 @@
 
           <button type="submit" class="w-full bg-gradient-to-l from-emerald-900 to-emerald-700 hover:from-emerald-800 hover:to-emerald-600 text-white font-extrabold text-base py-4 rounded-2xl shadow-lg transition active:scale-[0.99] flex items-center justify-center gap-2">
             <i class="fa-solid fa-paper-plane"></i>
-            <span>تأكيد الطلب </span>
+            <span>تأكيد الطلب ورفعه لقاعدة البيانات</span>
           </button>
         </form>
 
@@ -843,17 +890,9 @@
     const STORAGE_KEYS = {
       DONATIONS: 'qca_mushaf_donations_v2',
       VEHICLES: 'qca_pickup_vehicles_v1',
-      PICKUP_LOCATIONS: 'qca_pickup_locations_v1',
       SB_CONFIG: 'qca_supabase_config_v1',
       LOGGED_IN_PHONE: 'qca_logged_in_phone_v1'
     };
-
-    const DEFAULT_PICKUP_LOCATIONS = [
-      { id: 101, name: 'حي النرجس - شمال الرياض', area: 'شمال الرياض', address: 'شمال الرياض - منازل ومساجد', hours: 'يومياً من 9:00 ص - 10:00 م', status: 'متاح' },
-      { id: 102, name: 'حي الياسمين - شمال الرياض', area: 'شمال الرياض', address: 'شمال الرياض - منازل ومساجد', hours: 'يومياً من 9:00 ص - 10:00 م', status: 'متاح' },
-      { id: 103, name: 'حي الروضة - شرق الرياض', area: 'شرق الرياض', address: 'شرق الرياض - منازل ومساجد', hours: 'يومياً من 9:00 ص - 10:00 م', status: 'متاح' },
-      { id: 104, name: 'حي السويدي - غرب الرياض', area: 'غرب وجنوب الرياض', address: 'غرب الرياض - منازل ومساجد', hours: 'يومياً من 9:00 ص - 10:00 م', status: 'متاح' }
-    ];
 
     const DEFAULT_VEHICLES = [
       { id: 1, name: 'سيارة الاستلام (1) - حي الروضة', area: 'شرق الرياض', address: 'مقر جمعية العناية بالمصحف - حي الروضة، الرياض', distance: '1.8 كم', hours: 'مفتوح 24 ساعة (استقبال مباشر وميداني)', status: 'متاح', capacityPercent: 32 },
@@ -875,8 +914,7 @@
       supabaseClient: null,
       supabaseConnected: false,
       donations: [],
-      dropoffPoints: [],
-      pickupLocations: []
+      dropoffPoints: []
     };
 
     function normalizeSaudiPhone(raw) {
@@ -901,19 +939,23 @@
       return Array.from(variants).filter(Boolean);
     }
 
+    function formatLocationHtml(loc) {
+      const raw = String(loc || '');
+      const escaped = raw.replace(/</g, '<').replace(/>/g, '>');
+      const urlMatch = escaped.match(/(https?:\/\/[^\s)]+)/i);
+      if (!urlMatch) return escaped;
+      const url = urlMatch[1];
+      const remainder = escaped.replace(url, '').replace(/\(\s*\)/g, '').trim();
+      const mapBtn = `<a href="${url}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200 px-2.5 py-0.5 rounded-lg text-[11px] font-extrabold transition"><i class="fa-solid fa-location-dot text-emerald-700"></i><span>فتح الموقع على الخريطة</span></a>`;
+      return remainder ? `${mapBtn} <span class="text-slate-600 mr-1">${remainder}</span>` : mapBtn;
+    }
+
     function loadLocalData() {
       try {
         const savedVehicles = localStorage.getItem(STORAGE_KEYS.VEHICLES);
         appState.dropoffPoints = savedVehicles ? JSON.parse(savedVehicles) : structuredClone(DEFAULT_VEHICLES);
       } catch {
         appState.dropoffPoints = structuredClone(DEFAULT_VEHICLES);
-      }
-
-      try {
-        const savedPickups = localStorage.getItem(STORAGE_KEYS.PICKUP_LOCATIONS);
-        appState.pickupLocations = savedPickups ? JSON.parse(savedPickups) : structuredClone(DEFAULT_PICKUP_LOCATIONS);
-      } catch {
-        appState.pickupLocations = structuredClone(DEFAULT_PICKUP_LOCATIONS);
       }
 
       // تصفير الجلسة عند تحديث الرابط حتى لا تتداخل بيانات أكثر من عميل على نفس الجهاز
@@ -928,7 +970,6 @@
 
     function persistLocalData() {
       localStorage.setItem(STORAGE_KEYS.VEHICLES, JSON.stringify(appState.dropoffPoints));
-      localStorage.setItem(STORAGE_KEYS.PICKUP_LOCATIONS, JSON.stringify(appState.pickupLocations));
     }
 
     function initSupabaseFromStorage() {
@@ -971,22 +1012,6 @@
     async function syncPublicLocationsFromDatabase() {
       if (!appState.supabaseConnected || !appState.supabaseClient) return;
       try {
-        const { data: pData, error: pErr } = await appState.supabaseClient
-          .from('pickup_locations')
-          .select('*')
-          .order('id', { ascending: true });
-
-        if (!pErr && Array.isArray(pData)) {
-          appState.pickupLocations = pData.map(row => ({
-            id: row.id,
-            name: row.name,
-            area: row.area || 'شمال الرياض',
-            address: row.address || '',
-            hours: row.hours || 'يومياً',
-            status: row.status || 'متاح'
-          }));
-        }
-
         const { data: vData, error: vErr } = await appState.supabaseClient
           .from('pickup_vehicles')
           .select('*')
@@ -1090,42 +1115,79 @@
     }
 
     function refreshAllViews() {
-      populatePickupSelectOptions();
       populateVehicleSelectOptions();
-      syncPickupAvailability();
       renderDropoffPoints(appState.currentDropoffFilter);
       renderTrackingPills();
       renderTrackingDetails(appState.selectedTrackingId);
       renderProfileData();
     }
 
-    function populatePickupSelectOptions() {
-      const select = document.getElementById('form-district');
-      if (!select) return;
-      select.innerHTML = appState.pickupLocations.map(p =>
-        `<option value="${p.name}">${p.name} — ${p.address}</option>`
-      ).join('');
+    // ==================== GPS / GOOGLE MAPS LINK CAPTURE ====================
+    function handleLocationLinkInput(val) {
+      const trimmed = String(val || '').trim();
+      const successCard = document.getElementById('gps-success-card');
+      const hint = document.getElementById('gps-status-hint');
+      const openBtn = document.getElementById('gps-open-map-btn');
+      const previewAnchor = document.getElementById('location-preview-anchor');
+
+      const isValidUrl = /^https?:\/\/.+/i.test(trimmed);
+      if (isValidUrl) {
+        if (successCard) successCard.classList.remove('hidden');
+        if (hint) hint.classList.add('hidden');
+        if (openBtn) openBtn.href = trimmed;
+        if (previewAnchor) previewAnchor.href = trimmed;
+      } else {
+        if (successCard) successCard.classList.add('hidden');
+        if (hint) hint.classList.remove('hidden');
+        if (previewAnchor) previewAnchor.href = 'https://maps.google.com';
+      }
     }
 
-    function syncPickupAvailability() {
-      const hasPickup = Array.isArray(appState.pickupLocations) && appState.pickupLocations.length > 0;
-      const pickupBtn = document.getElementById('mode-btn-pickup');
-      const banner = document.getElementById('pickup-fallback-banner');
+    function captureCurrentLocationLink() {
+      const input = document.getElementById('form-location-link');
+      const btn = document.getElementById('btn-fetch-gps');
+      const hint = document.getElementById('gps-status-hint');
 
-      if (pickupBtn) {
-        pickupBtn.disabled = !hasPickup;
-        pickupBtn.classList.toggle('opacity-40', !hasPickup);
-        pickupBtn.classList.toggle('cursor-not-allowed', !hasPickup);
-      }
-      if (banner) {
-        banner.classList.toggle('hidden', hasPickup);
+      if (!navigator.geolocation) {
+        showToast('المتصفح لا يدعم تحديد الموقع تلقائياً؛ الصق رابط قوقل ماب يدوياً', 'info');
+        return;
       }
 
-      if (!hasPickup && appState.donationMethod === 'pickup') {
-        setDonationMethod('dropoff');
-      } else {
-        setDonationMethod(hasPickup ? appState.donationMethod : 'dropoff');
+      if (btn) {
+        btn.disabled = true;
+        btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin text-gold-400"></i><span>جاري تحديد موقعك...</span>`;
       }
+
+      navigator.geolocation.getCurrentPosition(
+        (pos) => {
+          const lat = pos.coords.latitude.toFixed(6);
+          const lng = pos.coords.longitude.toFixed(6);
+          const mapsUrl = `https://maps.google.com/?q=${lat},${lng}`;
+          if (input) {
+            input.value = mapsUrl;
+            handleLocationLinkInput(mapsUrl);
+          }
+          showToast('حفظك الله، تم رفع رابط الإحداثية بنجاح');
+
+          if (btn) {
+            btn.disabled = false;
+            btn.innerHTML = `<i class="fa-solid fa-rotate text-gold-400"></i><span>تحديث الموقع</span>`;
+          }
+        },
+        () => {
+          if (hint) {
+            hint.classList.remove('hidden');
+            hint.innerHTML = `<i class="fa-solid fa-circle-info text-amber-600"></i><span>يرجى تفعيل صلاحية الموقع في الجوال أو لصق رابط الإحداثية من قوقل ماب مباشرة.</span>`;
+          }
+          showToast('فعّل صلاحية الموقع أو الصق رابط قوقل ماب يدوياً', 'info');
+
+          if (btn) {
+            btn.disabled = false;
+            btn.innerHTML = `<i class="fa-solid fa-location-crosshairs text-gold-400"></i><span>تحديد موقعي الآن</span>`;
+          }
+        },
+        { enableHighAccuracy: true, timeout: 10000 }
+      );
     }
 
     function switchTab(tabId) {
@@ -1217,33 +1279,30 @@
 
     function startDonationMode(method) {
       switchTab('donate');
-      if (method === 'pickup' && (!appState.pickupLocations || appState.pickupLocations.length === 0)) {
-        setDonationMethod('dropoff');
-        return;
-      }
       setDonationMethod(method);
     }
 
     function setDonationMethod(method) {
-      const hasPickup = Array.isArray(appState.pickupLocations) && appState.pickupLocations.length > 0;
-      const targetMethod = (method === 'pickup' && !hasPickup) ? 'dropoff' : method;
-      appState.donationMethod = targetMethod;
+      appState.donationMethod = method;
 
       const pickupBtn = document.getElementById('mode-btn-pickup');
       const dropoffBtn = document.getElementById('mode-btn-dropoff');
       const pickupFields = document.getElementById('pickup-fields');
       const dropoffFields = document.getElementById('dropoff-fields');
+      const locationLinkInput = document.getElementById('form-location-link');
 
-      if (targetMethod === 'pickup') {
+      if (method === 'pickup') {
         pickupBtn.className = 'py-3 px-4 rounded-xl text-sm font-extrabold transition-all flex items-center justify-center gap-2 bg-emerald-800 text-white shadow-sm';
         dropoffBtn.className = 'py-3 px-4 rounded-xl text-sm font-extrabold transition-all flex items-center justify-center gap-2 text-slate-600 hover:text-slate-900';
         pickupFields.classList.remove('hidden');
         dropoffFields.classList.add('hidden');
+        if (locationLinkInput) locationLinkInput.required = true;
       } else {
         dropoffBtn.className = 'py-3 px-4 rounded-xl text-sm font-extrabold transition-all flex items-center justify-center gap-2 bg-emerald-800 text-white shadow-sm';
-        pickupBtn.className = `py-3 px-4 rounded-xl text-sm font-extrabold transition-all flex items-center justify-center gap-2 text-slate-600 hover:text-slate-900 ${!hasPickup ? 'opacity-40 cursor-not-allowed' : ''}`;
+        pickupBtn.className = 'py-3 px-4 rounded-xl text-sm font-extrabold transition-all flex items-center justify-center gap-2 text-slate-600 hover:text-slate-900';
         dropoffFields.classList.remove('hidden');
         pickupFields.classList.add('hidden');
+        if (locationLinkInput) locationLinkInput.required = false;
       }
     }
 
@@ -1266,7 +1325,7 @@
       return `السلام عليكم ورحمة الله وبركاته، حياكم الله في *جمعية العناية بالمصحف* (مبادرة جمع المصاحف المخالفة - ترخيص 1000629800) 🌸
 ${nameLine}${phoneLine}✅ رقم الطلب: *${order.id}*
 📖 العدد: *${order.quantity} مصاحف* (${order.condition})
-🚗 طريقة التسليم / الموقع: *${order.location}*
+📍 موقعها / الإحداثية: ${order.location}
 📅 الموعد: *${dateStr}${slotStr}*`;
     }
 
@@ -1318,11 +1377,11 @@ ${nameLine}${phoneLine}✅ رقم الطلب: *${order.id}*
 
       if (appState.donationMethod === 'pickup') {
         methodText = 'استلام من الموقع (مندوب)';
-        const district = document.getElementById('form-district').value;
-        const note = document.getElementById('form-address-note').value.trim();
+        const locationLink = (document.getElementById('form-location-link')?.value || '').trim();
+        const note = (document.getElementById('form-address-note')?.value || '').trim();
         preferredDate = document.getElementById('form-date').value;
         timeSlot = document.getElementById('form-timeslot').value;
-        locationText = note ? `${district} (${note})` : district;
+        locationText = note ? `${locationLink} (${note})` : locationLink;
       } else {
         methodText = 'تسليم لسيارة الاستلام';
         locationText = document.getElementById('form-dropoff-point').value;
@@ -1459,7 +1518,7 @@ ${nameLine}${phoneLine}✅ رقم الطلب: *${order.id}*
 
       const steps = [
         { num: 1, title: 'تم استلام الطلب إلكترونياً', desc: `تم تسجيل طلب جمع المصاحف المخالفة (${donation.quantity} مصاحف - ${donation.condition}) وجدولة الاستلام.`, icon: 'fa-clipboard-check' },
-        { num: 2, title: 'سيارة الاستلام / المندوب في الطريق', desc: `الموقع: ${donation.location}. تم جدولة جمع المصاحف ونقلها لمقر الجمعية.`, icon: 'fa-car-side' },
+        { num: 2, title: 'سيارة الاستلام / المندوب في الطريق', descHtml: `موقعها: ${formatLocationHtml(donation.location)}. تم جدولة جمع المصاحف ونقلها لمقر الجمعية.`, icon: 'fa-car-side' },
         { num: 3, title: 'الفرز والتصنيف الفني', desc: 'يقوم فريق الجمعية بفحص الطبعات وتحديد المسار المناسب لكل نسخة (صيانة أو معالجة شرعية).', icon: 'fa-layer-group' },
         { num: 4, title: 'الصيانة والترميم أو المعالجة الشرعية الآمنة', desc: 'إتمام أعمال الصيانة في معمل الجمعية أو المعالجة الشرعية المعتمدة دون توزيع.', icon: 'fa-screwdriver-wrench' }
       ];
@@ -1485,7 +1544,7 @@ ${nameLine}${phoneLine}✅ رقم الطلب: *${order.id}*
                 <h4 class="font-extrabold text-sm sm:text-base ${isCompleted ? 'text-emerald-950' : 'text-slate-400'}">${s.title}</h4>
                 ${isCurrent ? `<span class="text-[10px] font-bold bg-gold-100 text-gold-600 px-2.5 py-0.5 rounded-full border border-gold-200">المرحلة الحالية</span>` : ''}
               </div>
-              <p class="text-xs sm:text-sm ${isCompleted ? 'text-slate-600' : 'text-slate-400'} mt-1 leading-relaxed">${s.desc}</p>
+              <p class="text-xs sm:text-sm ${isCompleted ? 'text-slate-600' : 'text-slate-400'} mt-1 leading-relaxed">${s.descHtml || s.desc}</p>
             </div>
           </div>
         `;
@@ -1650,7 +1709,7 @@ ${nameLine}${phoneLine}✅ رقم الطلب: *${order.id}*
                 ${badge}
               </div>
               <div class="text-xs text-slate-500 mt-1">${d.quantity} مصاحف • ${d.condition} • ${d.date}</div>
-              <div class="text-[11px] text-slate-400 mt-0.5">${d.location}</div>
+              <div class="text-[11px] text-slate-500 mt-1">${formatLocationHtml(d.location)}</div>
             </div>
             <div class="flex items-center gap-2">
               <button type="button" onclick="openOrderCertificate('${d.id}')" class="bg-gold-50 hover:bg-gold-100 text-gold-600 border border-gold-200 text-xs font-bold px-3 py-2 rounded-xl transition flex items-center gap-1">
