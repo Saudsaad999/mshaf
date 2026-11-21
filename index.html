@@ -551,7 +551,7 @@
         <form onsubmit="handlePhoneLogin(event)" class="space-y-3 text-right">
           <div>
             <label class="block text-xs font-bold text-slate-700 mb-1.5">رقم الجوال *</label>
-            <input id="login-phone-input" type="tel" required placeholder="05XXXXXXXX" dir="ltr" class="w-full p-4 rounded-2xl bg-slate-50 border border-slate-200 text-base font-extrabold text-slate-900 text-center tracking-wider focus:border-emerald-600 focus:outline-none" />
+            <input id="login-phone-input" type="tel" required placeholder="05XXXXXXXX" dir="ltr" autocomplete="off" class="w-full p-4 rounded-2xl bg-slate-50 border border-slate-200 text-base font-extrabold text-slate-900 text-center tracking-wider focus:border-emerald-600 focus:outline-none" />
           </div>
           <button type="submit" id="login-submit-btn" class="w-full bg-emerald-800 hover:bg-emerald-700 text-white font-extrabold text-sm py-3.5 rounded-2xl shadow-md transition flex items-center justify-center gap-2">
             <i class="fa-solid fa-arrow-right-to-bracket"></i>
@@ -708,7 +708,7 @@
         جمعية العناية بالمصحف • مبادرة جمع المصاحف المخالفة (ترخيص 1000629800)
       </div>
       <div class="flex flex-wrap items-center gap-4">
-        <span>الهاتف: <strong class="text-slate-700" dir="ltr">0534494111</strong></span>
+        <span>الهاتف: <strong class="text-slate-700" dir="ltr">0559298889</strong></span>
         <a href="https://store.holyqurancare.sa/%D8%AC%D9%85%D8%B9-%D9%88%D8%AA%D8%B1%D9%85%D9%8A%D9%85-%D8%A7%D9%84%D9%85%D8%B5%D8%A7%D8%AD%D9%81/p886756038" target="_blank" rel="noopener noreferrer" class="font-extrabold text-[#8C9B1E] hover:underline flex items-center gap-1">
           <span>صيانة مصحف (10 ريال) — المتجر الرسمي</span>
           <i class="fa-solid fa-arrow-up-left-from-square text-[10px]"></i>
@@ -814,7 +814,7 @@
       </div>
       <div class="p-5 sm:p-6 space-y-4">
         <div class="text-xs text-slate-500">
-          رقم واتساب الجمعية: <strong id="wa-target-phone" dir="ltr" class="text-slate-800">0534494111</strong> • رمز الطلب: <strong id="wa-target-code" class="text-emerald-800"></strong>
+          رقم واتساب الجمعية: <strong id="wa-target-phone" dir="ltr" class="text-slate-800">0559298889</strong> • رمز الطلب: <strong id="wa-target-code" class="text-emerald-800"></strong>
         </div>
         <div>
           <label class="block text-xs font-bold text-slate-700 mb-1.5">نص الرسالة (قابل للتعديل)</label>
@@ -837,8 +837,8 @@
   <script>
     const DEFAULT_SB_URL = 'https://hhlhmlvkclpkjjapwlfv.supabase.co';
     const DEFAULT_SB_KEY = 'sb_publishable_zbaTUGPjuDaTMYxvQC_0Qw_6GECR4q5';
-    const ASSOCIATION_PHONE = '0534494111';
-    const ASSOCIATION_WA_PHONE = '966534494111';
+    const ASSOCIATION_PHONE = '0559298889';
+    const ASSOCIATION_WA_PHONE = '966559298889';
 
     const STORAGE_KEYS = {
       DONATIONS: 'qca_mushaf_donations_v2',
@@ -916,20 +916,19 @@
         appState.pickupLocations = structuredClone(DEFAULT_PICKUP_LOCATIONS);
       }
 
-      try {
-        const savedDonations = localStorage.getItem(STORAGE_KEYS.DONATIONS);
-        appState.donations = savedDonations ? JSON.parse(savedDonations) : [];
-      } catch {
-        appState.donations = [];
-      }
-
-      appState.loggedInPhone = normalizeSaudiPhone(localStorage.getItem(STORAGE_KEYS.LOGGED_IN_PHONE) || '');
+      // تصفير الجلسة عند تحديث الرابط حتى لا تتداخل بيانات أكثر من عميل على نفس الجهاز
+      appState.loggedInPhone = '';
+      appState.selectedTrackingId = '';
+      appState.searchedOrder = null;
+      appState.donations = [];
+      localStorage.removeItem(STORAGE_KEYS.LOGGED_IN_PHONE);
+      localStorage.removeItem(STORAGE_KEYS.DONATIONS);
+      sessionStorage.removeItem(STORAGE_KEYS.LOGGED_IN_PHONE);
     }
 
     function persistLocalData() {
       localStorage.setItem(STORAGE_KEYS.VEHICLES, JSON.stringify(appState.dropoffPoints));
       localStorage.setItem(STORAGE_KEYS.PICKUP_LOCATIONS, JSON.stringify(appState.pickupLocations));
-      localStorage.setItem(STORAGE_KEYS.DONATIONS, JSON.stringify(appState.donations));
     }
 
     function initSupabaseFromStorage() {
@@ -963,7 +962,7 @@
         condition: row.condition || 'مصاحف مخالفة للطبعة المعتمدة',
         method: row.method || 'استلام من الموقع (مندوب)',
         location: row.location || '',
-        date: row.order_date || '20 نوفمبر 2026',
+        date: row.order_date || '21 نوفمبر 2026',
         step: Number(row.step || 1),
         processingSummary: row.processing_summary || null
       };
@@ -1034,7 +1033,6 @@
         }
       }
 
-      // دمج مع أي طلبات محفوظة محلياً لنفس الرقم دون تكرار
       const localMatches = appState.donations.filter(d => normalizeSaudiPhone(d.donorPhone) === norm);
       const mergedMap = new Map();
       dbOrders.forEach(o => mergedMap.set(o.id, o));
@@ -1043,10 +1041,7 @@
       });
 
       const finalOrders = Array.from(mergedMap.values());
-      // تحديث التخزين المحلي بطلبات هذا الرقم فقط
-      const otherLocal = appState.donations.filter(d => normalizeSaudiPhone(d.donorPhone) !== norm);
-      appState.donations = [...finalOrders, ...otherLocal];
-      persistLocalData();
+      appState.donations = finalOrders;
       return finalOrders;
     }
 
@@ -1069,7 +1064,6 @@
           : await appState.supabaseClient.from('mushaf_orders').insert(payload);
         if (error) throw error;
       }
-      persistLocalData();
     }
 
     document.addEventListener('DOMContentLoaded', async () => {
@@ -1084,14 +1078,6 @@
       initSupabaseFromStorage();
       updateImpactCalculator(5);
       await syncPublicLocationsFromDatabase();
-
-      if (appState.loggedInPhone) {
-        await fetchOrdersByPhone(appState.loggedInPhone);
-        const myOrders = getUserOrders();
-        if (myOrders.length > 0 && !appState.selectedTrackingId) {
-          appState.selectedTrackingId = myOrders[0].id;
-        }
-      }
 
       refreshAllViews();
       switchTab('home');
@@ -1359,13 +1345,12 @@ ${nameLine}${phoneLine}✅ رقم الطلب: *${order.id}*
         processingSummary: null
       };
 
-      // تسجيل الدخول تلقائياً برقم جوال مقدم الطلب لحفظ خصوصية سجله
       if (donorPhone) {
         appState.loggedInPhone = normalizeSaudiPhone(donorPhone);
-        localStorage.setItem(STORAGE_KEYS.LOGGED_IN_PHONE, appState.loggedInPhone);
+        sessionStorage.setItem(STORAGE_KEYS.LOGGED_IN_PHONE, appState.loggedInPhone);
       }
 
-      appState.donations.unshift(newDonation);
+      appState.donations = [newDonation];
       appState.selectedTrackingId = trackingCode;
       appState.searchedOrder = newDonation;
 
@@ -1563,8 +1548,9 @@ ${nameLine}${phoneLine}✅ رقم الطلب: *${order.id}*
       btn.disabled = true;
       btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i><span>جاري جلب سجلك...</span>`;
 
+      appState.donations = [];
       appState.loggedInPhone = norm;
-      localStorage.setItem(STORAGE_KEYS.LOGGED_IN_PHONE, norm);
+      sessionStorage.setItem(STORAGE_KEYS.LOGGED_IN_PHONE, norm);
 
       const orders = await fetchOrdersByPhone(norm);
       if (orders.length > 0) {
@@ -1593,7 +1579,10 @@ ${nameLine}${phoneLine}✅ رقم الطلب: *${order.id}*
       appState.loggedInPhone = '';
       appState.selectedTrackingId = '';
       appState.searchedOrder = null;
+      appState.donations = [];
+      sessionStorage.removeItem(STORAGE_KEYS.LOGGED_IN_PHONE);
       localStorage.removeItem(STORAGE_KEYS.LOGGED_IN_PHONE);
+      localStorage.removeItem(STORAGE_KEYS.DONATIONS);
       const input = document.getElementById('login-phone-input');
       if (input) input.value = '';
       refreshAllViews();
@@ -1628,7 +1617,6 @@ ${nameLine}${phoneLine}✅ رقم الطلب: *${order.id}*
       document.getElementById('user-total-orders').textContent = totalOrders;
       document.getElementById('user-total-letters').textContent = totalLetters;
 
-      // تحديث بيانات الشهادة
       document.getElementById('cert-donor-name').textContent = displayName;
       document.getElementById('cert-mushaf-total').textContent = `${totalMushafs} مصاحف`;
       document.getElementById('cert-verify-code').textContent = myOrders[0] ? myOrders[0].id : `QCA-${appState.loggedInPhone.slice(-4)}`;
