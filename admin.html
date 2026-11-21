@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>لوحة الإدارة | جمعية العناية بالمصحف الشريف</title>
+  <title>لوحة الإدارة | جمع المصاحف المخالفة — جمعية العناية بالمصحف</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -28,10 +28,6 @@
               900: '#064e3b',
               950: '#022c22',
             },
-            olive: {
-              600: '#8C9B1E',
-              700: '#727e16',
-            },
             gold: {
               50: '#fdfbf7',
               100: '#fbf5e6',
@@ -49,7 +45,7 @@
   <style>
     body {
       font-family: 'Tajawal', sans-serif;
-      background-color: #f4f7f6;
+      background-color: #f4f7f5;
       color: #1e293b;
     }
     .islamic-pattern {
@@ -65,277 +61,214 @@
   <!-- Toast Container -->
   <div id="toast-container" class="fixed top-5 left-1/2 -translate-x-1/2 z-50 w-[92%] max-w-md pointer-events-none flex flex-col gap-2"></div>
 
-  <!-- Header -->
-  <header class="bg-emerald-950 text-white border-b border-emerald-800 shadow-md sticky top-0 z-40">
-    <div class="max-w-7xl mx-auto px-4 py-3.5 flex flex-wrap items-center justify-between gap-3">
+  <!-- Top Header -->
+  <header class="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-emerald-100 shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 h-16 sm:h-20 flex items-center justify-between gap-3">
       <div class="flex items-center gap-3">
-        <div class="w-11 h-11 rounded-2xl bg-gradient-to-br from-[#8C9B1E] to-emerald-700 flex items-center justify-center text-white shadow">
-          <i class="fa-solid fa-shield-halved text-lg text-gold-400"></i>
+        <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl bg-gradient-to-br from-emerald-900 to-emerald-700 text-gold-400 flex items-center justify-center text-lg shadow">
+          <i class="fa-solid fa-gauge-high"></i>
         </div>
         <div>
-          <div class="flex items-center gap-2">
-            <h1 class="text-base sm:text-xl font-black">لوحة إدارة مبادرة جمع المصاحف المخالفة</h1>
-            <span id="db-status-badge" class="text-[11px] font-bold bg-emerald-900 text-emerald-200 border border-emerald-700 px-2.5 py-0.5 rounded-full flex items-center gap-1.5">
-              <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-              <span>متصل بقاعدة البيانات</span>
-            </span>
-          </div>
-          <p class="text-xs text-emerald-200/90 mt-0.5">جمعية العناية بالمصحف الشريف • إدارة سيارات الاستلام والطلبات</p>
+          <h1 class="text-sm sm:text-lg font-black text-emerald-950">لوحة إدارة جمع المصاحف المخالفة</h1>
+          <p class="text-[11px] sm:text-xs text-slate-500">إدارة الطلبات، سيارات الاستلام، ومواقع تسليم المندوب</p>
         </div>
       </div>
 
       <div class="flex items-center gap-2">
-        <button onclick="syncAllFromSupabase()" class="bg-white/10 hover:bg-white/20 text-white text-xs font-bold px-3.5 py-2.5 rounded-xl transition flex items-center gap-1.5">
-          <i class="fa-solid fa-rotate"></i>
-          <span>تحديث البيانات</span>
-        </button>
-        <a href="index.html" class="bg-gold-500 hover:bg-gold-400 text-emerald-950 text-xs font-extrabold px-4 py-2.5 rounded-xl shadow transition flex items-center gap-1.5">
-          <i class="fa-solid fa-arrow-up-left-from-square"></i>
-          <span>واجهة الموقع</span>
+        <span id="db-connection-badge" class="hidden sm:inline-flex items-center gap-1.5 text-xs font-bold bg-emerald-50 text-emerald-800 border border-emerald-200 px-3 py-1.5 rounded-xl">
+          <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+          <span>متصل بقاعدة البيانات</span>
+        </span>
+        <a href="index.html" class="bg-emerald-800 hover:bg-emerald-700 text-white text-xs font-extrabold px-3.5 py-2.5 rounded-xl transition flex items-center gap-1.5">
+          <i class="fa-solid fa-arrow-up-right-from-square"></i>
+          <span>واجهة المستخدم</span>
         </a>
       </div>
     </div>
   </header>
 
-  <main class="flex-1 max-w-7xl w-full mx-auto px-4 pt-6 space-y-6">
+  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 pt-6 space-y-6">
 
-    <!-- الإحصائيات السريعة -->
-    <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
-      <div class="bg-white rounded-2xl p-4 sm:p-5 border border-slate-200/80 shadow-sm flex items-center gap-3.5">
-        <div class="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-800 flex items-center justify-center text-xl shrink-0">
-          <i class="fa-solid fa-car-side"></i>
-        </div>
-        <div>
-          <div class="text-xs text-slate-500 font-bold">سيارات الاستلام</div>
-          <div id="stat-vehicles-count" class="text-2xl font-black text-emerald-950">0</div>
-        </div>
+    <!-- Hero Banner -->
+    <div class="islamic-pattern rounded-3xl p-5 sm:p-7 text-white shadow-lg border border-emerald-800 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div>
+        <span class="inline-flex items-center gap-1.5 text-xs font-bold bg-white/10 border border-gold-400/30 text-gold-300 px-3 py-1 rounded-full">
+          <i class="fa-solid fa-shield-halved text-gold-400"></i>
+          <span>جمعية العناية بالمصحف • ترخيص 1000629800</span>
+        </span>
+        <h2 class="text-xl sm:text-2xl font-black mt-2">إدارة الميدان والاستلام والفرز</h2>
+        <p class="text-xs sm:text-sm text-emerald-100 mt-1">تحديث بيانات سيارات الاستلام وإضافة أو تعديل مواقع تسليم المندوب مع حرية كتابة القطاع مباشرة.</p>
       </div>
-
-      <div class="bg-white rounded-2xl p-4 sm:p-5 border border-slate-200/80 shadow-sm flex items-center gap-3.5">
-        <div class="w-12 h-12 rounded-2xl bg-gold-100 text-gold-600 flex items-center justify-center text-xl shrink-0">
-          <i class="fa-solid fa-clipboard-list"></i>
-        </div>
-        <div>
-          <div class="text-xs text-slate-500 font-bold">إجمالي الطلبات</div>
-          <div id="stat-orders-count" class="text-2xl font-black text-emerald-950">0</div>
-        </div>
-      </div>
-
-      <div class="bg-white rounded-2xl p-4 sm:p-5 border border-slate-200/80 shadow-sm flex items-center gap-3.5">
-        <div class="w-12 h-12 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center text-xl shrink-0">
-          <i class="fa-solid fa-truck-fast"></i>
-        </div>
-        <div>
-          <div class="text-xs text-slate-500 font-bold">طلبات قيد الاستلام</div>
-          <div id="stat-pending-count" class="text-2xl font-black text-amber-700">0</div>
-        </div>
-      </div>
-
-      <div class="bg-white rounded-2xl p-4 sm:p-5 border border-slate-200/80 shadow-sm flex items-center gap-3.5">
-        <div class="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-700 flex items-center justify-center text-xl shrink-0">
-          <i class="fa-solid fa-book-quran"></i>
-        </div>
-        <div>
-          <div class="text-xs text-slate-500 font-bold">مجموع المصاحف</div>
-          <div id="stat-mushafs-sum" class="text-2xl font-black text-emerald-800">0</div>
-        </div>
+      <div class="flex flex-wrap gap-2 shrink-0">
+        <button type="button" onclick="syncAllAdminData()" class="bg-gold-500 hover:bg-gold-400 text-emerald-950 text-xs sm:text-sm font-extrabold px-4 py-2.5 rounded-xl shadow transition flex items-center gap-2">
+          <i class="fa-solid fa-rotate"></i>
+          <span>مزامنة البيانات</span>
+        </button>
       </div>
     </div>
 
-    <!-- أزرار التنقل بين أقسام الإدارة -->
-    <div class="flex flex-wrap items-center justify-between gap-3 bg-white p-2 rounded-2xl border border-slate-200/80 shadow-sm">
-      <div class="flex flex-wrap gap-1.5">
-        <button type="button" onclick="switchAdminSection('vehicles')" id="sec-btn-vehicles" class="px-4 py-2.5 rounded-xl text-xs sm:text-sm font-extrabold bg-emerald-800 text-white shadow-sm transition flex items-center gap-2">
-          <i class="fa-solid fa-car-side"></i>
-          <span>إدارة سيارات الاستلام وروابط مواقعها</span>
-        </button>
-        <button type="button" onclick="switchAdminSection('orders')" id="sec-btn-orders" class="px-4 py-2.5 rounded-xl text-xs sm:text-sm font-extrabold text-slate-600 hover:bg-slate-100 transition flex items-center gap-2">
-          <i class="fa-solid fa-boxes-stacked"></i>
-          <span>إدارة طلبات الاستلام</span>
+    <!-- Summary Cards -->
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-5">
+      <div class="bg-white rounded-2xl p-4 sm:p-5 border border-slate-200/80 shadow-sm">
+        <div class="text-xs text-slate-500 font-bold">إجمالي الطلبات</div>
+        <div id="admin-stat-orders" class="text-2xl sm:text-3xl font-black text-emerald-950 mt-1">0</div>
+      </div>
+      <div class="bg-white rounded-2xl p-4 sm:p-5 border border-slate-200/80 shadow-sm">
+        <div class="text-xs text-slate-500 font-bold">إجمالي المصاحف</div>
+        <div id="admin-stat-mushafs" class="text-2xl sm:text-3xl font-black text-emerald-800 mt-1">0</div>
+      </div>
+      <div class="bg-white rounded-2xl p-4 sm:p-5 border border-slate-200/80 shadow-sm">
+        <div class="text-xs text-slate-500 font-bold">سيارات الاستلام</div>
+        <div id="admin-stat-vehicles" class="text-2xl sm:text-3xl font-black text-[#8C9B1E] mt-1">0</div>
+      </div>
+      <div class="bg-white rounded-2xl p-4 sm:p-5 border border-slate-200/80 shadow-sm">
+        <div class="text-xs text-slate-500 font-bold">مواقع تسليم المندوب</div>
+        <div id="admin-stat-delegates" class="text-2xl sm:text-3xl font-black text-gold-600 mt-1">0</div>
+      </div>
+    </div>
+
+    <!-- ==================== 1. إدارة موقع السيارة (القطاع تعبئة مفتوحة بدون اختيارات) ==================== -->
+    <section id="admin-vehicle-section" class="bg-white rounded-3xl p-5 sm:p-7 border border-slate-200/80 shadow-sm space-y-5">
+      <div class="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 pb-4">
+        <div>
+          <h3 class="text-lg font-black text-emerald-950 flex items-center gap-2">
+            <i class="fa-solid fa-car-side text-[#8C9B1E]"></i>
+            <span>إضافة أو تحديث موقع سيارة الاستلام</span>
+          </h3>
+          <p class="text-xs text-slate-500 mt-0.5">حقل القطاع / النطاق الجغرافي تعبئة نصية مفتوحة بالكامل بدون أي اختيارات مقيدة.</p>
+        </div>
+        <button type="button" onclick="resetVehicleForm()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold px-3.5 py-2 rounded-xl transition flex items-center gap-1.5">
+          <i class="fa-solid fa-plus"></i>
+          <span>سيارة جديدة</span>
         </button>
       </div>
 
-      <button type="button" onclick="exportOrdersCsv()" class="bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-extrabold px-3.5 py-2.5 rounded-xl transition flex items-center gap-1.5">
-        <i class="fa-solid fa-file-csv text-emerald-700"></i>
-        <span>تصدير الطلبات CSV</span>
-      </button>
-    </div>
+      <form id="admin-vehicle-form" onsubmit="saveVehiclePoint(event)" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 bg-slate-50/80 p-4 sm:p-5 rounded-2xl border border-slate-200/70">
+        <input type="hidden" id="vehicle-edit-id" value="" />
 
-    <!-- ==================== 1. قسم إدارة سيارات الاستلام ورفع رابط موقع السيارة ==================== -->
-    <section id="admin-sec-vehicles" class="space-y-6">
-      <div class="bg-white rounded-3xl p-5 sm:p-7 border border-slate-200/80 shadow-sm space-y-5">
-        <div class="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 pb-4">
-          <div class="flex items-center gap-3">
-            <div class="w-11 h-11 rounded-2xl bg-[#8C9B1E]/15 text-[#727e16] border border-[#8C9B1E]/30 flex items-center justify-center text-lg">
-              <i class="fa-solid fa-map-location-dot"></i>
-            </div>
-            <div>
-              <h2 id="vehicle-form-title" class="text-lg sm:text-xl font-black text-emerald-950">إضافة أو تعديل موقع سيارة استلام</h2>
-              <p class="text-xs text-slate-500 mt-0.5">ارفع رابط موقع السيارة من خرائط قوقل ليظهر مباشرة للعملاء في واجهة الموقع</p>
-            </div>
-          </div>
+        <div>
+          <label for="admin-vehicle-name" class="block text-xs font-extrabold text-slate-700 mb-1.5">اسم / مسمى سيارة الاستلام *</label>
+          <input id="admin-vehicle-name" type="text" required placeholder="مثال: سيارة الاستلام (1) - حي الروضة" class="w-full p-3 rounded-xl bg-white border border-slate-200 text-sm font-bold text-slate-800 focus:border-emerald-600 focus:outline-none" />
+        </div>
 
-          <button type="button" onclick="resetVehicleForm()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-extrabold px-3.5 py-2 rounded-xl transition flex items-center gap-1.5">
-            <i class="fa-solid fa-plus"></i>
-            <span>تفريغ النموذج / سيارة جديدة</span>
+        <!-- القطاع / النطاق الجغرافي: تعبئة مفتوحة بدون اختيارات -->
+        <div>
+          <label for="admin-vehicle-area" class="block text-xs font-extrabold text-slate-700 mb-1.5">القطاع / النطاق الجغرافي *</label>
+          <input
+            id="admin-vehicle-area"
+            type="text"
+            required
+            placeholder="اكتب القطاع أو النطاق الجغرافي بحرية (مثال: شمال الرياض، حي العليا، الزلفي...)"
+            class="w-full p-3 rounded-xl bg-white border border-slate-200 text-sm font-bold text-slate-800 focus:border-emerald-600 focus:outline-none"
+          />
+        </div>
+
+        <div>
+          <label for="admin-vehicle-address" class="block text-xs font-extrabold text-slate-700 mb-1.5">رابط موقع السيارة على الخريطة *</label>
+          <input id="admin-vehicle-address" type="text" required dir="ltr" placeholder="https://maps.google.com/?q=..." class="w-full p-3 rounded-xl bg-white border border-slate-200 text-sm font-bold text-slate-800 text-left focus:border-emerald-600 focus:outline-none" />
+        </div>
+
+        <div>
+          <label for="admin-vehicle-hours" class="block text-xs font-extrabold text-slate-700 mb-1.5">أوقات التواجد</label>
+          <input id="admin-vehicle-hours" type="text" placeholder="مثال: يومياً من 4:00 عصراً - 10:30 مساءً" class="w-full p-3 rounded-xl bg-white border border-slate-200 text-sm font-bold text-slate-800 focus:border-emerald-600 focus:outline-none" />
+        </div>
+
+        <div>
+          <label for="admin-vehicle-status" class="block text-xs font-extrabold text-slate-700 mb-1.5">حالة السيارة</label>
+          <select id="admin-vehicle-status" class="w-full p-3 rounded-xl bg-white border border-slate-200 text-sm font-bold text-slate-800 focus:border-emerald-600 focus:outline-none">
+            <option value="متاح">متاح</option>
+            <option value="شبه ممتلئ">شبه ممتلئ</option>
+            <option value="غير متاح">غير متاح</option>
+          </select>
+        </div>
+
+        <div>
+          <label for="admin-vehicle-capacity" class="block text-xs font-extrabold text-slate-700 mb-1.5">نسبة الحمولة (%)</label>
+          <input id="admin-vehicle-capacity" type="number" min="0" max="100" value="25" class="w-full p-3 rounded-xl bg-white border border-slate-200 text-sm font-bold text-slate-800 focus:border-emerald-600 focus:outline-none" />
+        </div>
+
+        <div class="sm:col-span-2 lg:col-span-3 flex justify-end">
+          <button type="submit" id="vehicle-submit-btn" class="bg-emerald-800 hover:bg-emerald-700 text-white text-sm font-extrabold py-3 px-6 rounded-xl shadow transition flex items-center gap-2">
+            <i class="fa-solid fa-floppy-disk"></i>
+            <span>حفظ / تحديث موقع السيارة</span>
           </button>
         </div>
+      </form>
 
-        <form id="vehicle-admin-form" onsubmit="saveVehicleFromAdmin(event)" class="grid grid-cols-1 md:grid-cols-2 gap-4 bg-gradient-to-br from-emerald-50/40 via-slate-50 to-gold-50/40 p-4 sm:p-6 rounded-2xl border border-emerald-200/70">
-          <input type="hidden" id="admin-vehicle-id" />
-
-          <div>
-            <label for="admin-vehicle-name" class="block text-xs sm:text-sm font-extrabold text-slate-800 mb-1.5">مسمى سيارة الاستلام *</label>
-            <input
-              id="admin-vehicle-name"
-              type="text"
-              required
-              placeholder="مثال: سيارة الاستلام (1) - حي الروضة"
-              class="w-full p-3.5 rounded-xl bg-white border border-slate-200 text-sm font-bold text-slate-900 focus:border-emerald-600 focus:outline-none"
-            />
-          </div>
-
-          <div>
-            <label for="admin-vehicle-area" class="block text-xs sm:text-sm font-extrabold text-slate-800 mb-1.5">القطاع / النطاق الجغرافي *</label>
-            <select id="admin-vehicle-area" class="w-full p-3.5 rounded-xl bg-white border border-slate-200 text-sm font-bold text-slate-900 focus:border-emerald-600 focus:outline-none">
-              <option value="شرق الرياض">شرق الرياض</option>
-              <option value="شمال الرياض">شمال الرياض</option>
-              <option value="غرب وجنوب الرياض">غرب وجنوب الرياض</option>
-              <option value="وسط الرياض">وسط الرياض</option>
-            </select>
-          </div>
-
-          <!-- حقل رفع رابط موقع السيارة (قوقل ماب) -->
-          <div class="md:col-span-2 rounded-2xl p-4 bg-white border border-emerald-200 shadow-sm space-y-2.5">
-            <div class="flex flex-wrap items-center justify-between gap-2">
-              <label for="admin-vehicle-map-url" class="text-xs sm:text-sm font-black text-emerald-950 flex items-center gap-1.5">
-                <i class="fa-solid fa-location-dot text-emerald-700"></i>
-                <span>رابط موقع السيارة (قوقل ماب / إحداثية) *</span>
-              </label>
-
-              <div class="flex items-center gap-2">
-                <button
-                  type="button"
-                  id="btn-admin-gps"
-                  onclick="captureCurrentLocationForVehicle()"
-                  class="bg-emerald-800 hover:bg-emerald-700 active:scale-95 text-white text-xs font-extrabold px-3 py-1.5 rounded-xl shadow-sm transition flex items-center gap-1.5"
-                >
-                  <i class="fa-solid fa-location-crosshairs text-gold-400"></i>
-                  <span>التقاط إحداثيتي الحالية</span>
-                </button>
-                <a
-                  id="admin-map-preview-link"
-                  href="https://maps.google.com"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  class="bg-gold-100 hover:bg-gold-200 text-emerald-950 text-xs font-extrabold px-3 py-1.5 rounded-xl transition flex items-center gap-1"
-                >
-                  <span>فتح قوقل ماب</span>
-                  <i class="fa-solid fa-arrow-up-left-from-square text-[10px]"></i>
-                </a>
-              </div>
-            </div>
-
-            <input
-              id="admin-vehicle-map-url"
-              type="text"
-              required
-              dir="ltr"
-              oninput="previewAdminVehicleUrl(this.value)"
-              placeholder="https://maps.google.com/?q=24.713600,46.675300 أو الصق رابط المشاركة من خرائط قوقل"
-              class="w-full p-3.5 rounded-xl bg-slate-50 border border-slate-200 text-xs sm:text-sm font-bold text-slate-900 text-left focus:border-emerald-600 focus:outline-none"
-            />
-
-            <p class="text-[11px] text-slate-500 flex items-center gap-1.5">
-              <i class="fa-solid fa-circle-info text-emerald-700"></i>
-              <span>الصق رابط موقع السيارة من خرائط قوقل (Google Maps) أو اضغط «التقاط إحداثيتي الحالية» لرفعه تلقائياً.</span>
-            </p>
-          </div>
-
-          <div>
-            <label for="admin-vehicle-hours" class="block text-xs sm:text-sm font-extrabold text-slate-800 mb-1.5">أوقات تواجد السيارة</label>
-            <input
-              id="admin-vehicle-hours"
-              type="text"
-              value="يومياً من 4:00 عصراً - 10:30 مساءً"
-              placeholder="مثال: يومياً من 4:00 عصراً - 10:30 مساءً"
-              class="w-full p-3.5 rounded-xl bg-white border border-slate-200 text-sm font-medium text-slate-800 focus:border-emerald-600 focus:outline-none"
-            />
-          </div>
-
-          <div class="grid grid-cols-2 gap-3">
-            <div>
-              <label for="admin-vehicle-status" class="block text-xs sm:text-sm font-extrabold text-slate-800 mb-1.5">حالة السيارة</label>
-              <select id="admin-vehicle-status" class="w-full p-3.5 rounded-xl bg-white border border-slate-200 text-sm font-bold text-slate-900 focus:border-emerald-600 focus:outline-none">
-                <option value="متاح">متاح</option>
-                <option value="شبه ممتلئ">شبه ممتلئ</option>
-              </select>
-            </div>
-            <div>
-              <label for="admin-vehicle-capacity" class="block text-xs sm:text-sm font-extrabold text-slate-800 mb-1.5">نسبة الحمولة (%)</label>
-              <input
-                id="admin-vehicle-capacity"
-                type="number"
-                min="0"
-                max="100"
-                value="25"
-                class="w-full p-3.5 rounded-xl bg-white border border-slate-200 text-sm font-black text-center text-emerald-900 focus:border-emerald-600 focus:outline-none"
-              />
-            </div>
-          </div>
-
-          <div class="md:col-span-2 flex flex-wrap items-center justify-end gap-2 pt-2">
-            <button type="submit" id="btn-save-vehicle" class="bg-emerald-800 hover:bg-emerald-700 active:scale-[0.99] text-white font-extrabold text-sm px-6 py-3.5 rounded-2xl shadow-md transition flex items-center gap-2">
-              <i class="fa-solid fa-floppy-disk text-gold-400"></i>
-              <span>حفظ ونشر موقع السيارة</span>
-            </button>
-          </div>
-        </form>
-
-        <!-- قائمة السيارات المسجلة -->
-        <div class="space-y-3 pt-2">
-          <div class="flex items-center justify-between">
-            <h3 class="text-base font-black text-emerald-950 flex items-center gap-2">
-              <span class="w-1.5 h-5 bg-gold-500 rounded-full"></span>
-              <span>قائمة سيارات الاستلام المعتمدة حالياً</span>
-            </h3>
-            <span id="vehicles-list-badge" class="text-xs font-bold text-slate-500">0 سيارات</span>
-          </div>
-
-          <div id="admin-vehicles-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
-        </div>
-      </div>
+      <div id="admin-vehicles-list" class="grid grid-cols-1 md:grid-cols-2 gap-3"></div>
     </section>
 
-    <!-- ==================== 2. قسم إدارة طلبات الاستلام ==================== -->
-    <section id="admin-sec-orders" class="hidden space-y-6">
-      <div class="bg-white rounded-3xl p-5 sm:p-7 border border-slate-200/80 shadow-sm space-y-5">
-        <div class="flex flex-col md:flex-row md:items-center justify-between gap-3 border-b border-slate-100 pb-4">
-          <div>
-            <h2 class="text-lg sm:text-xl font-black text-emerald-950">إدارة طلبات جمع المصاحف المخالفة</h2>
-            <p class="text-xs text-slate-500 mt-0.5">متابعة مواقع المتبرعين، تحديث مراحل الاستلام، وإصدار تقارير المعالجة</p>
-          </div>
+    <!-- ==================== 2. إضافة أو تحديث موقع تسليم من المندوب ==================== -->
+    <section id="admin-delegate-locations-section" class="bg-white rounded-3xl p-5 sm:p-7 border border-slate-200/80 shadow-sm space-y-5">
+      <div class="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 pb-4">
+        <div>
+          <h3 class="text-lg font-black text-emerald-950 flex items-center gap-2">
+            <i class="fa-solid fa-user-check text-emerald-700"></i>
+            <span>إضافة أو تحديث موقع تسليم من المندوب</span>
+          </h3>
+          <p class="text-xs text-slate-500 mt-0.5">أضف موقع تسليم جديد للمندوب أو عدّل أي موقع قائم بسهولة مع كتابة القطاع مباشرة.</p>
+        </div>
+        <button type="button" onclick="resetDelegateLocationForm()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold px-3.5 py-2 rounded-xl transition flex items-center gap-1.5">
+          <i class="fa-solid fa-plus"></i>
+          <span>موقع مندوب جديد</span>
+        </button>
+      </div>
 
-          <div class="flex flex-wrap gap-2">
-            <input
-              id="admin-order-search"
-              type="text"
-              oninput="renderAdminOrders()"
-              placeholder="بحث برقم الطلب، الاسم، أو الجوال..."
-              class="p-2.5 px-3.5 rounded-xl bg-slate-50 border border-slate-200 text-xs sm:text-sm font-bold focus:border-emerald-600 focus:outline-none w-60"
-            />
-            <select id="admin-order-step-filter" onchange="renderAdminOrders()" class="p-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs sm:text-sm font-bold focus:border-emerald-600 focus:outline-none">
-              <option value="all">جميع المراحل</option>
-              <option value="1">1 - طلب جديد</option>
-              <option value="2">2 - المندوب في الطريق</option>
-              <option value="3">3 - الفرز والتصنيف</option>
-              <option value="4">4 - مكتمل المعالجة</option>
-            </select>
-          </div>
+      <form id="admin-delegate-form" onsubmit="saveDelegateLocation(event)" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 bg-slate-50/80 p-4 sm:p-5 rounded-2xl border border-slate-200/70">
+        <input type="hidden" id="delegate-edit-id" value="" />
+
+        <div>
+          <label for="delegate-location-name" class="block text-xs font-extrabold text-slate-700 mb-1.5">اسم الموقع / نقطة المندوب *</label>
+          <input id="delegate-location-name" type="text" required placeholder="مثال: نقطة استلام مندوب - حي النرجس" class="w-full p-3 rounded-xl bg-white border border-slate-200 text-sm font-bold text-slate-800 focus:border-emerald-600 focus:outline-none" />
         </div>
 
-        <div id="admin-orders-list" class="space-y-3"></div>
+        <div>
+          <label for="delegate-location-area" class="block text-xs font-extrabold text-slate-700 mb-1.5">القطاع / النطاق الجغرافي *</label>
+          <input id="delegate-location-area" type="text" required placeholder="اكتب القطاع أو النطاق الجغرافي بحرية" class="w-full p-3 rounded-xl bg-white border border-slate-200 text-sm font-bold text-slate-800 focus:border-emerald-600 focus:outline-none" />
+        </div>
+
+        <div>
+          <label for="delegate-location-map" class="block text-xs font-extrabold text-slate-700 mb-1.5">رابط الإحداثية / الخريطة *</label>
+          <input id="delegate-location-map" type="text" required dir="ltr" placeholder="https://maps.google.com/?q=..." class="w-full p-3 rounded-xl bg-white border border-slate-200 text-sm font-bold text-slate-800 text-left focus:border-emerald-600 focus:outline-none" />
+        </div>
+
+        <div>
+          <label for="delegate-location-hours" class="block text-xs font-extrabold text-slate-700 mb-1.5">أوقات عمل المندوب</label>
+          <input id="delegate-location-hours" type="text" placeholder="مثال: يومياً من 4:00 عصراً - 10:00 مساءً" class="w-full p-3 rounded-xl bg-white border border-slate-200 text-sm font-bold text-slate-800 focus:border-emerald-600 focus:outline-none" />
+        </div>
+
+        <div>
+          <label for="delegate-location-status" class="block text-xs font-extrabold text-slate-700 mb-1.5">حالة الاستلام</label>
+          <select id="delegate-location-status" class="w-full p-3 rounded-xl bg-white border border-slate-200 text-sm font-bold text-slate-800 focus:border-emerald-600 focus:outline-none">
+            <option value="متاح">متاح</option>
+            <option value="مشغول حالياً">مشغول حالياً</option>
+            <option value="غير متاح">غير متاح</option>
+          </select>
+        </div>
+
+        <div class="flex items-end">
+          <button type="submit" id="delegate-submit-btn" class="w-full bg-emerald-800 hover:bg-emerald-700 text-white text-sm font-extrabold py-3 px-4 rounded-xl shadow transition flex items-center justify-center gap-2">
+            <i class="fa-solid fa-floppy-disk"></i>
+            <span>حفظ / تحديث موقع المندوب</span>
+          </button>
+        </div>
+      </form>
+
+      <div id="admin-delegate-locations-list" class="grid grid-cols-1 md:grid-cols-2 gap-3"></div>
+    </section>
+
+    <!-- ==================== 3. إدارة طلبات التسليم ==================== -->
+    <section id="admin-orders-section" class="bg-white rounded-3xl p-5 sm:p-7 border border-slate-200/80 shadow-sm space-y-4">
+      <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 pb-4">
+        <div>
+          <h3 class="text-lg font-black text-emerald-950 flex items-center gap-2">
+            <i class="fa-solid fa-boxes-stacked text-emerald-700"></i>
+            <span>طلبات تسليم المصاحف الواردة</span>
+          </h3>
+          <p class="text-xs text-slate-500 mt-0.5">تحديث مراحل المعالجة (1 إلى 4) للطلبات المسجلة.</p>
+        </div>
       </div>
+      <div id="admin-orders-list" class="space-y-3"></div>
     </section>
 
   </main>
@@ -346,21 +279,37 @@
 
     const STORAGE_KEYS = {
       VEHICLES: 'qca_pickup_vehicles_v1',
+      DELEGATE_LOCATIONS: 'qca_delegate_pickup_locations_v1',
       SB_CONFIG: 'qca_supabase_config_v1'
     };
 
     const DEFAULT_VEHICLES = [
-      { id: 1, name: 'سيارة الاستلام (1) - حي الروضة', area: 'شرق الرياض', address: 'https://maps.google.com/?q=24.7254,46.7745', hours: 'مفتوح 24 ساعة (استقبال مباشر وميداني)', status: 'متاح', capacityPercent: 32 },
-      { id: 2, name: 'سيارة الاستلام (2) - جامع الراجحي', area: 'شرق الرياض', address: 'https://maps.google.com/?q=24.6778,46.7796', hours: 'يومياً من 4:00 عصراً - 10:30 مساءً', status: 'متاح', capacityPercent: 45 },
-      { id: 3, name: 'سيارة الاستلام (3) - حي الياسمين', area: 'شمال الرياض', address: 'https://maps.google.com/?q=24.8235,46.6579', hours: '8:00 صباحاً - 12:00 منتصف الليل', status: 'شبه ممتلئ', capacityPercent: 82 },
-      { id: 4, name: 'سيارة الاستلام (4) - حي النرجس', area: 'شمال الرياض', address: 'https://maps.google.com/?q=24.8531,46.6732', hours: 'يومياً من 3:00 عصراً - 11:00 مساءً', status: 'متاح', capacityPercent: 20 }
+      { id: 1, name: 'سيارة الاستلام (1) - حي الروضة', area: 'شرق الرياض', address: 'https://maps.google.com/?q=24.7254,46.7745', distance: '1.8 كم', hours: 'مفتوح 24 ساعة (استقبال مباشر وميداني)', status: 'متاح', capacityPercent: 32 },
+      { id: 2, name: 'سيارة الاستلام (2) - جامع الراجحي', area: 'شرق الرياض', address: 'https://maps.google.com/?q=24.6778,46.7796', distance: '3.2 كم', hours: 'يومياً من 4:00 عصراً - 10:30 مساءً', status: 'متاح', capacityPercent: 45 },
+      { id: 3, name: 'سيارة الاستلام (3) - حي الياسمين', area: 'شمال الرياض', address: 'https://maps.google.com/?q=24.8235,46.6579', distance: '5.4 كم', hours: '8:00 صباحاً - 12:00 منتصف الليل', status: 'شبه ممتلئ', capacityPercent: 82 },
+      { id: 4, name: 'سيارة الاستلام (4) - حي النرجس', area: 'شمال الرياض', address: 'https://maps.google.com/?q=24.8531,46.6732', distance: '6.1 كم', hours: 'يومياً من 3:00 عصراً - 11:00 مساءً', status: 'متاح', capacityPercent: 20 }
     ];
 
     const adminState = {
       supabaseClient: null,
       vehicles: [],
+      delegateLocations: [],
       orders: []
     };
+
+    function showToast(message, type = 'success') {
+      const container = document.getElementById('toast-container');
+      const toast = document.createElement('div');
+      const bg = type === 'success' ? 'bg-emerald-900 border-gold-400/50' : 'bg-slate-800 border-slate-600';
+      const icon = type === 'success' ? 'fa-circle-check text-gold-400' : 'fa-circle-info text-emerald-300';
+      toast.className = `${bg} text-white px-4 py-3 rounded-2xl shadow-xl border flex items-center gap-2.5 text-xs sm:text-sm font-bold pointer-events-auto transition-all duration-300`;
+      toast.innerHTML = `<i class="fa-solid ${icon} text-base shrink-0"></i><span>${message}</span>`;
+      container.appendChild(toast);
+      setTimeout(() => {
+        toast.style.opacity = '0';
+        setTimeout(() => toast.remove(), 300);
+      }, 3200);
+    }
 
     function initSupabase() {
       let url = DEFAULT_SB_URL;
@@ -374,420 +323,372 @@
         }
       } catch {}
 
-      if (window.supabase && url && key) {
+      if (url && key && window.supabase) {
         adminState.supabaseClient = window.supabase.createClient(url, key);
+        const badge = document.getElementById('db-connection-badge');
+        if (badge) badge.classList.remove('hidden');
       }
     }
 
-    function showToast(message, type = 'success') {
-      const container = document.getElementById('toast-container');
-      const toast = document.createElement('div');
-      const bg = type === 'success' ? 'bg-emerald-900 border-gold-400/50' : 'bg-slate-800 border-slate-600';
-      const icon = type === 'success' ? 'fa-circle-check text-gold-400' : 'fa-circle-info text-emerald-300';
-      toast.className = `${bg} text-white px-4 py-3 rounded-2xl shadow-xl border flex items-center gap-3 text-xs sm:text-sm font-bold pointer-events-auto transition-all`;
-      toast.innerHTML = `<i class="fa-solid ${icon} text-lg"></i><span>${message}</span>`;
-      container.appendChild(toast);
-      setTimeout(() => {
-        toast.style.opacity = '0';
-        setTimeout(() => toast.remove(), 300);
-      }, 3200);
-    }
-
-    function switchAdminSection(sec) {
-      const vSec = document.getElementById('admin-sec-vehicles');
-      const oSec = document.getElementById('admin-sec-orders');
-      const vBtn = document.getElementById('sec-btn-vehicles');
-      const oBtn = document.getElementById('sec-btn-orders');
-
-      if (sec === 'vehicles') {
-        vSec.classList.remove('hidden');
-        oSec.classList.add('hidden');
-        vBtn.className = 'px-4 py-2.5 rounded-xl text-xs sm:text-sm font-extrabold bg-emerald-800 text-white shadow-sm transition flex items-center gap-2';
-        oBtn.className = 'px-4 py-2.5 rounded-xl text-xs sm:text-sm font-extrabold text-slate-600 hover:bg-slate-100 transition flex items-center gap-2';
-      } else {
-        oSec.classList.remove('hidden');
-        vSec.classList.add('hidden');
-        oBtn.className = 'px-4 py-2.5 rounded-xl text-xs sm:text-sm font-extrabold bg-emerald-800 text-white shadow-sm transition flex items-center gap-2';
-        vBtn.className = 'px-4 py-2.5 rounded-xl text-xs sm:text-sm font-extrabold text-slate-600 hover:bg-slate-100 transition flex items-center gap-2';
-      }
-    }
-
-    // ==================== GPS & MAP LINK FOR VEHICLES ====================
-    function previewAdminVehicleUrl(val) {
-      const trimmed = String(val || '').trim();
-      const link = document.getElementById('admin-map-preview-link');
-      if (link) {
-        link.href = /^https?:\/\/.+/i.test(trimmed) ? trimmed : 'https://maps.google.com';
-      }
-    }
-
-    function captureCurrentLocationForVehicle() {
-      const btn = document.getElementById('btn-admin-gps');
-      const input = document.getElementById('admin-vehicle-map-url');
-
-      if (!navigator.geolocation) {
-        showToast('المتصفح لا يدعم تحديد الموقع تلقائياً؛ الصق رابط قوقل ماب يدوياً', 'info');
-        return;
-      }
-
-      btn.disabled = true;
-      btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin text-gold-400"></i><span>جاري الالتقاط...</span>`;
-
-      navigator.geolocation.getCurrentPosition(
-        (pos) => {
-          const lat = pos.coords.latitude.toFixed(6);
-          const lng = pos.coords.longitude.toFixed(6);
-          const mapsUrl = `https://maps.google.com/?q=${lat},${lng}`;
-          input.value = mapsUrl;
-          previewAdminVehicleUrl(mapsUrl);
-          showToast('تم التقاط إحداثية الموقع وتوليد رابط قوقل ماب');
-          btn.disabled = false;
-          btn.innerHTML = `<i class="fa-solid fa-location-crosshairs text-gold-400"></i><span>التقاط إحداثيتي الحالية</span>`;
-        },
-        () => {
-          showToast('تعذر الوصول للموقع تلقائياً؛ الصق رابط قوقل ماب يدوياً', 'info');
-          btn.disabled = false;
-          btn.innerHTML = `<i class="fa-solid fa-location-crosshairs text-gold-400"></i><span>التقاط إحداثيتي الحالية</span>`;
-        },
-        { enableHighAccuracy: true, timeout: 10000 }
-      );
-    }
-
-    // ==================== SYNC DATA ====================
-    async function syncAllFromSupabase() {
-      // Load local fallback first
+    function loadLocalState() {
       try {
-        const saved = localStorage.getItem(STORAGE_KEYS.VEHICLES);
-        adminState.vehicles = saved ? JSON.parse(saved) : structuredClone(DEFAULT_VEHICLES);
+        const v = localStorage.getItem(STORAGE_KEYS.VEHICLES);
+        adminState.vehicles = v ? JSON.parse(v) : structuredClone(DEFAULT_VEHICLES);
       } catch {
         adminState.vehicles = structuredClone(DEFAULT_VEHICLES);
       }
 
+      try {
+        const d = localStorage.getItem(STORAGE_KEYS.DELEGATE_LOCATIONS);
+        adminState.delegateLocations = d ? JSON.parse(d) : [];
+      } catch {
+        adminState.delegateLocations = [];
+      }
+    }
+
+    function persistVehicles() {
+      localStorage.setItem(STORAGE_KEYS.VEHICLES, JSON.stringify(adminState.vehicles));
+    }
+
+    function persistDelegateLocations() {
+      localStorage.setItem(STORAGE_KEYS.DELEGATE_LOCATIONS, JSON.stringify(adminState.delegateLocations));
+    }
+
+    function updateStats() {
+      document.getElementById('admin-stat-orders').textContent = adminState.orders.length;
+      const totalMushafs = adminState.orders.reduce((sum, o) => sum + (Number(o.quantity) || 0), 0);
+      document.getElementById('admin-stat-mushafs').textContent = totalMushafs;
+      document.getElementById('admin-stat-vehicles').textContent = adminState.vehicles.length;
+      document.getElementById('admin-stat-delegates').textContent = adminState.delegateLocations.length;
+    }
+
+    // ==================== VEHICLES CRUD ====================
+    function resetVehicleForm() {
+      document.getElementById('vehicle-edit-id').value = '';
+      document.getElementById('admin-vehicle-name').value = '';
+      document.getElementById('admin-vehicle-area').value = '';
+      document.getElementById('admin-vehicle-address').value = '';
+      document.getElementById('admin-vehicle-hours').value = 'يومياً من 4:00 عصراً - 10:30 مساءً';
+      document.getElementById('admin-vehicle-status').value = 'متاح';
+      document.getElementById('admin-vehicle-capacity').value = '25';
+      document.getElementById('vehicle-submit-btn').innerHTML = `<i class="fa-solid fa-floppy-disk"></i><span>حفظ / تحديث موقع السيارة</span>`;
+    }
+
+    function editVehiclePoint(id) {
+      const item = adminState.vehicles.find(v => String(v.id) === String(id));
+      if (!item) return;
+
+      document.getElementById('vehicle-edit-id').value = item.id;
+      document.getElementById('admin-vehicle-name').value = item.name || '';
+      document.getElementById('admin-vehicle-area').value = item.area || '';
+      document.getElementById('admin-vehicle-address').value = item.address || '';
+      document.getElementById('admin-vehicle-hours').value = item.hours || '';
+      document.getElementById('admin-vehicle-status').value = item.status || 'متاح';
+      document.getElementById('admin-vehicle-capacity').value = item.capacityPercent ?? 25;
+      document.getElementById('vehicle-submit-btn').innerHTML = `<i class="fa-solid fa-pen-to-square"></i><span>تحديث موقع السيارة</span>`;
+      document.getElementById('admin-vehicle-form').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+
+    async function deleteVehiclePoint(id) {
+      adminState.vehicles = adminState.vehicles.filter(v => String(v.id) !== String(id));
+      persistVehicles();
+      renderVehiclesAdmin();
+      updateStats();
+
+      if (adminState.supabaseClient) {
+        try {
+          await adminState.supabaseClient.from('pickup_vehicles').delete().eq('id', id);
+        } catch {}
+      }
+      showToast('تم حذف موقع السيارة');
+    }
+
+    async function saveVehiclePoint(e) {
+      e.preventDefault();
+      const editId = document.getElementById('vehicle-edit-id').value.trim();
+      const record = {
+        id: editId || Date.now(),
+        name: document.getElementById('admin-vehicle-name').value.trim(),
+        area: document.getElementById('admin-vehicle-area').value.trim(),
+        address: document.getElementById('admin-vehicle-address').value.trim(),
+        distance: 'موقع مباشر',
+        hours: document.getElementById('admin-vehicle-hours').value.trim() || 'يومياً',
+        status: document.getElementById('admin-vehicle-status').value || 'متاح',
+        capacityPercent: Math.max(0, Math.min(100, Number(document.getElementById('admin-vehicle-capacity').value) || 0))
+      };
+
+      if (editId) {
+        adminState.vehicles = adminState.vehicles.map(v => String(v.id) === String(editId) ? { ...v, ...record, id: v.id } : v);
+      } else {
+        adminState.vehicles.push(record);
+      }
+
+      persistVehicles();
+      renderVehiclesAdmin();
+      updateStats();
+      resetVehicleForm();
+
+      if (adminState.supabaseClient) {
+        try {
+          await adminState.supabaseClient.from('pickup_vehicles').upsert({
+            id: Number(record.id),
+            name: record.name,
+            area: record.area,
+            address: record.address,
+            distance: record.distance,
+            hours: record.hours,
+            status: record.status,
+            capacity_percent: record.capacityPercent
+          });
+        } catch {}
+      }
+
+      showToast(editId ? 'تم تحديث موقع السيارة بنجاح' : 'تم حفظ موقع السيارة بنجاح');
+    }
+
+    function renderVehiclesAdmin() {
+      const container = document.getElementById('admin-vehicles-list');
+      if (!container) return;
+
+      if (!adminState.vehicles.length) {
+        container.innerHTML = `<div class="col-span-full text-center py-6 text-xs font-bold text-slate-400 bg-slate-50 rounded-2xl border border-dashed border-slate-200">لا توجد سيارات استلام مضافة حالياً.</div>`;
+        return;
+      }
+
+      container.innerHTML = adminState.vehicles.map(v => `
+        <div class="p-4 rounded-2xl border border-slate-200 bg-white flex items-start justify-between gap-3">
+          <div class="space-y-1 min-w-0">
+            <div class="flex items-center gap-2 flex-wrap">
+              <span class="font-extrabold text-sm text-emerald-950">${v.name}</span>
+              <span class="text-[11px] font-bold bg-emerald-50 text-emerald-800 border border-emerald-200 px-2 py-0.5 rounded-full">${v.status}</span>
+            </div>
+            <div class="text-xs font-bold text-slate-600">القطاع: ${v.area || 'غير محدد'} • الحمولة: ${v.capacityPercent ?? 0}%</div>
+            <div class="text-[11px] text-slate-500 truncate" dir="ltr">${v.address || ''}</div>
+          </div>
+          <div class="flex items-center gap-1.5 shrink-0">
+            <button type="button" onclick="editVehiclePoint('${v.id}')" class="bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200 text-xs font-bold px-3 py-1.5 rounded-xl transition">تعديل</button>
+            <button type="button" onclick="deleteVehiclePoint('${v.id}')" class="bg-red-50 hover:bg-red-100 text-red-700 border border-red-200 text-xs font-bold px-2.5 py-1.5 rounded-xl transition"><i class="fa-solid fa-trash"></i></button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // ==================== DELEGATE PICKUP LOCATIONS CRUD ====================
+    function resetDelegateLocationForm() {
+      document.getElementById('delegate-edit-id').value = '';
+      document.getElementById('delegate-location-name').value = '';
+      document.getElementById('delegate-location-area').value = '';
+      document.getElementById('delegate-location-map').value = '';
+      document.getElementById('delegate-location-hours').value = 'يومياً من 4:00 عصراً - 10:00 مساءً';
+      document.getElementById('delegate-location-status').value = 'متاح';
+      document.getElementById('delegate-submit-btn').innerHTML = `<i class="fa-solid fa-floppy-disk"></i><span>حفظ / تحديث موقع المندوب</span>`;
+    }
+
+    function editDelegateLocation(id) {
+      const item = adminState.delegateLocations.find(loc => String(loc.id) === String(id));
+      if (!item) return;
+
+      document.getElementById('delegate-edit-id').value = item.id;
+      document.getElementById('delegate-location-name').value = item.name || '';
+      document.getElementById('delegate-location-area').value = item.area || '';
+      document.getElementById('delegate-location-map').value = item.mapUrl || '';
+      document.getElementById('delegate-location-hours').value = item.hours || '';
+      document.getElementById('delegate-location-status').value = item.status || 'متاح';
+      document.getElementById('delegate-submit-btn').innerHTML = `<i class="fa-solid fa-pen-to-square"></i><span>تحديث موقع المندوب</span>`;
+      document.getElementById('admin-delegate-form').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+
+    async function deleteDelegateLocation(id) {
+      adminState.delegateLocations = adminState.delegateLocations.filter(loc => String(loc.id) !== String(id));
+      persistDelegateLocations();
+      renderDelegateLocationsAdmin();
+      updateStats();
+
+      if (adminState.supabaseClient) {
+        try {
+          await adminState.supabaseClient.from('delegate_pickup_locations').delete().eq('id', id);
+        } catch {}
+      }
+      showToast('تم حذف موقع المندوب');
+    }
+
+    async function saveDelegateLocation(e) {
+      e.preventDefault();
+      const editId = document.getElementById('delegate-edit-id').value.trim();
+      const record = {
+        id: editId || String(Date.now()),
+        name: document.getElementById('delegate-location-name').value.trim(),
+        area: document.getElementById('delegate-location-area').value.trim(),
+        mapUrl: document.getElementById('delegate-location-map').value.trim(),
+        hours: document.getElementById('delegate-location-hours').value.trim() || 'يومياً',
+        status: document.getElementById('delegate-location-status').value || 'متاح'
+      };
+
+      if (editId) {
+        adminState.delegateLocations = adminState.delegateLocations.map(loc =>
+          String(loc.id) === String(editId) ? record : loc
+        );
+      } else {
+        adminState.delegateLocations.unshift(record);
+      }
+
+      persistDelegateLocations();
+      renderDelegateLocationsAdmin();
+      updateStats();
+      resetDelegateLocationForm();
+
+      if (adminState.supabaseClient) {
+        try {
+          const payload = {
+            name: record.name,
+            area: record.area,
+            map_url: record.mapUrl,
+            hours: record.hours,
+            status: record.status
+          };
+          if (!isNaN(Number(record.id))) payload.id = Number(record.id);
+          await adminState.supabaseClient.from('delegate_pickup_locations').upsert(payload);
+        } catch {}
+      }
+
+      showToast(editId ? 'تم تحديث موقع تسليم المندوب بنجاح' : 'تم إضافة موقع تسليم المندوب بنجاح');
+    }
+
+    function renderDelegateLocationsAdmin() {
+      const container = document.getElementById('admin-delegate-locations-list');
+      if (!container) return;
+
+      if (!adminState.delegateLocations.length) {
+        container.innerHTML = `<div class="col-span-full text-center py-6 text-xs font-bold text-slate-400 bg-slate-50 rounded-2xl border border-dashed border-slate-200">لا توجد مواقع تسليم من المندوب مضافة حتى الآن.</div>`;
+        return;
+      }
+
+      container.innerHTML = adminState.delegateLocations.map(loc => `
+        <div class="p-4 rounded-2xl border border-slate-200 bg-white flex items-start justify-between gap-3">
+          <div class="space-y-1 min-w-0">
+            <div class="flex items-center gap-2 flex-wrap">
+              <span class="font-extrabold text-sm text-emerald-950">${loc.name}</span>
+              <span class="text-[11px] font-bold bg-emerald-50 text-emerald-800 border border-emerald-200 px-2 py-0.5 rounded-full">${loc.status}</span>
+            </div>
+            <div class="text-xs font-bold text-slate-600">القطاع: ${loc.area}</div>
+            <div class="text-[11px] text-slate-500">${loc.hours}</div>
+          </div>
+          <div class="flex items-center gap-1.5 shrink-0">
+            <button type="button" onclick="editDelegateLocation('${loc.id}')" class="bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200 text-xs font-bold px-3 py-1.5 rounded-xl transition">تعديل</button>
+            <button type="button" onclick="deleteDelegateLocation('${loc.id}')" class="bg-red-50 hover:bg-red-100 text-red-700 border border-red-200 text-xs font-bold px-2.5 py-1.5 rounded-xl transition"><i class="fa-solid fa-trash"></i></button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // ==================== ORDERS SYNC & STEP UPDATE ====================
+    async function syncAllAdminData() {
       if (adminState.supabaseClient) {
         try {
           const { data: vData, error: vErr } = await adminState.supabaseClient
             .from('pickup_vehicles')
             .select('*')
             .order('id', { ascending: true });
-
           if (!vErr && Array.isArray(vData) && vData.length > 0) {
-            adminState.vehicles = vData.map(row => ({
-              id: row.id,
-              name: row.name,
-              area: row.area || 'شرق الرياض',
-              address: row.address || '',
-              hours: row.hours || 'يومياً',
-              status: row.status || 'متاح',
-              capacityPercent: Number(row.capacity_percent ?? row.capacityPercent ?? 25)
+            adminState.vehicles = vData.map(r => ({
+              id: r.id,
+              name: r.name,
+              area: r.area || '',
+              address: r.address || '',
+              distance: r.distance || 'موقع مباشر',
+              hours: r.hours || 'يومياً',
+              status: r.status || 'متاح',
+              capacityPercent: Number(r.capacity_percent ?? 25)
             }));
-            localStorage.setItem(STORAGE_KEYS.VEHICLES, JSON.stringify(adminState.vehicles));
+            persistVehicles();
+          }
+
+          const { data: dData, error: dErr } = await adminState.supabaseClient
+            .from('delegate_pickup_locations')
+            .select('*')
+            .order('id', { ascending: false });
+          if (!dErr && Array.isArray(dData) && dData.length > 0) {
+            adminState.delegateLocations = dData.map(r => ({
+              id: String(r.id),
+              name: r.name,
+              area: r.area || '',
+              mapUrl: r.map_url || '',
+              hours: r.hours || 'يومياً',
+              status: r.status || 'متاح'
+            }));
+            persistDelegateLocations();
           }
 
           const { data: oData, error: oErr } = await adminState.supabaseClient
             .from('mushaf_orders')
             .select('*')
             .order('created_at', { ascending: false });
-
           if (!oErr && Array.isArray(oData)) {
-            adminState.orders = oData.map(row => ({
-              id: row.tracking_code || row.id,
-              donorName: row.donor_name || 'غير محدد',
-              donorPhone: row.donor_phone || '',
-              quantity: Number(row.quantity || 1),
-              condition: row.condition || '',
-              method: row.method || '',
-              location: row.location || '',
-              date: row.order_date || '',
-              step: Number(row.step || 1),
-              processingSummary: row.processing_summary || null
+            adminState.orders = oData.map(r => ({
+              id: r.tracking_code || r.id,
+              donorName: r.donor_name || 'مساهم كريم',
+              donorPhone: r.donor_phone || '',
+              quantity: Number(r.quantity || 1),
+              condition: r.condition || '',
+              method: r.method || '',
+              location: r.location || '',
+              date: r.order_date || '',
+              step: Number(r.step || 1)
             }));
           }
         } catch (err) {
-          console.warn('Supabase sync warning:', err);
+          console.warn('Admin sync warning:', err);
         }
       }
 
-      updateDashboardStats();
-      renderAdminVehicles();
-      renderAdminOrders();
-    }
-
-    function updateDashboardStats() {
-      document.getElementById('stat-vehicles-count').textContent = adminState.vehicles.length;
-      document.getElementById('stat-orders-count').textContent = adminState.orders.length;
-      document.getElementById('stat-pending-count').textContent = adminState.orders.filter(o => o.step < 4).length;
-      const totalMushafs = adminState.orders.reduce((sum, o) => sum + (Number(o.quantity) || 0), 0);
-      document.getElementById('stat-mushafs-sum').textContent = totalMushafs.toLocaleString('en-US');
-    }
-
-    // ==================== VEHICLES CRUD ====================
-    function resetVehicleForm() {
-      document.getElementById('admin-vehicle-id').value = '';
-      document.getElementById('admin-vehicle-name').value = '';
-      document.getElementById('admin-vehicle-area').value = 'شرق الرياض';
-      document.getElementById('admin-vehicle-map-url').value = '';
-      document.getElementById('admin-vehicle-hours').value = 'يومياً من 4:00 عصراً - 10:30 مساءً';
-      document.getElementById('admin-vehicle-status').value = 'متاح';
-      document.getElementById('admin-vehicle-capacity').value = '25';
-      document.getElementById('vehicle-form-title').textContent = 'إضافة سيارة استلام جديدة';
-      document.getElementById('btn-save-vehicle').innerHTML = `<i class="fa-solid fa-floppy-disk text-gold-400"></i><span>حفظ ونشر موقع السيارة</span>`;
-      previewAdminVehicleUrl('');
-    }
-
-    function editVehicle(id) {
-      const v = adminState.vehicles.find(item => String(item.id) === String(id));
-      if (!v) return;
-
-      document.getElementById('admin-vehicle-id').value = v.id;
-      document.getElementById('admin-vehicle-name').value = v.name || '';
-      document.getElementById('admin-vehicle-area').value = v.area || 'شرق الرياض';
-      document.getElementById('admin-vehicle-map-url').value = v.address || '';
-      document.getElementById('admin-vehicle-hours').value = v.hours || '';
-      document.getElementById('admin-vehicle-status').value = v.status || 'متاح';
-      document.getElementById('admin-vehicle-capacity').value = Number(v.capacityPercent ?? 25);
-
-      document.getElementById('vehicle-form-title').textContent = `تعديل بيانات: ${v.name}`;
-      document.getElementById('btn-save-vehicle').innerHTML = `<i class="fa-solid fa-check text-gold-400"></i><span>تحديث بيانات السيارة</span>`;
-      previewAdminVehicleUrl(v.address || '');
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-
-    async function saveVehicleFromAdmin(e) {
-      e.preventDefault();
-      const rawId = document.getElementById('admin-vehicle-id').value;
-      const name = document.getElementById('admin-vehicle-name').value.trim();
-      const area = document.getElementById('admin-vehicle-area').value;
-      const mapUrl = document.getElementById('admin-vehicle-map-url').value.trim();
-      const hours = document.getElementById('admin-vehicle-hours').value.trim();
-      const status = document.getElementById('admin-vehicle-status').value;
-      const capacityPercent = Math.max(0, Math.min(100, parseInt(document.getElementById('admin-vehicle-capacity').value, 10) || 0));
-
-      const nextId = rawId
-        ? (isNaN(Number(rawId)) ? rawId : Number(rawId))
-        : (adminState.vehicles.reduce((max, item) => Math.max(max, Number(item.id) || 0), 0) + 1);
-
-      const vehicleObj = {
-        id: nextId,
-        name,
-        area,
-        address: mapUrl,
-        hours,
-        status,
-        capacityPercent
-      };
-
-      const idx = adminState.vehicles.findIndex(item => String(item.id) === String(nextId));
-      if (idx >= 0) {
-        adminState.vehicles[idx] = vehicleObj;
-      } else {
-        adminState.vehicles.push(vehicleObj);
-      }
-
-      localStorage.setItem(STORAGE_KEYS.VEHICLES, JSON.stringify(adminState.vehicles));
-
-      if (adminState.supabaseClient) {
-        try {
-          const { error } = await adminState.supabaseClient
-            .from('pickup_vehicles')
-            .upsert({
-              id: vehicleObj.id,
-              name: vehicleObj.name,
-              area: vehicleObj.area,
-              address: vehicleObj.address,
-              hours: vehicleObj.hours,
-              status: vehicleObj.status,
-              capacity_percent: vehicleObj.capacityPercent
-            }, { onConflict: 'id' });
-
-          if (error) throw error;
-          showToast('تم حفظ وتحديث رابط موقع السيارة في قاعدة البيانات بنجاح');
-        } catch (err) {
-          console.warn('Vehicle upsert error:', err);
-          showToast('تم الحفظ محلياً (تعذر التحديث السحابي)', 'info');
-        }
-      } else {
-        showToast('تم حفظ بيانات السيارة محلياً');
-      }
-
-      updateDashboardStats();
-      renderAdminVehicles();
-      resetVehicleForm();
-    }
-
-    async function deleteVehicle(id) {
-      if (!confirm('هل أنت متأكد من حذف سيارة الاستلام هذه؟')) return;
-
-      adminState.vehicles = adminState.vehicles.filter(item => String(item.id) !== String(id));
-      localStorage.setItem(STORAGE_KEYS.VEHICLES, JSON.stringify(adminState.vehicles));
-
-      if (adminState.supabaseClient) {
-        try {
-          await adminState.supabaseClient.from('pickup_vehicles').delete().eq('id', id);
-        } catch (err) {
-          console.warn('Vehicle delete error:', err);
-        }
-      }
-
-      showToast('تم حذف سيارة الاستلام', 'info');
-      updateDashboardStats();
-      renderAdminVehicles();
-    }
-
-    function renderAdminVehicles() {
-      const container = document.getElementById('admin-vehicles-list');
-      const badge = document.getElementById('vehicles-list-badge');
-      badge.textContent = `${adminState.vehicles.length} سيارات`;
-
-      if (adminState.vehicles.length === 0) {
-        container.innerHTML = `<div class="col-span-full text-center py-8 text-sm font-bold text-slate-500 bg-slate-50 rounded-2xl">لا توجد سيارات مسجلة حالياً.</div>`;
-        return;
-      }
-
-      container.innerHTML = adminState.vehicles.map(v => {
-        const isUrl = /^https?:\/\/.+/i.test(String(v.address || '').trim());
-        const isAvailable = v.status === 'متاح';
-        const statusClass = isAvailable
-          ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
-          : 'bg-amber-50 text-amber-700 border-amber-200';
-
-        const locationHtml = isUrl
-          ? `<a href="${v.address}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200 px-3 py-1.5 rounded-xl text-xs font-extrabold transition">
-               <i class="fa-solid fa-location-dot text-emerald-700"></i>
-               <span>فتح موقع السيارة على قوقل ماب</span>
-               <i class="fa-solid fa-arrow-up-left-from-square text-[10px]"></i>
-             </a>`
-          : `<div class="text-xs text-slate-600 flex items-center gap-1.5"><i class="fa-solid fa-location-dot text-emerald-700"></i><span>${v.address || 'لم يحدد رابط'}</span></div>`;
-
-        return `
-          <div class="rounded-2xl p-4 sm:p-5 bg-slate-50/70 hover:bg-white border border-slate-200 hover:border-emerald-300 transition shadow-sm flex flex-col justify-between gap-4">
-            <div class="space-y-2.5">
-              <div class="flex items-start justify-between gap-2">
-                <h4 class="font-extrabold text-sm sm:text-base text-emerald-950 flex items-center gap-2">
-                  <i class="fa-solid fa-car-side text-[#8C9B1E]"></i>
-                  <span>${v.name}</span>
-                </h4>
-                <span class="shrink-0 text-[11px] font-bold px-2.5 py-0.5 rounded-full border ${statusClass}">${v.status}</span>
-              </div>
-
-              <div class="flex flex-wrap items-center gap-3 text-xs text-slate-500">
-                <span class="font-bold text-emerald-800"><i class="fa-solid fa-map-pin ml-1"></i>${v.area}</span>
-                <span><i class="fa-regular fa-clock ml-1"></i>${v.hours}</span>
-              </div>
-
-              <div>${locationHtml}</div>
-
-              <div>
-                <div class="flex justify-between text-[11px] text-slate-500 mb-1">
-                  <span>الحمولة</span>
-                  <span class="font-bold">${v.capacityPercent}%</span>
-                </div>
-                <div class="w-full h-1.5 bg-slate-200 rounded-full overflow-hidden">
-                  <div class="h-full ${isAvailable ? 'bg-emerald-600' : 'bg-amber-500'}" style="width: ${v.capacityPercent}%"></div>
-                </div>
-              </div>
-            </div>
-
-            <div class="flex items-center gap-2 pt-2 border-t border-slate-200/80">
-              <button type="button" onclick="editVehicle('${v.id}')" class="flex-1 bg-emerald-800 hover:bg-emerald-700 text-white text-xs font-extrabold py-2 px-3 rounded-xl transition flex items-center justify-center gap-1.5">
-                <i class="fa-solid fa-pen-to-square"></i>
-                <span>تعديل الرابط والبيانات</span>
-              </button>
-              <button type="button" onclick="deleteVehicle('${v.id}')" class="bg-red-50 hover:bg-red-100 text-red-700 border border-red-200 text-xs font-bold py-2 px-3 rounded-xl transition" title="حذف السيارة">
-                <i class="fa-solid fa-trash"></i>
-              </button>
-            </div>
-          </div>
-        `;
-      }).join('');
-    }
-
-    // ==================== ORDERS MANAGEMENT ====================
-    function formatOrderLocation(loc) {
-      const raw = String(loc || '');
-      const escaped = raw.replace(/</g, '<').replace(/>/g, '>');
-      const urlMatch = escaped.match(/(https?:\/\/[^\s)]+)/i);
-      if (!urlMatch) return escaped;
-      const url = urlMatch[1];
-      const note = escaped.replace(url, '').replace(/\(\s*\)/g, '').trim();
-      const btn = `<a href="${url}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200 px-2.5 py-1 rounded-lg text-xs font-extrabold transition"><i class="fa-solid fa-location-dot text-emerald-700"></i><span>فتح إحداثية العميل</span><i class="fa-solid fa-arrow-up-left-from-square text-[10px]"></i></a>`;
-      return note ? `${btn} <span class="text-slate-600 mr-1">${note}</span>` : btn;
+      renderVehiclesAdmin();
+      renderDelegateLocationsAdmin();
+      renderOrdersAdmin();
+      updateStats();
     }
 
     async function updateOrderStep(trackingCode, newStep) {
       const stepNum = Number(newStep);
-      const order = adminState.orders.find(o => o.id === trackingCode);
-      if (!order) return;
-
-      order.step = stepNum;
-      if (stepNum === 4 && !order.processingSummary) {
-        order.processingSummary = {
-          facility: 'معمل جمعية العناية بالمصحف الشريف',
-          completedDate: new Date().toLocaleDateString('ar-SA', { day: 'numeric', month: 'long', year: 'numeric' }),
-          notes: 'تم استلام المصاحف وفرزها وصيانتها / معالجتها وفق الضوابط الشرعية المعتمدة.'
-        };
-      }
+      adminState.orders = adminState.orders.map(o => o.id === trackingCode ? { ...o, step: stepNum } : o);
+      renderOrdersAdmin();
 
       if (adminState.supabaseClient) {
         try {
           await adminState.supabaseClient
             .from('mushaf_orders')
-            .update({
-              step: order.step,
-              processing_summary: order.processingSummary
-            })
+            .update({ step: stepNum })
             .eq('tracking_code', trackingCode);
-          showToast(`تم تحديث حالة الطلب ${trackingCode} إلى المرحلة ${stepNum}`);
-        } catch (err) {
-          console.warn('Order update error:', err);
+          showToast(`تم تحديث مرحلة الطلب ${trackingCode} إلى المرحلة ${stepNum}/4`);
+        } catch {
+          showToast('تعذر التحديث في قاعدة البيانات', 'info');
         }
       }
-
-      updateDashboardStats();
-      renderAdminOrders();
     }
 
-    function renderAdminOrders() {
+    function renderOrdersAdmin() {
       const container = document.getElementById('admin-orders-list');
-      const searchQ = (document.getElementById('admin-order-search')?.value || '').trim().toLowerCase();
-      const stepFilter = document.getElementById('admin-order-step-filter')?.value || 'all';
+      if (!container) return;
 
-      const filtered = adminState.orders.filter(o => {
-        const matchesStep = stepFilter === 'all' || String(o.step) === stepFilter;
-        const matchesQuery = !searchQ
-          || o.id.toLowerCase().includes(searchQ)
-          || o.donorName.toLowerCase().includes(searchQ)
-          || o.donorPhone.includes(searchQ);
-        return matchesStep && matchesQuery;
-      });
-
-      if (filtered.length === 0) {
-        container.innerHTML = `<div class="text-center py-8 text-sm font-bold text-slate-500 bg-slate-50 rounded-2xl">لا توجد طلبات مطابقة للبحث الحالي.</div>`;
+      if (!adminState.orders.length) {
+        container.innerHTML = `<div class="text-center py-6 text-xs font-bold text-slate-400 bg-slate-50 rounded-2xl border border-dashed border-slate-200">لا توجد طلبات مسجلة حالياً.</div>`;
         return;
       }
 
-      container.innerHTML = filtered.map(o => `
-        <div class="p-4 sm:p-5 rounded-2xl bg-slate-50/70 border border-slate-200 flex flex-col lg:flex-row lg:items-center justify-between gap-4">
-          <div class="space-y-1.5">
-            <div class="flex flex-wrap items-center gap-2">
-              <span class="font-black text-emerald-950 text-sm sm:text-base">${o.id}</span>
-              <span class="text-xs font-extrabold bg-emerald-100 text-emerald-900 px-2.5 py-0.5 rounded-full">${o.quantity} مصاحف</span>
-              <span class="text-xs font-bold bg-gold-100 text-gold-600 px-2.5 py-0.5 rounded-full">${o.method}</span>
+      container.innerHTML = adminState.orders.map(o => `
+        <div class="p-4 rounded-2xl border border-slate-200 bg-slate-50/50 flex flex-wrap items-center justify-between gap-3">
+          <div>
+            <div class="flex items-center gap-2 flex-wrap">
+              <span class="font-black text-sm text-emerald-950">${o.id}</span>
+              <span class="text-xs font-bold text-slate-700">${o.donorName}</span>
+              <span class="text-xs font-mono text-slate-500" dir="ltr">${o.donorPhone}</span>
             </div>
-            <div class="text-xs sm:text-sm font-bold text-slate-800">
-              المتبرع: ${o.donorName} • الجوال: <a href="tel:${o.donorPhone}" dir="ltr" class="text-emerald-800 underline">${o.donorPhone}</a>
-            </div>
-            <div class="text-xs text-slate-600 flex flex-wrap items-center gap-2">
-              <span>الموقع:</span>
-              ${formatOrderLocation(o.location)}
-            </div>
-            <div class="text-[11px] text-slate-400">${o.condition} • ${o.date}</div>
+            <div class="text-xs text-slate-600 mt-1">${o.quantity} مصاحف • ${o.condition} • ${o.method}</div>
           </div>
-
-          <div class="flex flex-wrap items-center gap-2 shrink-0">
+          <div class="flex items-center gap-2">
             <label class="text-xs font-bold text-slate-600">المرحلة:</label>
-            <select onchange="updateOrderStep('${o.id}', this.value)" class="p-2.5 rounded-xl bg-white border border-slate-300 text-xs font-extrabold text-emerald-950 focus:border-emerald-600 focus:outline-none">
+            <select onchange="updateOrderStep('${o.id}', this.value)" class="p-2 rounded-xl bg-white border border-slate-200 text-xs font-extrabold text-emerald-900">
               <option value="1" ${o.step === 1 ? 'selected' : ''}>1 - استلام الطلب</option>
-              <option value="2" ${o.step === 2 ? 'selected' : ''}>2 - المندوب في الطريق</option>
+              <option value="2" ${o.step === 2 ? 'selected' : ''}>2 - في الطريق</option>
               <option value="3" ${o.step === 3 ? 'selected' : ''}>3 - الفرز والتصنيف</option>
               <option value="4" ${o.step === 4 ? 'selected' : ''}>4 - مكتمل المعالجة</option>
             </select>
@@ -796,28 +697,14 @@
       `).join('');
     }
 
-    function exportOrdersCsv() {
-      if (adminState.orders.length === 0) {
-        showToast('لا توجد طلبات لتصديرها', 'info');
-        return;
-      }
-      const headers = ['رقم التتبع', 'الاسم', 'الجوال', 'العدد', 'التصنيف', 'الطريقة', 'الموقع', 'التاريخ', 'المرحلة'];
-      const rows = adminState.orders.map(o => [
-        o.id, o.donorName, o.donorPhone, o.quantity, o.condition, o.method, `"${String(o.location).replace(/"/g, '""')}"`, o.date, o.step
-      ]);
-      const csvContent = '\uFEFF' + [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
-      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `mushaf-orders-${new Date().toISOString().slice(0, 10)}.csv`;
-      a.click();
-      URL.revokeObjectURL(url);
-    }
-
     document.addEventListener('DOMContentLoaded', async () => {
+      loadLocalState();
       initSupabase();
-      await syncAllFromSupabase();
+      renderVehiclesAdmin();
+      renderDelegateLocationsAdmin();
+      renderOrdersAdmin();
+      updateStats();
+      await syncAllAdminData();
     });
   </script>
 </body>
