@@ -398,7 +398,7 @@
             </div>
           </div>
 
-          <!-- ==================== حقل موقعها ورفع رابط الإحداثية (Google Maps) ==================== -->
+          <!-- ==================== 1. استلام من الموقع (مندوب) ==================== -->
           <div id="pickup-fields" class="space-y-4 pt-2 border-t border-slate-100">
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div class="rounded-2xl p-4 bg-gradient-to-br from-emerald-50/80 via-white to-gold-50/60 border border-emerald-200/90 shadow-sm space-y-2.5">
@@ -433,7 +433,6 @@
                   </a>
                 </div>
 
-                <!-- بطاقة التأكيد الأنيقة بعد التقاط أو لصق رابط الإحداثية -->
                 <div id="gps-success-card" class="hidden rounded-xl bg-emerald-900 text-white px-3.5 py-2.5 flex items-center justify-between gap-2 text-xs">
                   <div class="flex items-center gap-2">
                     <i class="fa-solid fa-circle-check text-gold-400 text-sm shrink-0"></i>
@@ -455,9 +454,16 @@
                   <label for="form-address-note" class="block text-sm font-bold text-slate-700 mb-1.5">وصف مختصر للموقع / اسم الحي أو المسجد</label>
                   <input id="form-address-note" type="text" placeholder="مثال: حي النرجس، بجوار مسجد الرحمة" class="w-full p-3.5 rounded-xl bg-white border border-slate-200 text-sm focus:border-emerald-600 focus:outline-none" />
                 </div>
-                <div class="text-[11px] text-emerald-800 bg-emerald-50/90 border border-emerald-100 rounded-xl px-3 py-2 flex items-center gap-2">
-                  <i class="fa-solid fa-hand-holding-heart text-emerald-700"></i>
-                  <span>دقة الإحداثية تيسّر وصول مندوب الجمعية وحفظ وقتكم المبارك.</span>
+
+                <!-- تحويل سريع لسيارة الاستلام في حال عدم توفر المندوب أو رغبة التسليم المباشر -->
+                <div class="rounded-xl bg-amber-50/90 border border-amber-200/90 px-3 py-2.5 flex items-center justify-between gap-2">
+                  <span class="text-[11px] text-amber-900 font-bold leading-snug">
+                    إذا لم يتوفر استلام مندوب أو أردت التسليم المباشر:
+                  </span>
+                  <button type="button" onclick="switchToVehiclePickupQuick()" class="shrink-0 bg-[#8C9B1E] hover:bg-[#727e16] text-white text-[11px] font-extrabold px-3 py-1.5 rounded-lg transition flex items-center gap-1">
+                    <i class="fa-solid fa-car-side"></i>
+                    <span>تحويل لسيارة الاستلام</span>
+                  </button>
                 </div>
               </div>
             </div>
@@ -478,13 +484,29 @@
             </div>
           </div>
 
+          <!-- ==================== 2. تسليم لسيارة الاستلام (زر سريع لموقع السيارة) ==================== -->
           <div id="dropoff-fields" class="hidden space-y-4 pt-2 border-t border-slate-100">
-            <div>
-              <label class="block text-sm font-bold text-slate-700 mb-1.5">اختر سيارة الاستلام / الموقع المعتمد للتسليم *</label>
-              <select id="form-dropoff-point" class="w-full p-3.5 rounded-2xl bg-slate-50 border border-slate-200 text-sm font-bold text-slate-800 focus:border-emerald-600 focus:outline-none"></select>
-              <p class="text-xs text-emerald-700 mt-1.5 flex items-center gap-1">
-                <i class="fa-solid fa-car-side"></i>
-                <span>يتم تحديث مواقع سيارات الاستلام ومسمياتها مباشرة عبر لوحة الإدارة.</span>
+            <div class="rounded-2xl p-4 bg-gradient-to-br from-emerald-50/70 to-gold-50/50 border border-emerald-200/80 space-y-3">
+              <div class="flex flex-wrap items-center justify-between gap-2">
+                <label for="form-dropoff-point" class="text-sm font-black text-emerald-950 flex items-center gap-1.5">
+                  <i class="fa-solid fa-car-side text-[#8C9B1E]"></i>
+                  <span>اختر سيارة الاستلام المعتمدة للتسليم *</span>
+                </label>
+
+                <a id="selected-vehicle-map-quick-btn" href="https://maps.google.com" target="_blank" rel="noopener noreferrer" class="bg-emerald-800 hover:bg-emerald-700 active:scale-95 text-white text-xs font-extrabold px-3.5 py-2 rounded-xl shadow-sm transition flex items-center gap-1.5">
+                  <i class="fa-solid fa-location-dot text-gold-400"></i>
+                  <span>موقع السيارة على الخريطة</span>
+                  <i class="fa-solid fa-arrow-up-left-from-square text-[10px]"></i>
+                </a>
+              </div>
+
+              <select id="form-dropoff-point" onchange="syncSelectedVehicleQuickLink()" class="w-full p-3.5 rounded-xl bg-white border border-slate-200 text-sm font-bold text-slate-800 focus:border-emerald-600 focus:outline-none"></select>
+
+              <p class="text-xs text-emerald-800 flex items-center justify-between gap-2 flex-wrap">
+                <span class="flex items-center gap-1">
+                  <i class="fa-solid fa-circle-check text-emerald-700"></i>
+                  <span>يتم تحديث مسمى السيارة ورابط موقعها مباشرة عبر صفحة الإدارة.</span>
+                </span>
               </p>
             </div>
           </div>
@@ -583,7 +605,6 @@
     <!-- ==================== 5. MY RECORD & CERTIFICATES TAB (سجلي - دخول برقم الجوال) ==================== -->
     <section id="tab-profile" class="tab-section hidden space-y-6">
 
-      <!-- شاشة تسجيل الدخول برقم الجوال فقط -->
       <div id="profile-login-box" class="bg-white rounded-3xl p-6 sm:p-10 border border-slate-200/80 shadow-sm max-w-xl mx-auto text-center space-y-5">
         <div class="w-16 h-16 mx-auto rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-800 flex items-center justify-center text-2xl">
           <i class="fa-solid fa-mobile-screen-button"></i>
@@ -607,7 +628,6 @@
         </form>
       </div>
 
-      <!-- لوحة سجلي الخاصة بالمستخدم بعد الدخول برقم الجوال -->
       <div id="profile-dashboard-box" class="hidden space-y-6">
         <div class="islamic-pattern rounded-3xl p-6 sm:p-8 text-white shadow-lg border border-emerald-700 flex flex-col sm:flex-row sm:items-center justify-between gap-6">
           <div class="flex items-center gap-4">
@@ -639,7 +659,6 @@
           </div>
         </div>
 
-        <!-- إحصائيات المساهم الخاصة -->
         <div class="grid grid-cols-3 gap-3 sm:gap-5">
           <div class="bg-white rounded-2xl p-4 sm:p-5 border border-slate-100 shadow-sm text-center">
             <div class="text-xs text-slate-500 font-medium">إجمالي مصاحفك</div>
@@ -658,7 +677,6 @@
           </div>
         </div>
 
-        <!-- سجل الطلبات الخاصة بهذا الرقم -->
         <div class="bg-white rounded-3xl p-5 sm:p-6 border border-slate-200/80 shadow-sm">
           <div class="flex items-center justify-between gap-2 mb-4">
             <h3 class="text-lg font-extrabold text-emerald-950 flex items-center gap-2">
@@ -790,7 +808,7 @@
     </div>
   </nav>
 
-  <!-- ==================== CERTIFICATE MODAL (شهادة التقدير والشكر) ==================== -->
+  <!-- ==================== CERTIFICATE MODAL ==================== -->
   <div id="certificate-modal" class="fixed inset-0 z-50 hidden bg-slate-950/70 backdrop-blur-sm flex items-center justify-center p-4">
     <div class="bg-white rounded-3xl max-w-xl w-full overflow-hidden shadow-2xl animate-[fadeSlideUp_0.25s_ease-out]">
       <div class="flex items-center justify-between px-5 py-3.5 bg-emerald-950 text-white">
@@ -895,12 +913,10 @@
     };
 
     const DEFAULT_VEHICLES = [
-      { id: 1, name: 'سيارة الاستلام (1) - حي الروضة', area: 'شرق الرياض', address: 'مقر جمعية العناية بالمصحف - حي الروضة، الرياض', distance: '1.8 كم', hours: 'مفتوح 24 ساعة (استقبال مباشر وميداني)', status: 'متاح', capacityPercent: 32 },
-      { id: 2, name: 'سيارة الاستلام (2) - جامع الراجحي', area: 'شرق الرياض', address: 'مخرج 15، البوابة الشمالية للجامع', distance: '3.2 كم', hours: 'يومياً من 4:00 عصراً - 10:30 مساءً', status: 'متاح', capacityPercent: 45 },
-      { id: 3, name: 'سيارة الاستلام (3) - حي الياسمين', area: 'شمال الرياض', address: 'حي الياسمين، طريق الملك عبدالعزيز', distance: '5.4 كم', hours: '8:00 صباحاً - 12:00 منتصف الليل', status: 'شبه ممتلئ', capacityPercent: 82 },
-      { id: 4, name: 'سيارة الاستلام (4) - حي النرجس', area: 'شمال الرياض', address: 'حي النرجس، طريق عثمان بن عفان', distance: '6.1 كم', hours: 'يومياً من 3:00 عصراً - 11:00 مساءً', status: 'متاح', capacityPercent: 20 },
-      { id: 5, name: 'سيارة الاستلام (5) - السويدي', area: 'غرب وجنوب الرياض', address: 'حي السويدي، الرياض', distance: '8.7 كم', hours: '4:00 عصراً - 10:00 مساءً', status: 'متاح', capacityPercent: 40 },
-      { id: 6, name: 'سيارة الاستلام (6) - العزيزية', area: 'غرب وجنوب الرياض', address: 'حي العزيزية، الطريق الدائري الجنوبي', distance: '10.2 كم', hours: 'يومياً من 4:00 عصراً - 10:00 مساءً', status: 'متاح', capacityPercent: 55 }
+      { id: 1, name: 'سيارة الاستلام (1) - حي الروضة', area: 'شرق الرياض', address: 'https://maps.google.com/?q=24.7254,46.7745', distance: '1.8 كم', hours: 'مفتوح 24 ساعة (استقبال مباشر وميداني)', status: 'متاح', capacityPercent: 32 },
+      { id: 2, name: 'سيارة الاستلام (2) - جامع الراجحي', area: 'شرق الرياض', address: 'https://maps.google.com/?q=24.6778,46.7796', distance: '3.2 كم', hours: 'يومياً من 4:00 عصراً - 10:30 مساءً', status: 'متاح', capacityPercent: 45 },
+      { id: 3, name: 'سيارة الاستلام (3) - حي الياسمين', area: 'شمال الرياض', address: 'https://maps.google.com/?q=24.8235,46.6579', distance: '5.4 كم', hours: '8:00 صباحاً - 12:00 منتصف الليل', status: 'شبه ممتلئ', capacityPercent: 82 },
+      { id: 4, name: 'سيارة الاستلام (4) - حي النرجس', area: 'شمال الرياض', address: 'https://maps.google.com/?q=24.8531,46.6732', distance: '6.1 كم', hours: 'يومياً من 3:00 عصراً - 11:00 مساءً', status: 'متاح', capacityPercent: 20 }
     ];
 
     const appState = {
@@ -939,6 +955,14 @@
       return Array.from(variants).filter(Boolean);
     }
 
+    function getVehicleMapHref(point) {
+      if (!point) return 'https://maps.google.com';
+      const raw = String(point.address || '').trim();
+      if (/^https?:\/\/.+/i.test(raw)) return raw;
+      if (raw) return `https://maps.google.com/?q=${encodeURIComponent(raw)}`;
+      return `https://maps.google.com/?q=${encodeURIComponent(point.name || '')}`;
+    }
+
     function formatLocationHtml(loc) {
       const raw = String(loc || '');
       const escaped = raw.replace(/</g, '<').replace(/>/g, '>');
@@ -958,7 +982,6 @@
         appState.dropoffPoints = structuredClone(DEFAULT_VEHICLES);
       }
 
-      // تصفير الجلسة عند تحديث الرابط حتى لا تتداخل بيانات أكثر من عميل على نفس الجهاز
       appState.loggedInPhone = '';
       appState.selectedTrackingId = '';
       appState.searchedOrder = null;
@@ -1023,7 +1046,7 @@
             name: row.name,
             area: row.area || 'شرق الرياض',
             address: row.address || '',
-            distance: row.distance || 'قريب',
+            distance: row.distance || 'موقع مباشر',
             hours: row.hours || 'يومياً',
             status: row.status || 'متاح',
             capacityPercent: Number(row.capacity_percent ?? row.capacityPercent ?? 25)
@@ -1149,7 +1172,7 @@
       const hint = document.getElementById('gps-status-hint');
 
       if (!navigator.geolocation) {
-        showToast('المتصفح لا يدعم تحديد الموقع تلقائياً؛ الصق رابط قوقل ماب يدوياً', 'info');
+        switchToVehiclePickupQuick('المتصفح لا يدعم تحديد الموقع تلقائياً؛ تم التحويل لسيارة الاستلام');
         return;
       }
 
@@ -1175,19 +1198,34 @@
           }
         },
         () => {
-          if (hint) {
-            hint.classList.remove('hidden');
-            hint.innerHTML = `<i class="fa-solid fa-circle-info text-amber-600"></i><span>يرجى تفعيل صلاحية الموقع في الجوال أو لصق رابط الإحداثية من قوقل ماب مباشرة.</span>`;
-          }
-          showToast('فعّل صلاحية الموقع أو الصق رابط قوقل ماب يدوياً', 'info');
-
           if (btn) {
             btn.disabled = false;
             btn.innerHTML = `<i class="fa-solid fa-location-crosshairs text-gold-400"></i><span>تحديد موقعي الآن</span>`;
           }
+          if (hint) {
+            hint.classList.remove('hidden');
+            hint.innerHTML = `<i class="fa-solid fa-circle-info text-amber-600"></i><span>تعذر تحديد الموقع تلقائياً؛ يمكنك الصق الرابط أو التحويل لسيارة الاستلام.</span>`;
+          }
+          switchToVehiclePickupQuick('تعذر تحديد موقع المندوب تلقائياً؛ تم التحويل لتسليم سيارة الاستلام');
         },
         { enableHighAccuracy: true, timeout: 10000 }
       );
+    }
+
+    function switchToVehiclePickupQuick(msg = 'تم التحويل إلى التسليم لسيارة الاستلام') {
+      setDonationMethod('dropoff');
+      syncSelectedVehicleQuickLink();
+      showToast(msg, 'info');
+    }
+
+    function syncSelectedVehicleQuickLink() {
+      const select = document.getElementById('form-dropoff-point');
+      const quickBtn = document.getElementById('selected-vehicle-map-quick-btn');
+      if (!select || !quickBtn) return;
+
+      const selectedIdx = select.selectedIndex;
+      const point = appState.dropoffPoints[selectedIdx] || appState.dropoffPoints[0];
+      quickBtn.href = getVehicleMapHref(point);
     }
 
     function switchTab(tabId) {
@@ -1303,6 +1341,7 @@
         dropoffFields.classList.remove('hidden');
         pickupFields.classList.add('hidden');
         if (locationLinkInput) locationLinkInput.required = false;
+        syncSelectedVehicleQuickLink();
       }
     }
 
@@ -1325,6 +1364,7 @@
       return `السلام عليكم ورحمة الله وبركاته، حياكم الله في *جمعية العناية بالمصحف* (مبادرة جمع المصاحف المخالفة - ترخيص 1000629800) 🌸
 ${nameLine}${phoneLine}✅ رقم الطلب: *${order.id}*
 📖 العدد: *${order.quantity} مصاحف* (${order.condition})
+🚚 الطريقة: *${order.method}*
 📍 موقعها / الإحداثية: ${order.location}
 📅 الموعد: *${dateStr}${slotStr}*`;
     }
@@ -1384,7 +1424,9 @@ ${nameLine}${phoneLine}✅ رقم الطلب: *${order.id}*
         locationText = note ? `${locationLink} (${note})` : locationLink;
       } else {
         methodText = 'تسليم لسيارة الاستلام';
-        locationText = document.getElementById('form-dropoff-point').value;
+        const select = document.getElementById('form-dropoff-point');
+        const point = appState.dropoffPoints[select.selectedIndex] || appState.dropoffPoints[0];
+        locationText = point ? `${point.name} — ${getVehicleMapHref(point)}` : select.value;
       }
 
       const todayStr = new Date().toLocaleDateString('ar-SA', { day: 'numeric', month: 'long', year: 'numeric' });
@@ -1757,11 +1799,12 @@ ${nameLine}${phoneLine}✅ رقم الطلب: *${order.id}*
       if (!select) return;
       const currentVal = select.value;
       select.innerHTML = appState.dropoffPoints.map(v =>
-        `<option value="${v.name}">${v.name} — ${v.address}</option>`
+        `<option value="${v.name}">${v.name} — ${v.area || ''}</option>`
       ).join('');
       if (currentVal && [...select.options].some(o => o.value === currentVal)) {
         select.value = currentVal;
       }
+      syncSelectedVehicleQuickLink();
     }
 
     function filterDropoffs(area) {
@@ -1795,6 +1838,7 @@ ${nameLine}${phoneLine}✅ رقم الطلب: *${order.id}*
           ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
           : 'bg-amber-50 text-amber-700 border-amber-200';
         const barColor = isAvailable ? 'bg-emerald-600' : 'bg-amber-500';
+        const mapHref = getVehicleMapHref(point);
 
         return `
           <div class="rounded-2xl p-5 border border-slate-200/90 hover:border-emerald-300 bg-slate-50/40 hover:bg-white transition shadow-sm flex flex-col justify-between gap-4">
@@ -1806,10 +1850,15 @@ ${nameLine}${phoneLine}✅ رقم الطلب: *${order.id}*
                 </h3>
                 <span class="shrink-0 text-[11px] font-bold px-2.5 py-1 rounded-full border ${statusBadge}">${point.status}</span>
               </div>
-              <p class="text-xs text-slate-500 mt-1.5 flex items-center gap-1.5">
-                <i class="fa-solid fa-location-dot text-emerald-700"></i>
-                <span>${point.address}</span>
-              </p>
+
+              <div class="mt-2">
+                <a href="${mapHref}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200 px-3 py-1.5 rounded-xl text-xs font-extrabold transition">
+                  <i class="fa-solid fa-location-dot text-emerald-700"></i>
+                  <span>موقع السيارة على الخريطة</span>
+                  <i class="fa-solid fa-arrow-up-left-from-square text-[10px]"></i>
+                </a>
+              </div>
+
               <div class="flex flex-wrap items-center gap-4 mt-3 text-xs text-slate-600">
                 ${point.area ? `<span class="font-bold text-emerald-800"><i class="fa-solid fa-map-pin ml-1"></i>${point.area}</span>` : ''}
                 <span><i class="fa-regular fa-clock ml-1 text-slate-400"></i>${point.hours}</span>
@@ -1826,10 +1875,10 @@ ${nameLine}${phoneLine}✅ رقم الطلب: *${order.id}*
             </div>
 
             <div class="flex gap-2 pt-2 border-t border-slate-200/70">
-              <button onclick="copyTextToClipboard('${point.name} - ${point.address}', 'تم نسخ موقع سيارة الاستلام بنجاح!')" class="flex-1 bg-white hover:bg-slate-100 text-slate-800 border border-slate-200 text-xs font-bold py-2.5 px-3 rounded-xl transition flex items-center justify-center gap-1.5">
-                <i class="fa-regular fa-copy"></i>
-                <span>نسخ الموقع</span>
-              </button>
+              <a href="${mapHref}" target="_blank" rel="noopener noreferrer" class="flex-1 bg-white hover:bg-slate-100 text-emerald-900 border border-slate-200 text-xs font-extrabold py-2.5 px-3 rounded-xl transition flex items-center justify-center gap-1.5">
+                <i class="fa-solid fa-location-arrow text-emerald-700"></i>
+                <span>فتح الموقع</span>
+              </a>
               <button onclick="selectDropoffAndDonate('${point.name.replace(/'/g, "\\'")}')" class="flex-1 bg-emerald-800 hover:bg-emerald-700 text-white text-xs font-bold py-2.5 px-3 rounded-xl transition flex items-center justify-center gap-1.5">
                 <i class="fa-solid fa-paper-plane"></i>
                 <span>تسليم لهذه السيارة</span>
@@ -1850,6 +1899,7 @@ ${nameLine}${phoneLine}✅ رقم الطلب: *${order.id}*
           break;
         }
       }
+      syncSelectedVehicleQuickLink();
     }
   </script>
 </body>
