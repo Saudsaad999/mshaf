@@ -102,6 +102,23 @@
         transform: translateY(0);
       }
     }
+
+    @media print {
+      body * {
+        visibility: hidden;
+      }
+      #certificate-print-area, #certificate-print-area * {
+        visibility: visible;
+      }
+      #certificate-print-area {
+        position: fixed;
+        inset: 0;
+        margin: 0;
+        width: 100%;
+        height: 100%;
+        box-shadow: none !important;
+      }
+    }
   </style>
 </head>
 <body class="min-h-screen flex flex-col pt-28 sm:pt-32 md:pt-0 pb-24 md:pb-10">
@@ -150,6 +167,9 @@
         <button onclick="switchTab('dropoff')" data-nav="dropoff" class="nav-btn px-3.5 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5">
           <i class="fa-solid fa-car-side"></i> سيارات الاستلام
         </button>
+        <button onclick="switchTab('profile')" data-nav="profile" class="nav-btn px-3.5 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5">
+          <i class="fa-solid fa-award"></i> سجلي
+        </button>
       </nav>
 
       <div class="flex items-center gap-2 shrink-0">
@@ -191,9 +211,9 @@
               <span>صيانة مصحف (10 ريال)</span>
               <i class="fa-solid fa-arrow-up-left-from-square text-xs"></i>
             </a>
-            <button onclick="switchTab('track')" class="bg-emerald-900/70 hover:bg-emerald-900 text-white border border-white/15 font-bold text-sm px-4 py-3 rounded-2xl transition active:scale-95 flex items-center gap-2">
-              <i class="fa-solid fa-magnifying-glass-location"></i>
-              <span>تتبع الطلب</span>
+            <button onclick="switchTab('profile')" class="bg-emerald-900/70 hover:bg-emerald-900 text-white border border-white/15 font-bold text-sm px-4 py-3 rounded-2xl transition active:scale-95 flex items-center gap-2">
+              <i class="fa-solid fa-award text-gold-400"></i>
+              <span>سجلي وشهاداتي</span>
             </button>
           </div>
         </div>
@@ -424,11 +444,11 @@
 
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2 border-t border-slate-100">
             <div>
-              <label class="block text-sm font-bold text-slate-700 mb-1.5">الاسم الكريم *</label>
+              <label class="block text-sm font-bold text-slate-700 mb-1.5">الاسم الكريم (يظهر في شهادة الشكر) *</label>
               <input id="form-donor-name" type="text" required value="" placeholder="أدخل الاسم" class="w-full p-3.5 rounded-2xl bg-slate-50 border border-slate-200 text-sm font-bold text-slate-800 focus:border-emerald-600 focus:outline-none" />
             </div>
             <div>
-              <label class="block text-sm font-bold text-slate-700 mb-1.5">رقم الجوال *</label>
+              <label class="block text-sm font-bold text-slate-700 mb-1.5">رقم الجوال (للدخول ومتابعة سجلك وشهاداتك) *</label>
               <input id="form-donor-phone" type="tel" required value="" placeholder="05XXXXXXXX" dir="ltr" class="w-full p-3.5 rounded-2xl bg-slate-50 border border-slate-200 text-sm font-bold text-slate-800 text-right focus:border-emerald-600 focus:outline-none" />
             </div>
           </div>
@@ -456,7 +476,7 @@
     <section id="tab-track" class="tab-section hidden space-y-6">
       <div class="bg-white rounded-3xl p-5 sm:p-6 border border-slate-200/80 shadow-sm">
         <h2 class="text-xl font-extrabold text-emerald-950 mb-1">تتبع رحلة المصاحف</h2>
-        <p class="text-xs sm:text-sm text-slate-500 mb-4">أدخل رقم التتبع الخاص بطلبك أو اختر أحد طلباتك أدناه لمشاهدة مراحل الجمع والفرز والصيانة والمعالجة الشرعية.</p>
+        <p class="text-xs sm:text-sm text-slate-500 mb-4">أدخل رقم التتبع الخاص بطلبك لمشاهدة مراحل الجمع والفرز والصيانة والمعالجة الشرعية.</p>
         <div class="flex gap-2">
           <input id="track-search-input" type="text" placeholder="مثال: QCA-2026-849" class="flex-1 p-3.5 rounded-2xl bg-slate-50 border border-slate-200 text-sm font-bold uppercase focus:border-emerald-600 focus:outline-none" />
           <button onclick="searchTrackingCode()" class="bg-emerald-800 hover:bg-emerald-700 text-white font-bold px-6 rounded-2xl transition flex items-center gap-2">
@@ -465,8 +485,8 @@
           </button>
         </div>
 
-        <div class="mt-4">
-          <span class="text-xs font-bold text-slate-400 block mb-2">الطلبات المسجلة (اضغط للمعاينة):</span>
+        <div id="tracking-pills-wrapper" class="mt-4 hidden">
+          <span class="text-xs font-bold text-slate-400 block mb-2">طلباتك المسجلة برقم جوالك (اضغط للمعاينة):</span>
           <div id="tracking-pills" class="flex flex-wrap gap-2"></div>
         </div>
       </div>
@@ -511,6 +531,102 @@
 
         <div id="dropoff-list" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
       </div>
+    </section>
+
+    <!-- ==================== 5. MY RECORD & CERTIFICATES TAB (سجلي - دخول برقم الجوال) ==================== -->
+    <section id="tab-profile" class="tab-section hidden space-y-6">
+
+      <!-- شاشة تسجيل الدخول برقم الجوال فقط -->
+      <div id="profile-login-box" class="bg-white rounded-3xl p-6 sm:p-10 border border-slate-200/80 shadow-sm max-w-xl mx-auto text-center space-y-5">
+        <div class="w-16 h-16 mx-auto rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-800 flex items-center justify-center text-2xl">
+          <i class="fa-solid fa-mobile-screen-button"></i>
+        </div>
+        <div class="space-y-1.5">
+          <h2 class="text-xl sm:text-2xl font-black text-emerald-950">الدخول إلى سجلي وشهاداتي</h2>
+          <p class="text-xs sm:text-sm text-slate-500 leading-relaxed">
+            لحماية خصوصية المساهمين، أدخل <strong>رقم جوالك</strong> المسجل في الطلب لعرض سجل مشاركاتك وحالاتها وشهادات التقدير الخاصة بك فقط.
+          </p>
+        </div>
+
+        <form onsubmit="handlePhoneLogin(event)" class="space-y-3 text-right">
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1.5">رقم الجوال *</label>
+            <input id="login-phone-input" type="tel" required placeholder="05XXXXXXXX" dir="ltr" class="w-full p-4 rounded-2xl bg-slate-50 border border-slate-200 text-base font-extrabold text-slate-900 text-center tracking-wider focus:border-emerald-600 focus:outline-none" />
+          </div>
+          <button type="submit" id="login-submit-btn" class="w-full bg-emerald-800 hover:bg-emerald-700 text-white font-extrabold text-sm py-3.5 rounded-2xl shadow-md transition flex items-center justify-center gap-2">
+            <i class="fa-solid fa-arrow-right-to-bracket"></i>
+            <span>عرض سجلي وشهاداتي</span>
+          </button>
+        </form>
+      </div>
+
+      <!-- لوحة سجلي الخاصة بالمستخدم بعد الدخول برقم الجوال -->
+      <div id="profile-dashboard-box" class="hidden space-y-6">
+        <div class="islamic-pattern rounded-3xl p-6 sm:p-8 text-white shadow-lg border border-emerald-700 flex flex-col sm:flex-row sm:items-center justify-between gap-6">
+          <div class="flex items-center gap-4">
+            <div class="w-16 h-16 rounded-2xl bg-gold-500 text-emerald-950 flex items-center justify-center text-2xl font-black shadow-md shrink-0">
+              <i class="fa-solid fa-user-check"></i>
+            </div>
+            <div>
+              <span class="text-xs font-bold text-gold-300 bg-white/10 px-2.5 py-0.5 rounded-full">سجل المساهم الشخصي</span>
+              <h2 id="profile-user-name" class="text-xl sm:text-2xl font-extrabold mt-1">مساهم كريم</h2>
+              <p class="text-xs text-emerald-200 mt-0.5 flex items-center gap-2">
+                <span>رقم الجوال: <strong id="profile-user-phone" dir="ltr" class="text-white"></strong></span>
+              </p>
+            </div>
+          </div>
+
+          <div class="flex flex-wrap items-center gap-2">
+            <button type="button" onclick="refreshLoggedInUserOrders()" class="bg-white/15 hover:bg-white/25 text-white text-xs font-bold px-3.5 py-2.5 rounded-xl transition flex items-center gap-1.5">
+              <i class="fa-solid fa-rotate"></i>
+              <span>تحديث السجل</span>
+            </button>
+            <button type="button" onclick="openCertificateModal()" class="bg-gold-500 hover:bg-gold-400 text-emerald-950 font-extrabold text-xs sm:text-sm px-4 py-2.5 rounded-xl shadow transition flex items-center gap-2">
+              <i class="fa-solid fa-certificate"></i>
+              <span>عرض شهادة الشكر</span>
+            </button>
+            <button type="button" onclick="logoutUserPhone()" class="bg-red-950/70 hover:bg-red-900 text-red-100 border border-red-400/30 text-xs font-bold px-3.5 py-2.5 rounded-xl transition flex items-center gap-1.5">
+              <i class="fa-solid fa-right-from-bracket"></i>
+              <span>خروج</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- إحصائيات المساهم الخاصة -->
+        <div class="grid grid-cols-3 gap-3 sm:gap-5">
+          <div class="bg-white rounded-2xl p-4 sm:p-5 border border-slate-100 shadow-sm text-center">
+            <div class="text-xs text-slate-500 font-medium">إجمالي مصاحفك</div>
+            <div id="user-total-mushafs" class="text-2xl sm:text-3xl font-black text-emerald-900 mt-1">0</div>
+            <div class="text-[11px] text-emerald-600 mt-0.5">مصحف تم تسليمه</div>
+          </div>
+          <div class="bg-white rounded-2xl p-4 sm:p-5 border border-slate-100 shadow-sm text-center">
+            <div class="text-xs text-slate-500 font-medium">عدد طلباتك</div>
+            <div id="user-total-orders" class="text-2xl sm:text-3xl font-black text-emerald-900 mt-1">0</div>
+            <div class="text-[11px] text-slate-400 mt-0.5">طلب مسجل برقمك</div>
+          </div>
+          <div class="bg-white rounded-2xl p-4 sm:p-5 border border-slate-100 shadow-sm text-center">
+            <div class="text-xs text-slate-500 font-medium">أثر الحروف المتوقع</div>
+            <div id="user-total-letters" class="text-xl sm:text-3xl font-black text-gold-600 mt-1">0</div>
+            <div class="text-[11px] text-slate-400 mt-0.5">حرف مقروء بإذن الله</div>
+          </div>
+        </div>
+
+        <!-- سجل الطلبات الخاصة بهذا الرقم -->
+        <div class="bg-white rounded-3xl p-5 sm:p-6 border border-slate-200/80 shadow-sm">
+          <div class="flex items-center justify-between gap-2 mb-4">
+            <h3 class="text-lg font-extrabold text-emerald-950 flex items-center gap-2">
+              <i class="fa-solid fa-clock-rotate-left text-emerald-700"></i>
+              <span>سجل طلباتك السابقة والحالية</span>
+            </h3>
+            <button type="button" onclick="switchTab('donate')" class="bg-emerald-800 hover:bg-emerald-700 text-white text-xs font-bold px-3.5 py-2 rounded-xl transition flex items-center gap-1.5">
+              <i class="fa-solid fa-plus"></i>
+              <span>طلب جديد</span>
+            </button>
+          </div>
+          <div id="profile-history-list" class="space-y-3"></div>
+        </div>
+      </div>
+
     </section>
 
     <!-- ==================== تراخيصنا ==================== -->
@@ -601,8 +717,9 @@
     </div>
   </footer>
 
+  <!-- Bottom Mobile Navigation Bar -->
   <nav class="md:hidden fixed bottom-0 inset-x-0 z-40 bg-white/95 backdrop-blur-md border-t border-slate-200 px-2 py-1.5 shadow-[0_-4px_20px_rgba(0,0,0,0.05)]">
-    <div class="grid grid-cols-4 gap-1">
+    <div class="grid grid-cols-5 gap-1">
       <button onclick="switchTab('home')" data-nav="home" class="mobile-nav-btn flex flex-col items-center justify-center py-1.5 rounded-xl text-emerald-800 font-bold">
         <i class="fa-solid fa-house text-base mb-0.5"></i>
         <span class="text-[10px]">الرئيسية</span>
@@ -619,8 +736,69 @@
         <i class="fa-solid fa-car-side text-base mb-0.5"></i>
         <span class="text-[10px]">السيارات</span>
       </button>
+      <button onclick="switchTab('profile')" data-nav="profile" class="mobile-nav-btn flex flex-col items-center justify-center py-1.5 rounded-xl text-slate-500 font-medium">
+        <i class="fa-solid fa-award text-base mb-0.5"></i>
+        <span class="text-[10px]">سجلي</span>
+      </button>
     </div>
   </nav>
+
+  <!-- ==================== CERTIFICATE MODAL (شهادة التقدير والشكر) ==================== -->
+  <div id="certificate-modal" class="fixed inset-0 z-50 hidden bg-slate-950/70 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-xl w-full overflow-hidden shadow-2xl animate-[fadeSlideUp_0.25s_ease-out]">
+      <div class="flex items-center justify-between px-5 py-3.5 bg-emerald-950 text-white">
+        <span class="text-sm font-bold flex items-center gap-2">
+          <i class="fa-solid fa-award text-gold-400"></i>
+          <span>شهادة شكر وتقدير إلكترونية</span>
+        </span>
+        <button onclick="closeCertificateModal()" class="w-8 h-8 rounded-xl bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <div id="certificate-print-area" class="p-6 sm:p-10 bg-gradient-to-b from-gold-50 to-white">
+        <div class="border-4 border-double border-gold-500 rounded-2xl p-6 sm:p-8 text-center relative bg-white shadow-inner">
+          <div class="w-14 h-14 mx-auto mb-3 rounded-2xl bg-emerald-900 text-gold-400 flex items-center justify-center text-2xl shadow">
+            <i class="fa-solid fa-book-quran"></i>
+          </div>
+          <div class="text-xs font-extrabold text-emerald-700 tracking-wide">جمعية العناية بالمصحف الشريف • ترخيص 1000629800</div>
+          <h3 class="font-serif text-2xl sm:text-3xl font-bold text-emerald-950 mt-2">شهادة شكر وتقدير</h3>
+          <p class="text-xs sm:text-sm text-slate-500 mt-3">تتقدم الجمعية بوافر الشكر والتقدير إلى</p>
+          <div id="cert-donor-name" class="font-serif text-2xl sm:text-3xl font-bold text-gold-600 my-2">مساهم كريم</div>
+          <p class="text-xs sm:text-sm text-slate-600 leading-relaxed max-w-md mx-auto">
+            تقديراً لمساهمته المباركة في مبادرة جمع المصاحف المخالفة وعنايته بكتاب الله تعالى بعدد
+            <strong id="cert-mushaf-total" class="text-emerald-900">0 مصاحف</strong>،
+            سائلين المولى عز وجل أن يجعل ذلك في ميزان حسناته صدقةً جارية.
+          </p>
+
+          <div class="mt-6 pt-5 border-t border-slate-200 flex items-center justify-between text-xs text-slate-500">
+            <div class="text-right">
+              <div class="font-bold text-emerald-950">إدارة مبادرة جمع المصاحف المخالفة</div>
+              <div id="cert-date" class="text-[11px] mt-0.5">1448 هـ - 2026 م</div>
+            </div>
+            <div class="flex items-center gap-2 bg-slate-50 px-3 py-2 rounded-xl border border-slate-200">
+              <i class="fa-solid fa-qrcode text-2xl text-emerald-900"></i>
+              <div class="text-right">
+                <div class="text-[10px] text-slate-400">رمز التحقق</div>
+                <div id="cert-verify-code" class="font-mono font-bold text-emerald-900">QCA-CERT</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="px-6 py-4 bg-slate-50 border-t border-slate-200 flex gap-3">
+        <button onclick="window.print()" class="flex-1 bg-emerald-800 hover:bg-emerald-700 text-white text-xs sm:text-sm font-bold py-3 rounded-xl transition flex items-center justify-center gap-2">
+          <i class="fa-solid fa-print"></i>
+          <span>طباعة / حفظ كـ PDF</span>
+        </button>
+        <button onclick="copyCertificateLink()" class="flex-1 bg-white hover:bg-slate-100 text-slate-800 border border-slate-300 text-xs sm:text-sm font-bold py-3 rounded-xl transition flex items-center justify-center gap-2">
+          <i class="fa-solid fa-share-nodes"></i>
+          <span>نسخ رمز التحقق</span>
+        </button>
+      </div>
+    </div>
+  </div>
 
   <!-- ==================== WHATSAPP REMINDER MODAL ==================== -->
   <div id="whatsapp-modal" class="fixed inset-0 z-50 hidden bg-slate-950/70 backdrop-blur-sm flex items-center justify-center p-4">
@@ -628,7 +806,7 @@
       <div class="flex items-center justify-between px-5 py-3.5 bg-emerald-950 text-white">
         <div class="flex items-center gap-2">
           <i class="fa-brands fa-whatsapp text-emerald-400 text-xl"></i>
-          <span class="text-sm font-extrabold">رسالة تذكير واتساب للطلب</span>
+          <span class="text-sm font-extrabold">إرسال تفاصيل الطلب إلى واتساب الجمعية</span>
         </div>
         <button onclick="closeWhatsAppModal()" class="w-8 h-8 rounded-xl bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition">
           <i class="fa-solid fa-xmark"></i>
@@ -636,16 +814,16 @@
       </div>
       <div class="p-5 sm:p-6 space-y-4">
         <div class="text-xs text-slate-500">
-          رقم الجوال المستهدف: <strong id="wa-target-phone" dir="ltr" class="text-slate-800">0534494111</strong> • رمز الطلب: <strong id="wa-target-code" class="text-emerald-800"></strong>
+          رقم واتساب الجمعية: <strong id="wa-target-phone" dir="ltr" class="text-slate-800">0534494111</strong> • رمز الطلب: <strong id="wa-target-code" class="text-emerald-800"></strong>
         </div>
         <div>
-          <label class="block text-xs font-bold text-slate-700 mb-1.5">نص رسالة التذكير (قابل للتعديل)</label>
+          <label class="block text-xs font-bold text-slate-700 mb-1.5">نص الرسالة (قابل للتعديل)</label>
           <textarea id="wa-message-text" rows="6" class="w-full p-3.5 rounded-2xl bg-slate-50 border border-slate-200 text-xs sm:text-sm font-medium text-slate-800 leading-relaxed focus:border-emerald-600 focus:outline-none"></textarea>
         </div>
         <div class="flex flex-wrap gap-2 pt-1">
           <a id="wa-send-link" href="#" target="_blank" rel="noopener noreferrer" onclick="updateWhatsAppLinkBeforeOpen()" class="flex-1 bg-emerald-700 hover:bg-emerald-600 text-white text-xs sm:text-sm font-extrabold py-3 px-4 rounded-xl shadow transition flex items-center justify-center gap-2">
             <i class="fa-brands fa-whatsapp text-base"></i>
-            <span>إرسال عبر واتساب الآن</span>
+            <span>إرسال إلى واتساب الجمعية</span>
           </a>
           <button type="button" onclick="copyWhatsAppMessage()" class="bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-bold py-3 px-4 rounded-xl transition flex items-center gap-1.5">
             <i class="fa-regular fa-copy"></i>
@@ -663,10 +841,11 @@
     const ASSOCIATION_WA_PHONE = '966534494111';
 
     const STORAGE_KEYS = {
-      DONATIONS: 'qca_mushaf_donations_v1',
+      DONATIONS: 'qca_mushaf_donations_v2',
       VEHICLES: 'qca_pickup_vehicles_v1',
       PICKUP_LOCATIONS: 'qca_pickup_locations_v1',
-      SB_CONFIG: 'qca_supabase_config_v1'
+      SB_CONFIG: 'qca_supabase_config_v1',
+      LOGGED_IN_PHONE: 'qca_logged_in_phone_v1'
     };
 
     const DEFAULT_PICKUP_LOCATIONS = [
@@ -685,43 +864,13 @@
       { id: 6, name: 'سيارة الاستلام (6) - العزيزية', area: 'غرب وجنوب الرياض', address: 'حي العزيزية، الطريق الدائري الجنوبي', distance: '10.2 كم', hours: 'يومياً من 4:00 عصراً - 10:00 مساءً', status: 'متاح', capacityPercent: 55 }
     ];
 
-    const DEFAULT_DONATIONS = [
-      {
-        id: 'QCA-2026-849',
-        donorName: '',
-        donorPhone: '',
-        quantity: 15,
-        condition: 'مصاحف مخالفة للطبعة المعتمدة',
-        method: 'استلام من الموقع (مندوب)',
-        location: 'حي النرجس - شمال الرياض',
-        date: '10 نوفمبر 2026',
-        step: 4,
-        processingSummary: {
-          facility: 'مركز الفرز والعناية والمعالجة الشرعية - جمعية العناية بالمصحف',
-          district: 'الرياض',
-          notes: 'تم فرز المصاحف المخالفة وتصنيف الصالح منها للصيانة والترميم والمعالجة الشرعية المعتمدة دون توزيع.',
-          completedDate: '14 نوفمبر 2026'
-        }
-      },
-      {
-        id: 'QCA-2026-912',
-        donorName: '',
-        donorPhone: '',
-        quantity: 8,
-        condition: 'تحتاج صيانة وترميم (10 ريال)',
-        method: 'تسليم لسيارة الاستلام',
-        location: 'سيارة الاستلام (2) - جامع الراجحي',
-        date: '15 نوفمبر 2026',
-        step: 3,
-        processingSummary: null
-      }
-    ];
-
     const appState = {
       currentTab: 'home',
       donationMethod: 'pickup',
       currentDropoffFilter: 'all',
-      selectedTrackingId: 'QCA-2026-849',
+      selectedTrackingId: '',
+      searchedOrder: null,
+      loggedInPhone: '',
       totalAssociationMushafs: 14820,
       supabaseClient: null,
       supabaseConnected: false,
@@ -729,6 +878,28 @@
       dropoffPoints: [],
       pickupLocations: []
     };
+
+    function normalizeSaudiPhone(raw) {
+      const digits = String(raw || '').replace(/\D/g, '');
+      if (!digits) return '';
+      if (digits.startsWith('9665') && digits.length === 12) return '0' + digits.slice(3);
+      if (digits.startsWith('05') && digits.length === 10) return digits;
+      if (digits.startsWith('5') && digits.length === 9) return '0' + digits;
+      return digits;
+    }
+
+    function getPhoneVariants(raw) {
+      const norm = normalizeSaudiPhone(raw);
+      if (!norm) return [];
+      const variants = new Set([norm, String(raw || '').trim()]);
+      if (norm.startsWith('05') && norm.length === 10) {
+        const noZero = norm.slice(1);
+        variants.add(noZero);
+        variants.add('966' + noZero);
+        variants.add('+966' + noZero);
+      }
+      return Array.from(variants).filter(Boolean);
+    }
 
     function loadLocalData() {
       try {
@@ -747,14 +918,12 @@
 
       try {
         const savedDonations = localStorage.getItem(STORAGE_KEYS.DONATIONS);
-        appState.donations = savedDonations ? JSON.parse(savedDonations) : structuredClone(DEFAULT_DONATIONS);
+        appState.donations = savedDonations ? JSON.parse(savedDonations) : [];
       } catch {
-        appState.donations = structuredClone(DEFAULT_DONATIONS);
+        appState.donations = [];
       }
 
-      if (appState.donations.length > 0) {
-        appState.selectedTrackingId = appState.donations[0].id;
-      }
+      appState.loggedInPhone = normalizeSaudiPhone(localStorage.getItem(STORAGE_KEYS.LOGGED_IN_PHONE) || '');
     }
 
     function persistLocalData() {
@@ -772,18 +941,12 @@
           const cfg = JSON.parse(raw);
           if (cfg.url && cfg.url.startsWith('https://hhlhmlvkclpkjjapwlfv.supabase.co')) {
             url = cfg.url.replace(/\/rest\/v1\/?$/, '');
-          } else {
-            localStorage.removeItem(STORAGE_KEYS.SB_CONFIG);
           }
           if (cfg.key && cfg.key.startsWith('sb_publishable_zbaTUGPjuDaTMYxvQC_0Qw_6GECR4q5')) {
             key = cfg.key.trim();
-          } else {
-            localStorage.removeItem(STORAGE_KEYS.SB_CONFIG);
           }
         }
-      } catch {
-        localStorage.removeItem(STORAGE_KEYS.SB_CONFIG);
-      }
+      } catch {}
 
       if (url && key && window.supabase) {
         appState.supabaseClient = window.supabase.createClient(url, key);
@@ -791,73 +954,100 @@
       }
     }
 
-    async function syncAllFromDatabase(showFeedback = false) {
-      if (appState.supabaseConnected && appState.supabaseClient) {
-        try {
-          const { data: pData, error: pErr } = await appState.supabaseClient
-            .from('pickup_locations')
-            .select('*')
-            .order('id', { ascending: true });
+    function mapDbRowToOrder(row) {
+      return {
+        id: row.tracking_code || row.id,
+        donorName: row.donor_name || '',
+        donorPhone: row.donor_phone || '',
+        quantity: Number(row.quantity || 1),
+        condition: row.condition || 'مصاحف مخالفة للطبعة المعتمدة',
+        method: row.method || 'استلام من الموقع (مندوب)',
+        location: row.location || '',
+        date: row.order_date || '20 نوفمبر 2026',
+        step: Number(row.step || 1),
+        processingSummary: row.processing_summary || null
+      };
+    }
 
-          if (!pErr && Array.isArray(pData)) {
-            appState.pickupLocations = pData.map(row => ({
-              id: row.id,
-              name: row.name,
-              area: row.area || 'شمال الرياض',
-              address: row.address || '',
-              hours: row.hours || 'يومياً',
-              status: row.status || 'متاح'
-            }));
-          }
+    async function syncPublicLocationsFromDatabase() {
+      if (!appState.supabaseConnected || !appState.supabaseClient) return;
+      try {
+        const { data: pData, error: pErr } = await appState.supabaseClient
+          .from('pickup_locations')
+          .select('*')
+          .order('id', { ascending: true });
 
-          const { data: vData, error: vErr } = await appState.supabaseClient
-            .from('pickup_vehicles')
-            .select('*')
-            .order('id', { ascending: true });
-
-          if (!vErr && Array.isArray(vData) && vData.length > 0) {
-            appState.dropoffPoints = vData.map(row => ({
-              id: row.id,
-              name: row.name,
-              area: row.area || 'شرق الرياض',
-              address: row.address || '',
-              distance: row.distance || 'قريب',
-              hours: row.hours || 'يومياً',
-              status: row.status || 'متاح',
-              capacityPercent: Number(row.capacity_percent ?? row.capacityPercent ?? 25)
-            }));
-          }
-
-          const { data: dData, error: dErr } = await appState.supabaseClient
-            .from('mushaf_orders')
-            .select('*')
-            .order('created_at', { ascending: false });
-
-          if (!dErr && Array.isArray(dData) && dData.length > 0) {
-            appState.donations = dData.map(row => ({
-              id: row.tracking_code || row.id,
-              donorName: row.donor_name || '',
-              donorPhone: row.donor_phone || '',
-              quantity: Number(row.quantity || 1),
-              condition: row.condition || 'مصاحف مخالفة للطبعة المعتمدة',
-              method: row.method || 'استلام من الموقع (مندوب)',
-              location: row.location || '',
-              date: row.order_date || '20 نوفمبر 2026',
-              step: Number(row.step || 1),
-              processingSummary: row.processing_summary || null
-            }));
-            if (appState.donations.length > 0) {
-              appState.selectedTrackingId = appState.donations[0].id;
-            }
-          }
-
-          persistLocalData();
-          if (showFeedback) showToast('تمت مزامنة البيانات من قاعدة بيانات Supabase بنجاح');
-        } catch (err) {
-          console.warn('Sync error, falling back to local DB:', err);
+        if (!pErr && Array.isArray(pData)) {
+          appState.pickupLocations = pData.map(row => ({
+            id: row.id,
+            name: row.name,
+            area: row.area || 'شمال الرياض',
+            address: row.address || '',
+            hours: row.hours || 'يومياً',
+            status: row.status || 'متاح'
+          }));
         }
+
+        const { data: vData, error: vErr } = await appState.supabaseClient
+          .from('pickup_vehicles')
+          .select('*')
+          .order('id', { ascending: true });
+
+        if (!vErr && Array.isArray(vData) && vData.length > 0) {
+          appState.dropoffPoints = vData.map(row => ({
+            id: row.id,
+            name: row.name,
+            area: row.area || 'شرق الرياض',
+            address: row.address || '',
+            distance: row.distance || 'قريب',
+            hours: row.hours || 'يومياً',
+            status: row.status || 'متاح',
+            capacityPercent: Number(row.capacity_percent ?? row.capacityPercent ?? 25)
+          }));
+        }
+        persistLocalData();
+      } catch (err) {
+        console.warn('Locations sync warning:', err);
       }
       refreshAllViews();
+    }
+
+    async function fetchOrdersByPhone(phone) {
+      const variants = getPhoneVariants(phone);
+      const norm = normalizeSaudiPhone(phone);
+      if (!norm) return [];
+
+      let dbOrders = [];
+      if (appState.supabaseConnected && appState.supabaseClient && variants.length > 0) {
+        try {
+          const { data, error } = await appState.supabaseClient
+            .from('mushaf_orders')
+            .select('*')
+            .in('donor_phone', variants)
+            .order('created_at', { ascending: false });
+
+          if (!error && Array.isArray(data)) {
+            dbOrders = data.map(mapDbRowToOrder);
+          }
+        } catch (err) {
+          console.warn('Fetch user orders error:', err);
+        }
+      }
+
+      // دمج مع أي طلبات محفوظة محلياً لنفس الرقم دون تكرار
+      const localMatches = appState.donations.filter(d => normalizeSaudiPhone(d.donorPhone) === norm);
+      const mergedMap = new Map();
+      dbOrders.forEach(o => mergedMap.set(o.id, o));
+      localMatches.forEach(o => {
+        if (!mergedMap.has(o.id)) mergedMap.set(o.id, o);
+      });
+
+      const finalOrders = Array.from(mergedMap.values());
+      // تحديث التخزين المحلي بطلبات هذا الرقم فقط
+      const otherLocal = appState.donations.filter(d => normalizeSaudiPhone(d.donorPhone) !== norm);
+      appState.donations = [...finalOrders, ...otherLocal];
+      persistLocalData();
+      return finalOrders;
     }
 
     async function dbSaveOrder(orderObj, isUpdate = false) {
@@ -882,7 +1072,7 @@
       persistLocalData();
     }
 
-    document.addEventListener('DOMContentLoaded', () => {
+    document.addEventListener('DOMContentLoaded', async () => {
       const tomorrow = new Date();
       tomorrow.setDate(tomorrow.getDate() + 1);
       const dateInput = document.getElementById('form-date');
@@ -892,11 +1082,26 @@
 
       loadLocalData();
       initSupabaseFromStorage();
-      refreshAllViews();
       updateImpactCalculator(5);
+      await syncPublicLocationsFromDatabase();
+
+      if (appState.loggedInPhone) {
+        await fetchOrdersByPhone(appState.loggedInPhone);
+        const myOrders = getUserOrders();
+        if (myOrders.length > 0 && !appState.selectedTrackingId) {
+          appState.selectedTrackingId = myOrders[0].id;
+        }
+      }
+
+      refreshAllViews();
       switchTab('home');
-      syncAllFromDatabase(false);
     });
+
+    function getUserOrders() {
+      if (!appState.loggedInPhone) return [];
+      const norm = normalizeSaudiPhone(appState.loggedInPhone);
+      return appState.donations.filter(d => normalizeSaudiPhone(d.donorPhone) === norm);
+    }
 
     function refreshAllViews() {
       populatePickupSelectOptions();
@@ -905,7 +1110,7 @@
       renderDropoffPoints(appState.currentDropoffFilter);
       renderTrackingPills();
       renderTrackingDetails(appState.selectedTrackingId);
-      updateHomeStats();
+      renderProfileData();
     }
 
     function populatePickupSelectOptions() {
@@ -935,13 +1140,6 @@
       } else {
         setDonationMethod(hasPickup ? appState.donationMethod : 'dropoff');
       }
-    }
-
-    function updateHomeStats() {
-      const extraMushafs = appState.donations.reduce((sum, d) => sum + (Number(d.quantity) || 0), 0);
-      const total = appState.totalAssociationMushafs + Math.max(0, extraMushafs - 23);
-      const el = document.getElementById('stat-total-mushafs');
-      if (el) el.textContent = total.toLocaleString('en-US');
     }
 
     function switchTab(tabId) {
@@ -1091,7 +1289,7 @@ ${nameLine}${phoneLine}✅ رقم الطلب: *${order.id}*
     }
 
     function openWhatsAppModal(order) {
-      const waPhone = formatPhoneForWhatsApp(order.donorPhone);
+      const waPhone = formatPhoneForWhatsApp();
       const msg = buildWhatsAppReminderMessage(order);
       document.getElementById('wa-target-phone').textContent = ASSOCIATION_PHONE;
       document.getElementById('wa-target-code').textContent = order.id;
@@ -1110,7 +1308,7 @@ ${nameLine}${phoneLine}✅ رقم الطلب: *${order.id}*
 
     function copyWhatsAppMessage() {
       const text = document.getElementById('wa-message-text').value;
-      copyTextToClipboard(text, 'تم نسخ رسالة التذكير للواتساب!');
+      copyTextToClipboard(text, 'تم نسخ رسالة الواتساب!');
     }
 
     function closeWhatsAppModal() {
@@ -1122,7 +1320,8 @@ ${nameLine}${phoneLine}✅ رقم الطلب: *${order.id}*
       const quantity = parseInt(document.getElementById('form-quantity').value, 10) || 1;
       const condition = document.querySelector('input[name="condition"]:checked').value;
       const donorName = document.getElementById('form-donor-name').value.trim();
-      const donorPhone = document.getElementById('form-donor-phone').value.trim();
+      const rawPhone = document.getElementById('form-donor-phone').value.trim();
+      const donorPhone = normalizeSaudiPhone(rawPhone) || rawPhone;
       const randomNum = Math.floor(100 + Math.random() * 899);
       const trackingCode = `QCA-2026-${randomNum}`;
 
@@ -1143,6 +1342,8 @@ ${nameLine}${phoneLine}✅ رقم الطلب: *${order.id}*
         locationText = document.getElementById('form-dropoff-point').value;
       }
 
+      const todayStr = new Date().toLocaleDateString('ar-SA', { day: 'numeric', month: 'long', year: 'numeric' });
+
       const newDonation = {
         id: trackingCode,
         donorName,
@@ -1153,20 +1354,27 @@ ${nameLine}${phoneLine}✅ رقم الطلب: *${order.id}*
         location: locationText,
         preferredDate,
         timeSlot,
-        date: '20 نوفمبر 2026',
+        date: todayStr,
         step: 1,
         processingSummary: null
       };
 
+      // تسجيل الدخول تلقائياً برقم جوال مقدم الطلب لحفظ خصوصية سجله
+      if (donorPhone) {
+        appState.loggedInPhone = normalizeSaudiPhone(donorPhone);
+        localStorage.setItem(STORAGE_KEYS.LOGGED_IN_PHONE, appState.loggedInPhone);
+      }
+
       appState.donations.unshift(newDonation);
       appState.selectedTrackingId = trackingCode;
+      appState.searchedOrder = newDonation;
 
       try {
         await dbSaveOrder(newDonation, false);
-        showToast(`تم رفع الطلب إلى قاعدة البيانات! رمز التتبع: ${trackingCode}`);
+        showToast(`تم تسجيل طلبك! رمز التتبع: ${trackingCode}`);
       } catch (err) {
         console.warn('Order DB save warning:', err);
-        showToast(`تم حفظ الطلب محلياً (${trackingCode})؛ تحقق من سياسات Supabase`, 'info');
+        showToast(`تم حفظ الطلب (${trackingCode})`, 'info');
       }
 
       refreshAllViews();
@@ -1174,10 +1382,21 @@ ${nameLine}${phoneLine}✅ رقم الطلب: *${order.id}*
       switchTab('track');
     }
 
+    // ==================== TRACKING FUNCTIONS ====================
     function renderTrackingPills() {
+      const wrapper = document.getElementById('tracking-pills-wrapper');
       const container = document.getElementById('tracking-pills');
-      if (!container) return;
-      container.innerHTML = appState.donations.map(d => {
+      if (!container || !wrapper) return;
+
+      const myOrders = getUserOrders();
+      if (myOrders.length === 0) {
+        wrapper.classList.add('hidden');
+        container.innerHTML = '';
+        return;
+      }
+
+      wrapper.classList.remove('hidden');
+      container.innerHTML = myOrders.map(d => {
         const isSelected = d.id === appState.selectedTrackingId;
         const activeClass = isSelected
           ? 'bg-emerald-800 text-white border-emerald-800 shadow-sm'
@@ -1197,14 +1416,33 @@ ${nameLine}${phoneLine}✅ رقم الطلب: *${order.id}*
       renderTrackingDetails(id);
     }
 
-    function searchTrackingCode() {
+    async function searchTrackingCode() {
       const query = document.getElementById('track-search-input').value.trim().toUpperCase();
       if (!query) {
         showToast('يرجى إدخال رمز التتبع أولاً', 'info');
         return;
       }
-      const found = appState.donations.find(d => d.id.toUpperCase() === query);
+
+      let found = appState.donations.find(d => d.id.toUpperCase() === query);
+      if (!found && appState.supabaseConnected && appState.supabaseClient) {
+        try {
+          const { data, error } = await appState.supabaseClient
+            .from('mushaf_orders')
+            .select('*')
+            .ilike('tracking_code', query)
+            .limit(1);
+
+          if (!error && Array.isArray(data) && data.length > 0) {
+            found = mapDbRowToOrder(data[0]);
+            appState.searchedOrder = found;
+          }
+        } catch (err) {
+          console.warn('Tracking search error:', err);
+        }
+      }
+
       if (found) {
+        appState.searchedOrder = found;
         selectTracking(found.id);
         showToast(`تم العثور على الطلب ${found.id}`);
       } else {
@@ -1212,32 +1450,25 @@ ${nameLine}${phoneLine}✅ رقم الطلب: *${order.id}*
       }
     }
 
-    async function advanceDemoStep(id) {
-      const donation = appState.donations.find(d => d.id === id);
-      if (!donation || donation.step >= 4) return;
-      donation.step += 1;
-      if (donation.step === 4) {
-        donation.processingSummary = {
-          facility: 'مركز الفرز والعناية والمعالجة الشرعية - جمعية العناية بالمصحف',
-          district: 'الرياض',
-          notes: 'تم إتمام الفرز والصيانة أو المعالجة الشرعية للمصاحف المخالفة وفق الضوابط المعتمدة دون توزيع.',
-          completedDate: '20 نوفمبر 2026'
-        };
-        showToast('تم إتمام مرحلة الصيانة والمعالجة الشرعية بنجاح!');
-      } else {
-        showToast('تم تحديث مرحلة تتبع الطلب بنجاح');
-      }
-      await dbSaveOrder(donation, true);
-      refreshAllViews();
-    }
-
     function renderTrackingDetails(id) {
       const container = document.getElementById('tracking-detail-card');
       if (!container) return;
-      const donation = appState.donations.find(d => d.id === id) || appState.donations[0];
+
+      const myOrders = getUserOrders();
+      const donation = myOrders.find(d => d.id === id)
+        || (appState.searchedOrder && appState.searchedOrder.id === id ? appState.searchedOrder : null)
+        || myOrders[0]
+        || appState.searchedOrder;
 
       if (!donation) {
-        container.innerHTML = `<p class="text-center text-slate-500 py-8">لا توجد طلبات مسجلة حالياً.</p>`;
+        container.innerHTML = `
+          <div class="text-center py-8 space-y-3">
+            <div class="w-12 h-12 mx-auto rounded-2xl bg-slate-100 text-slate-400 flex items-center justify-center text-xl">
+              <i class="fa-solid fa-magnifying-glass"></i>
+            </div>
+            <p class="text-sm font-bold text-slate-600">أدخل رمز التتبع أعلاه أو سجّل الدخول برقم جوالك في صفحة «سجلي» لعرض طلباتك.</p>
+          </div>
+        `;
         return;
       }
 
@@ -1291,15 +1522,7 @@ ${nameLine}${phoneLine}✅ رقم الطلب: *${order.id}*
           </div>
           <p class="text-xs sm:text-sm text-slate-700 leading-relaxed">${donation.processingSummary.notes}</p>
         </div>
-      ` : `
-        <div class="mt-6 pt-4 border-t border-slate-100 flex flex-wrap items-center justify-between gap-3">
-          <span class="text-xs text-slate-500">تحديث حالة الطلب في قاعدة البيانات:</span>
-          <button onclick="advanceDemoStep('${donation.id}')" class="bg-gold-500 hover:bg-gold-400 text-emerald-950 text-xs font-extrabold px-4 py-2 rounded-xl transition flex items-center gap-1.5">
-            <i class="fa-solid fa-forward-step"></i>
-            <span>تقديم للمرحلة التالية</span>
-          </button>
-        </div>
-      `;
+      ` : '';
 
       container.innerHTML = `
         <div class="flex flex-wrap items-center justify-between gap-3 pb-5 mb-6 border-b border-slate-100">
@@ -1311,7 +1534,7 @@ ${nameLine}${phoneLine}✅ رقم الطلب: *${order.id}*
             <div class="text-xs text-slate-500 mt-0.5">${donation.method} • ${donation.date}</div>
           </div>
           <div class="flex flex-wrap items-center gap-2">
-            <button onclick="openWhatsAppReminderById('${donation.id}')" class="bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200 px-3 py-1.5 rounded-xl text-xs font-extrabold flex items-center gap-1.5 transition">
+            <button onclick='openWhatsAppModal(${JSON.stringify(donation)})' class="bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200 px-3 py-1.5 rounded-xl text-xs font-extrabold flex items-center gap-1.5 transition">
               <i class="fa-brands fa-whatsapp text-sm"></i>
               <span>إرسال للجمعية واتساب</span>
             </button>
@@ -1325,11 +1548,163 @@ ${nameLine}${phoneLine}✅ رقم الطلب: *${order.id}*
       `;
     }
 
-    function openWhatsAppReminderById(orderId) {
-      const order = appState.donations.find(d => d.id === orderId);
-      if (order) openWhatsAppModal(order);
+    // ==================== PROFILE / PHONE LOGIN & CERTIFICATES ====================
+    async function handlePhoneLogin(e) {
+      e.preventDefault();
+      const input = document.getElementById('login-phone-input');
+      const btn = document.getElementById('login-submit-btn');
+      const norm = normalizeSaudiPhone(input.value);
+
+      if (!norm || norm.length < 9) {
+        showToast('يرجى إدخال رقم جوال صحيح (مثال: 05XXXXXXXX)', 'info');
+        return;
+      }
+
+      btn.disabled = true;
+      btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i><span>جاري جلب سجلك...</span>`;
+
+      appState.loggedInPhone = norm;
+      localStorage.setItem(STORAGE_KEYS.LOGGED_IN_PHONE, norm);
+
+      const orders = await fetchOrdersByPhone(norm);
+      if (orders.length > 0) {
+        appState.selectedTrackingId = orders[0].id;
+        showToast(`تم الدخول بنجاح! تم العثور على ${orders.length} طلب مسجل برقمك`);
+      } else {
+        showToast('تم الدخول برقم الجوال، لا توجد طلبات سابقة مسجلة بهذا الرقم حتى الآن', 'info');
+      }
+
+      btn.disabled = false;
+      btn.innerHTML = `<i class="fa-solid fa-arrow-right-to-bracket"></i><span>عرض سجلي وشهاداتي</span>`;
+      refreshAllViews();
     }
 
+    async function refreshLoggedInUserOrders() {
+      if (!appState.loggedInPhone) return;
+      const orders = await fetchOrdersByPhone(appState.loggedInPhone);
+      if (orders.length > 0 && !appState.selectedTrackingId) {
+        appState.selectedTrackingId = orders[0].id;
+      }
+      refreshAllViews();
+      showToast('تم تحديث سجل طلباتك وشهاداتك');
+    }
+
+    function logoutUserPhone() {
+      appState.loggedInPhone = '';
+      appState.selectedTrackingId = '';
+      appState.searchedOrder = null;
+      localStorage.removeItem(STORAGE_KEYS.LOGGED_IN_PHONE);
+      const input = document.getElementById('login-phone-input');
+      if (input) input.value = '';
+      refreshAllViews();
+      showToast('تم تسجيل الخروج من السجل', 'info');
+    }
+
+    function renderProfileData() {
+      const loginBox = document.getElementById('profile-login-box');
+      const dashboardBox = document.getElementById('profile-dashboard-box');
+      if (!loginBox || !dashboardBox) return;
+
+      if (!appState.loggedInPhone) {
+        loginBox.classList.remove('hidden');
+        dashboardBox.classList.add('hidden');
+        return;
+      }
+
+      loginBox.classList.add('hidden');
+      dashboardBox.classList.remove('hidden');
+
+      const myOrders = getUserOrders();
+      const latestWithName = myOrders.find(o => o.donorName && o.donorName.trim() !== '');
+      const displayName = latestWithName ? latestWithName.donorName : 'مساهم كريم';
+
+      const totalMushafs = myOrders.reduce((acc, item) => acc + (Number(item.quantity) || 0), 0);
+      const totalOrders = myOrders.length;
+      const totalLetters = (totalMushafs * 320000).toLocaleString('en-US');
+
+      document.getElementById('profile-user-name').textContent = displayName;
+      document.getElementById('profile-user-phone').textContent = appState.loggedInPhone;
+      document.getElementById('user-total-mushafs').textContent = totalMushafs;
+      document.getElementById('user-total-orders').textContent = totalOrders;
+      document.getElementById('user-total-letters').textContent = totalLetters;
+
+      // تحديث بيانات الشهادة
+      document.getElementById('cert-donor-name').textContent = displayName;
+      document.getElementById('cert-mushaf-total').textContent = `${totalMushafs} مصاحف`;
+      document.getElementById('cert-verify-code').textContent = myOrders[0] ? myOrders[0].id : `QCA-${appState.loggedInPhone.slice(-4)}`;
+
+      const historyContainer = document.getElementById('profile-history-list');
+      if (!historyContainer) return;
+
+      if (myOrders.length === 0) {
+        historyContainer.innerHTML = `
+          <div class="text-center py-8 bg-slate-50 rounded-2xl border border-slate-200/70 space-y-3">
+            <p class="text-sm font-bold text-slate-600">لا توجد طلبات مسجلة برقم الجوال <span dir="ltr">${appState.loggedInPhone}</span> حتى الآن.</p>
+            <button type="button" onclick="switchTab('donate')" class="bg-emerald-800 hover:bg-emerald-700 text-white text-xs font-extrabold px-4 py-2.5 rounded-xl transition">
+              إنشاء أول طلب تسليم مصاحف
+            </button>
+          </div>
+        `;
+        return;
+      }
+
+      historyContainer.innerHTML = myOrders.map(d => {
+        const isDone = d.step === 4;
+        const badge = isDone
+          ? `<span class="text-[11px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200 px-2.5 py-1 rounded-full">مكتمل المعالجة</span>`
+          : `<span class="text-[11px] font-bold bg-gold-100 text-gold-600 border border-gold-200 px-2.5 py-1 rounded-full">قيد المتابعة (${d.step}/4)</span>`;
+
+        return `
+          <div class="p-4 rounded-2xl border border-slate-200/80 hover:border-emerald-300 bg-slate-50/50 flex flex-wrap items-center justify-between gap-3 transition">
+            <div>
+              <div class="flex items-center gap-2">
+                <span class="font-extrabold text-emerald-950 text-sm">${d.id}</span>
+                ${badge}
+              </div>
+              <div class="text-xs text-slate-500 mt-1">${d.quantity} مصاحف • ${d.condition} • ${d.date}</div>
+              <div class="text-[11px] text-slate-400 mt-0.5">${d.location}</div>
+            </div>
+            <div class="flex items-center gap-2">
+              <button type="button" onclick="openOrderCertificate('${d.id}')" class="bg-gold-50 hover:bg-gold-100 text-gold-600 border border-gold-200 text-xs font-bold px-3 py-2 rounded-xl transition flex items-center gap-1">
+                <i class="fa-solid fa-certificate"></i>
+                <span>الشهادة</span>
+              </button>
+              <button type="button" onclick="switchTab('track'); selectTracking('${d.id}');" class="bg-white hover:bg-emerald-800 hover:text-white text-emerald-800 border border-emerald-200 text-xs font-bold px-3.5 py-2 rounded-xl transition">
+                التتبع
+              </button>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function openOrderCertificate(orderId) {
+      const myOrders = getUserOrders();
+      const order = myOrders.find(o => o.id === orderId);
+      if (order) {
+        const name = (order.donorName && order.donorName.trim()) || document.getElementById('profile-user-name').textContent || 'مساهم كريم';
+        document.getElementById('cert-donor-name').textContent = name;
+        document.getElementById('cert-mushaf-total').textContent = `${order.quantity} مصاحف`;
+        document.getElementById('cert-verify-code').textContent = order.id;
+      }
+      document.getElementById('certificate-modal').classList.remove('hidden');
+    }
+
+    function openCertificateModal() {
+      renderProfileData();
+      document.getElementById('certificate-modal').classList.remove('hidden');
+    }
+
+    function closeCertificateModal() {
+      document.getElementById('certificate-modal').classList.add('hidden');
+    }
+
+    function copyCertificateLink() {
+      const code = document.getElementById('cert-verify-code').textContent;
+      copyTextToClipboard(`شهادة تقدير - جمعية العناية بالمصحف الشريف | رمز التحقق: ${code}`, 'تم نسخ رمز التحقق الخاص بالشهادة!');
+    }
+
+    // ==================== VEHICLES LIST ====================
     function populateVehicleSelectOptions() {
       const select = document.getElementById('form-dropoff-point');
       if (!select) return;
