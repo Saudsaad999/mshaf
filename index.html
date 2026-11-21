@@ -400,6 +400,30 @@
 
           <!-- ==================== 1. استلام من الموقع (مندوب) ==================== -->
           <div id="pickup-fields" class="space-y-4 pt-2 border-t border-slate-100">
+            <!-- رسالة تنبيه وتحويل فوري لسيارة الاستلام عند عدم توفر مواقع متاحة -->
+            <div
+              id="no-pickup-spots-alert"
+              role="button"
+              tabindex="0"
+              onclick="goDirectlyToVehicleForm()"
+              onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();goDirectlyToVehicleForm();}"
+              class="hidden cursor-pointer rounded-2xl p-4 bg-gradient-to-l from-amber-50 to-orange-50/90 hover:from-amber-100 hover:to-orange-100/90 border-2 border-amber-300 shadow-sm transition flex items-center justify-between gap-3 select-none"
+            >
+              <div class="flex items-center gap-3">
+                <div class="w-11 h-11 rounded-xl bg-amber-500 text-white flex items-center justify-center text-lg shrink-0 shadow-sm">
+                  <i class="fa-solid fa-car-side"></i>
+                </div>
+                <div>
+                  <div class="text-sm sm:text-base font-black text-amber-950">لا يوجد أماكن متاحة للتسليم</div>
+                  <div class="text-xs font-bold text-amber-800 mt-0.5">اضغط هنا للتحويل المباشر وتعبئة بيانات الاستلام للسيارة</div>
+                </div>
+              </div>
+              <span class="shrink-0 bg-emerald-800 text-white text-xs font-extrabold px-3.5 py-2 rounded-xl flex items-center gap-1.5 shadow-sm">
+                <span>تسليم السيارة</span>
+                <i class="fa-solid fa-arrow-left text-[11px]"></i>
+              </span>
+            </div>
+
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div class="rounded-2xl p-4 bg-gradient-to-br from-emerald-50/80 via-white to-gold-50/60 border border-emerald-200/90 shadow-sm space-y-2.5">
                 <div class="flex items-center justify-between gap-2">
@@ -455,12 +479,11 @@
                   <input id="form-address-note" type="text" placeholder="مثال: حي النرجس، بجوار مسجد الرحمة" class="w-full p-3.5 rounded-xl bg-white border border-slate-200 text-sm focus:border-emerald-600 focus:outline-none" />
                 </div>
 
-                <!-- تحويل سريع لسيارة الاستلام في حال عدم توفر المندوب أو رغبة التسليم المباشر -->
                 <div class="rounded-xl bg-amber-50/90 border border-amber-200/90 px-3 py-2.5 flex items-center justify-between gap-2">
                   <span class="text-[11px] text-amber-900 font-bold leading-snug">
                     إذا لم يتوفر استلام مندوب أو أردت التسليم المباشر:
                   </span>
-                  <button type="button" onclick="switchToVehiclePickupQuick()" class="shrink-0 bg-[#8C9B1E] hover:bg-[#727e16] text-white text-[11px] font-extrabold px-3 py-1.5 rounded-lg transition flex items-center gap-1">
+                  <button type="button" onclick="goDirectlyToVehicleForm()" class="shrink-0 bg-[#8C9B1E] hover:bg-[#727e16] text-white text-[11px] font-extrabold px-3 py-1.5 rounded-lg transition flex items-center gap-1">
                     <i class="fa-solid fa-car-side"></i>
                     <span>تحويل لسيارة الاستلام</span>
                   </button>
@@ -484,7 +507,7 @@
             </div>
           </div>
 
-          <!-- ==================== 2. تسليم لسيارة الاستلام (زر سريع لموقع السيارة) ==================== -->
+          <!-- ==================== 2. تسليم لسيارة الاستلام ==================== -->
           <div id="dropoff-fields" class="hidden space-y-4 pt-2 border-t border-slate-100">
             <div class="rounded-2xl p-4 bg-gradient-to-br from-emerald-50/70 to-gold-50/50 border border-emerald-200/80 space-y-3">
               <div class="flex flex-wrap items-center justify-between gap-2">
@@ -524,7 +547,7 @@
 
           <button type="submit" class="w-full bg-gradient-to-l from-emerald-900 to-emerald-700 hover:from-emerald-800 hover:to-emerald-600 text-white font-extrabold text-base py-4 rounded-2xl shadow-lg transition active:scale-[0.99] flex items-center justify-center gap-2">
             <i class="fa-solid fa-paper-plane"></i>
-            <span>تأكيد الطلب ورفعه لقاعدة البيانات</span>
+            <span>تأكيد الطلب</span>
           </button>
         </form>
 
@@ -1040,7 +1063,7 @@
           .select('*')
           .order('id', { ascending: true });
 
-        if (!vErr && Array.isArray(vData) && vData.length > 0) {
+        if (!vErr && Array.isArray(vData)) {
           appState.dropoffPoints = vData.map(row => ({
             id: row.id,
             name: row.name,
@@ -1140,9 +1163,48 @@
     function refreshAllViews() {
       populateVehicleSelectOptions();
       renderDropoffPoints(appState.currentDropoffFilter);
+      checkLocationsAvailabilityAndRedirect();
       renderTrackingPills();
       renderTrackingDetails(appState.selectedTrackingId);
       renderProfileData();
+    }
+
+    // ==================== AVAILABILITY AUTO-REDIRECT (بدون قفل) ====================
+    function hasAvailablePickupLocations() {
+      if (!Array.isArray(appState.dropoffPoints) || appState.dropoffPoints.length === 0) {
+        return false;
+      }
+      const activePoints = appState.dropoffPoints.filter(p => (p.status || '').trim() !== 'غير متاح');
+      return activePoints.length > 0;
+    }
+
+    function goDirectlyToVehicleForm() {
+      setDonationMethod('dropoff');
+      syncSelectedVehicleQuickLink();
+      const dropoffSection = document.getElementById('dropoff-fields');
+      if (dropoffSection) {
+        dropoffSection.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }
+      const vehicleSelect = document.getElementById('form-dropoff-point');
+      if (vehicleSelect) {
+        vehicleSelect.focus();
+      }
+      showToast('تم تحويلك إلى تعبئة الاستلام للسيارة', 'info');
+    }
+
+    function checkLocationsAvailabilityAndRedirect() {
+      const noSpotsAlert = document.getElementById('no-pickup-spots-alert');
+      const available = hasAvailablePickupLocations();
+
+      if (!available) {
+        if (noSpotsAlert) noSpotsAlert.classList.remove('hidden');
+        if (appState.currentTab === 'donate' && appState.donationMethod === 'pickup') {
+          setDonationMethod('dropoff');
+          syncSelectedVehicleQuickLink();
+        }
+      } else {
+        if (noSpotsAlert) noSpotsAlert.classList.add('hidden');
+      }
     }
 
     // ==================== GPS / GOOGLE MAPS LINK CAPTURE ====================
@@ -1172,7 +1234,7 @@
       const hint = document.getElementById('gps-status-hint');
 
       if (!navigator.geolocation) {
-        switchToVehiclePickupQuick('المتصفح لا يدعم تحديد الموقع تلقائياً؛ تم التحويل لسيارة الاستلام');
+        goDirectlyToVehicleForm();
         return;
       }
 
@@ -1206,16 +1268,14 @@
             hint.classList.remove('hidden');
             hint.innerHTML = `<i class="fa-solid fa-circle-info text-amber-600"></i><span>تعذر تحديد الموقع تلقائياً؛ يمكنك الصق الرابط أو التحويل لسيارة الاستلام.</span>`;
           }
-          switchToVehiclePickupQuick('تعذر تحديد موقع المندوب تلقائياً؛ تم التحويل لتسليم سيارة الاستلام');
+          if (!hasAvailablePickupLocations()) {
+            goDirectlyToVehicleForm();
+          } else {
+            showToast('فعّل صلاحية الموقع أو الصق رابط قوقل ماب يدوياً', 'info');
+          }
         },
         { enableHighAccuracy: true, timeout: 10000 }
       );
-    }
-
-    function switchToVehiclePickupQuick(msg = 'تم التحويل إلى التسليم لسيارة الاستلام') {
-      setDonationMethod('dropoff');
-      syncSelectedVehicleQuickLink();
-      showToast(msg, 'info');
     }
 
     function syncSelectedVehicleQuickLink() {
@@ -1254,6 +1314,10 @@
           btn.classList.add('text-slate-500', 'font-medium');
         }
       });
+
+      if (tabId === 'donate' && !hasAvailablePickupLocations()) {
+        setDonationMethod('dropoff');
+      }
 
       refreshAllViews();
       window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -1316,12 +1380,14 @@
     }
 
     function startDonationMode(method) {
+      const targetMethod = (method === 'pickup' && !hasAvailablePickupLocations()) ? 'dropoff' : method;
       switchTab('donate');
-      setDonationMethod(method);
+      setDonationMethod(targetMethod);
     }
 
     function setDonationMethod(method) {
-      appState.donationMethod = method;
+      const resolvedMethod = (method === 'pickup' && !hasAvailablePickupLocations()) ? 'dropoff' : method;
+      appState.donationMethod = resolvedMethod;
 
       const pickupBtn = document.getElementById('mode-btn-pickup');
       const dropoffBtn = document.getElementById('mode-btn-dropoff');
@@ -1329,7 +1395,7 @@
       const dropoffFields = document.getElementById('dropoff-fields');
       const locationLinkInput = document.getElementById('form-location-link');
 
-      if (method === 'pickup') {
+      if (resolvedMethod === 'pickup') {
         pickupBtn.className = 'py-3 px-4 rounded-xl text-sm font-extrabold transition-all flex items-center justify-center gap-2 bg-emerald-800 text-white shadow-sm';
         dropoffBtn.className = 'py-3 px-4 rounded-xl text-sm font-extrabold transition-all flex items-center justify-center gap-2 text-slate-600 hover:text-slate-900';
         pickupFields.classList.remove('hidden');
@@ -1831,6 +1897,16 @@ ${nameLine}${phoneLine}✅ رقم الطلب: *${order.id}*
       const filtered = area === 'all'
         ? appState.dropoffPoints
         : appState.dropoffPoints.filter(p => (p.area || '').includes(area));
+
+      if (filtered.length === 0) {
+        container.innerHTML = `
+          <div onclick="goDirectlyToVehicleForm()" class="col-span-full cursor-pointer rounded-2xl p-6 bg-amber-50 hover:bg-amber-100/80 border border-amber-300 text-center space-y-2 transition">
+            <div class="text-base font-black text-amber-950">لا يوجد أماكن متاحة للتسليم</div>
+            <p class="text-xs font-bold text-amber-800">اضغط هنا للتحويل المباشر وتعبئة بيانات الاستلام للسيارة</p>
+          </div>
+        `;
+        return;
+      }
 
       container.innerHTML = filtered.map(point => {
         const isAvailable = point.status === 'متاح';
